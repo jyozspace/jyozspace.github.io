@@ -1,1 +1,0 @@
-# jyozspace.github.io
