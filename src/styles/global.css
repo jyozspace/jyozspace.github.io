@@ -98,6 +98,12 @@ body {
 img,
 picture {
   max-width: 100%;
+  /* Without this, an <img> with HTML width/height attributes (which Astro's
+     <Image> always sets) keeps that fixed height once max-width shrinks its
+     width below the attribute value — squishing it. Only bit if the image's
+     intrinsic width exceeds its container (e.g. the home hero photo on a
+     phone); auto-height keeps the aspect ratio intact whenever it shrinks. */
+  height: auto;
   display: block;
 }
 
