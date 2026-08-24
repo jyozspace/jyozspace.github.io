@@ -1,0 +1,84 @@
+---
+const socials = [
+  { label: 'GitHub', href: 'https://github.com/jyothish2312' },
+  { label: 'LinkedIn', href: 'http://www.linkedin.com/in/jyothishkj' },
+  { label: 'YouTube', href: 'https://www.youtube.com/channel/UCJNfn2usGWhr9XHlWwgIbdw' },
+  { label: 'Instagram', href: 'https://www.instagram.com/jyozspace/' },
+  { label: 'Twitter', href: 'https://twitter.com/JyothishKrJ' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-brand">JyozSpace</p>
+      <p class="footer-tagline">Your friendly neighbourhood geek.</p>
+    </div>
+
+    <nav aria-label="Social links" class="footer-socials">
+      {socials.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
+      ))}
+    </nav>
+  </div>
+  <div class="container">
+    <p class="footer-copy">&copy; {year} Jyothish J. Kumar &middot; Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+    padding-block: 2.5rem 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-brand {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .footer-tagline {
+    color: var(--text-muted);
+    margin: 0.15rem 0 0;
+    font-size: 0.9rem;
+  }
+
+  .footer-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .footer-socials a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .footer-socials a:hover { color: var(--accent-strong); }
+
+  .footer-copy {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-copy a { color: var(--text-muted); }
+</style>

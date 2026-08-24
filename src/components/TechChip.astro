@@ -1,0 +1,37 @@
+---
+import { getIcon } from '../lib/techIcons';
+
+interface Props {
+  label: string;
+  icon?: string; // simple-icons slug, e.g. "python" — omit if no brand mark exists
+}
+
+const { label, icon } = Astro.props;
+const iconData = icon ? getIcon(icon) : null;
+---
+
+<span class="tool-chip">
+  {iconData && (
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d={iconData.path} fill="currentColor" />
+    </svg>
+  )}
+  {label}
+</span>
+
+<style>
+  .tool-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.25em 0.65em;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .tool-chip svg { color: var(--accent-strong); flex-shrink: 0; }
+</style>

@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# env
+.env
+.env.production
+
+# editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# source WordPress export — kept locally for reference only, not published
+public_html.zip
+content_extract/

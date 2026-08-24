@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarkHero from '../components/DarkHero.astro';
+import { Image } from 'astro:assets';
+import profilePhoto from '../assets/images/profile-photo.jpg';
+
+const RESUME_URL = '/resume.pdf';
+
+const experience = [
+  {
+    when: 'Jun 2025 – Present',
+    title: 'Project Associate, AI & HPC Research Centre (AHRC), IIT Bhubaneswar',
+    detail: 'Full-stack development of computer-vision-based infrastructure inspection robots, with a focus on railway applications — electronics, sensor integration, ROS2 software stack, and UI.',
+  },
+  {
+    when: 'Dec 2023 – May 2025',
+    title: "Research Scholar, Dr. Subhankar Mishra's Lab, School of Computer Sciences, NISER",
+    detail: '"Swayansaasita" — research and development of ADAS systems for two-wheeled vehicles: system design, sensor data collection pipeline, and data processing.',
+  },
+  {
+    when: 'May – Nov 2023',
+    title: 'UAV Systems Engineer, UAVIO Labs Pvt. Ltd.',
+    detail: '(Now defunct — CIN U31909KA2021PTC145205.) Under Dr. Arjun Jain, designed and developed embedded system accessories for autonomous drones operating in GPS-denied environments.',
+  },
+  {
+    when: 'Jun – Aug 2022',
+    title: 'Summer Intern, Smart Materials, Systems and Structures Lab, IIT Kanpur',
+    detail: '"Adaptive Smart Stick for Sit-to-Stand Assistance" — electromechanical system design for sensing and actuation, and data collection/processing for training time-series ML models.',
+  },
+  {
+    when: 'Aug 2021 – May 2023',
+    title: 'M.Sc. thesis — soft robotics for prosthetics',
+    detail: 'Developed a PVDF-HFP and polyaniline-based ionic electroactive polymer actuator with an LSTM-based EMG control system. Guided by Dr. Subhankar Mishra and Dr. Himansu S. Biswal, NISER.',
+  },
+];
+
+const education = [
+  { title: 'M.Sc. Chemistry, Computer Science (Minor)', detail: 'NISER Bhubaneswar — degree awarded by Homi Bhabha National Institute (HBNI), under the Dept. of Atomic Energy. DISHA Scholarship, 2018–2023.', when: '2023' },
+  { title: 'Class 12', detail: 'Central Academy Sr. Sec. School, Ajmer (CBSE)', when: '2017' },
+  { title: 'Class 10', detail: 'Kendriya Vidyalaya, Nasirabad, Ajmer (CBSE)', when: '2015' },
+];
+
+const positions = [
+  'Former Head, RoboTech Club, NISER (2019–2021)',
+  'Former Mentor Manager and Mentor, Avanti Fellows — J.N.V. Dhenkanal-NISER Chapter',
+  'Former Outreach Member and Core Committee Member, Zaariya (Social Service Club of NISER)',
+];
+---
+
+<BaseLayout title="About" description="Jyothish J. Kumar — a chemistry graduate turned self-taught full-stack roboticist, working in embedded systems, ROS2, and robotic systems design.">
+  <DarkHero>
+    <div class="hero-about-inner">
+      <div>
+        <span class="eyebrow">👋 About</span>
+        <h1>A chemistry graduate, now a <span class="text-gradient">full-stack roboticist</span></h1>
+        <p class="lede">
+          I started out in chemistry and taught myself the rest — embedded systems, ROS2, CAD, and
+          electronics. I work across the full stack of a robotic system: electronics, firmware,
+          ROS2, and the mechanical build that holds it together — from GPS-denied drone autonomy to
+          ADAS and infrastructure-inspection robots.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={RESUME_URL} target="_blank" rel="noopener noreferrer">Download resume</a>
+          <a class="btn btn-secondary" href="/contact/">Contact me</a>
+        </div>
+      </div>
+      <Image src={profilePhoto} alt="Jyothish J. Kumar" width={320} height={400} densities={[1, 1.5, 2]} />
+    </div>
+  </DarkHero>
+
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Experience</h2>
+      <ol class="timeline">
+        {experience.map((item) => (
+          <li class="timeline-item">
+            <span class="timeline-when">{item.when}</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Education</h2>
+      <ul class="education-list">
+        {education.map((item) => (
+          <li>
+            <span class="edu-when">{item.when}</span>
+            <div>
+              <strong>{item.title}</strong>
+              <p>{item.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container prose">
+      <h2>Leadership &amp; mentorship</h2>
+      <ul>
+        {positions.map((p) => <li>{p}</li>)}
+      </ul>
+      <p class="personal-link">
+        Outside work, a bit more about me is on the <a href="/about/personal/">personal side of things</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-about-inner {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .hero-about-inner :global(img) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    justify-self: center;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .hero-about-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero-actions { justify-content: center; }
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    max-width: var(--content-width);
+    border-left: 2px solid var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 2rem 1.5rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0.3rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline-when {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--accent-strong);
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+  }
+  .timeline-item h3 { margin: 0.1rem 0 0.2rem; }
+  .timeline-item p { margin: 0; color: var(--text-muted); }
+
+  .education-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    max-width: var(--content-width);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .education-list li {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .education-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .edu-when {
+    flex-shrink: 0;
+    width: 3.5rem;
+    font-weight: 700;
+    color: var(--accent-strong);
+    font-size: 0.9rem;
+  }
+  .education-list p { margin: 0.2rem 0 0; color: var(--text-muted); font-size: 0.92rem; }
+
+  .personal-link {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+</style>

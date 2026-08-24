@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarkHero from '../components/DarkHero.astro';
+import { getCollection } from 'astro:content';
+import { STATUS_META } from '../lib/projectStatus';
+
+const RESUME_URL = '/resume.pdf';
+
+const allProjects = await getCollection('projects');
+const majorProjects = allProjects.filter((p) => p.data.featured).sort((a, b) => a.data.order - b.data.order);
+const hobbyProjects = allProjects.filter((p) => !p.data.featured).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Projects" description="Robotics systems built end to end — UAVs, ADAS, healthcare IoT, and infrastructure inspection — by Jyothish J. Kumar.">
+  <DarkHero compact>
+    <span class="eyebrow">🤖 Projects</span>
+    <h1>Robots, built <span class="text-gradient">end to end</span></h1>
+    <p class="lede">
+      The major systems I've built professionally, plus a running list of hobby projects from
+      earlier tinkering years.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href={RESUME_URL} target="_blank" rel="noopener noreferrer">Download resume</a>
+      <a class="btn btn-secondary" href="/contact/">Contact me</a>
+    </div>
+  </DarkHero>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="grid grid-2">
+        {majorProjects.map((project) => {
+          const meta = STATUS_META[project.data.status];
+          return (
+            <article class="card project-card">
+              <div class="project-head">
+                <h3>{project.data.title}</h3>
+                <span class="badge">{meta.emoji} {meta.label}</span>
+              </div>
+              <p class="project-meta"><strong>Affiliation:</strong> {project.data.affiliation}</p>
+              <p class="project-meta"><strong>Role:</strong> {project.data.task}</p>
+              {project.data.link && (
+                <a class="project-link" href={project.data.link} target="_blank" rel="noopener noreferrer">
+                  {project.data.link.includes('affybo.com') ? 'Visit affybo.com' : 'Reference'} &rarr;
+                </a>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <details class="hobby-details">
+        <summary>
+          <span class="eyebrow" style="margin:0;">DIY, tinkering &amp; hobby projects</span>
+          <h2 style="margin:0.3em 0 0;">From the RoboTech Club years — click to expand</h2>
+        </summary>
+        <p class="lede" style="margin-top:1rem;">
+          Smaller, self-directed builds from my undergrad years with NISER's RoboTech Club — where a lot
+          of the hands-on electronics and fabrication instinct came from.
+        </p>
+        <ul class="hobby-list">
+          {hobbyProjects.map((project) => {
+            const meta = STATUS_META[project.data.status];
+            return (
+              <li>
+                <span class="badge">{meta.emoji} {meta.label}</span>
+                <div>
+                  <strong>{project.data.title}</strong>
+                  <span class="hobby-meta"> — {project.data.task}, {project.data.affiliation}</span>
+                  {project.data.link && (
+                    <a href={project.data.link} target="_blank" rel="noopener noreferrer"> (reference)</a>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .project-card { display: flex; flex-direction: column; }
+  .project-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .project-head h3 { margin: 0; }
+  .project-meta {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin: 0 0 0.35rem;
+  }
+  .project-meta strong { color: var(--text); }
+  .project-link {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .hobby-details summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .hobby-details summary::-webkit-details-marker { display: none; }
+  .hobby-details summary::after {
+    content: '+ show projects';
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--accent-strong);
+  }
+  .hobby-details[open] summary::after { content: '− hide projects'; }
+
+  .hobby-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .hobby-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hobby-meta { color: var(--text-muted); font-size: 0.92rem; }
+</style>

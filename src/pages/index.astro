@@ -1,0 +1,300 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarkHero from '../components/DarkHero.astro';
+import { Image } from 'astro:assets';
+// import { getCollection } from 'astro:content';
+import profilePhoto from '../assets/images/profile-photo.jpg';
+import affyboIcon from '../assets/images/affybo-icon.png';
+import TechChip from '../components/TechChip.astro';
+
+const skills = [
+  {
+    title: 'Programming',
+    tools: [
+      { label: 'C++', icon: 'cplusplus' },
+      { label: 'Python', icon: 'python' },
+      { label: 'ROS2', icon: 'ros' },
+      { label: 'Flutter', icon: 'flutter' },
+      { label: 'MAVLink' },
+    ],
+    desc: 'ROS2 and embedded C++/Python are my daily tools; Flutter and MAVLink round out companion apps and drone comms.',
+  },
+  {
+    title: 'Development boards',
+    tools: [
+      { label: 'Arduino', icon: 'arduino' },
+      { label: 'Raspberry Pi', icon: 'raspberrypi' },
+      { label: 'Jetson Nano', icon: 'nvidia' },
+      { label: 'STM32', icon: 'stmicroelectronics' },
+      { label: 'ESP32', icon: 'espressif' },
+      { label: 'PX4' },
+    ],
+    desc: 'Comfortable across MCU and SBC platforms, including custom boards and PX4-based autopilot systems.',
+  },
+  {
+    title: 'CAD / CAM & fabrication',
+    tools: [
+      { label: 'SolidWorks' },
+      { label: 'Altium Designer' },
+      { label: 'Laser cutting' },
+      { label: 'SLA/FDM printing' },
+    ],
+    desc: '4+ years designing mechanical assemblies and PCBs, and fabricating them end to end.',
+  },
+  {
+    title: 'Electronics',
+    tools: [
+      { label: 'PCB design' },
+      { label: 'Micro-soldering' },
+      { label: 'Signal processing' },
+    ],
+    desc: 'From schematic to enclosure — component selection, MCU/PLC signal handling, and common comms protocols.',
+  },
+  {
+    title: 'Chemistry background',
+    tools: [
+      { label: '1H-NMR' },
+      { label: 'UV/Vis' },
+      { label: 'IR & fluorescence spectroscopy' },
+    ],
+    desc: "Academic background from my M.Sc. — the analytical rigor still shows up in how I approach engineering problems.",
+  },
+  {
+    title: 'Other tools',
+    tools: [
+      { label: 'LaTeX', icon: 'latex' },
+      { label: 'Adobe Illustrator' },
+      { label: 'Adobe Photoshop' },
+      { label: 'DaVinci Resolve', icon: 'davinciresolve' },
+      { label: 'Linux', icon: 'linux' },
+    ],
+    desc: 'For papers, documentation, graphics, and the occasional demo video.',
+  },
+];
+
+// Latest-posts section is commented out below (not currently featured on the
+// home page) — uncomment both this query and the <section> further down to
+// bring it back.
+// const posts = (await getCollection('blog', ({ data }) => !data.draft))
+//   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+//   .slice(0, 2);
+
+const featuredWork = [
+  {
+    title: 'Affybo Systems',
+    tag: 'Founder',
+    desc: 'Building drone-based mid-mile & last-mile delivery for complex terrain and medical logistics.',
+    href: 'https://affybo.com',
+    external: true,
+  },
+  {
+    title: 'Autonomous Railway Track Inspection System',
+    tag: 'AHRC, IIT Bhubaneswar',
+    desc: 'A self-propelled, computer-vision-driven robot for railway infrastructure inspection.',
+    href: '/projects/',
+  },
+  {
+    title: 'Swayansaasita — ADAS for two-wheelers',
+    tag: 'NISER',
+    desc: 'Sensor pipeline and perception research behind the IndiGo autonomous-driving dataset.',
+    href: '/research/',
+  },
+];
+---
+
+<BaseLayout title="JyozSpace">
+  <DarkHero>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">🚀 Full-stack robotics · Embedded systems · ROS2</span>
+        <h1>Jyothish J. Kumar</h1>
+        <p class="lede">
+          A chemistry graduate (M.Sc., NISER Bhubaneswar) turned <span class="text-gradient">self-taught
+          full-stack roboticist</span>. I design and build robotic systems end to end — electronics,
+          firmware, and ROS2 software — across UAVs, healthcare IoT, and autonomous-vehicle perception.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/projects/">View projects</a>
+          <a class="btn btn-secondary" href="/contact/">Get in touch</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <Image src={profilePhoto} alt="Portrait of Jyothish J. Kumar" width={420} height={525} densities={[1, 1.5, 2]} loading="eager" />
+      </div>
+    </div>
+  </DarkHero>
+
+  <section class="section now-banner">
+    <div class="container now-inner">
+      <div>
+        <span class="eyebrow">Now building</span>
+        <h2 class="now-title">
+          <Image src={affyboIcon} alt="" width={40} height={23} densities={[1, 1.5, 2]} />
+          <span class="text-gradient">Affybo Systems</span>
+        </h2>
+        <p class="lede" style="margin-bottom:0;">
+          A robotics startup building drone-based mid-mile and last-mile delivery for complex
+          terrain and medical logistics — alongside solutions for infrastructure inspection and
+          defence.
+        </p>
+      </div>
+      <a class="btn btn-primary" href="https://affybo.com" target="_blank" rel="noopener noreferrer">Visit affybo.com &rarr;</a>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <span class="eyebrow">Skill set</span>
+      <h2>What I <span class="text-gradient">work with</span></h2>
+      <div class="grid grid-3">
+        {skills.map((s) => (
+          <div class="card skill-card">
+            <h3>{s.title}</h3>
+            <div class="tool-chips">
+              {s.tools.map((t) => <TechChip label={t.label} icon={t.icon} />)}
+            </div>
+            <p class="skill-desc">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Featured work</span>
+          <h2>A few systems I've <span class="text-gradient">built</span></h2>
+        </div>
+        <a class="btn btn-secondary" href="/projects/">View all projects</a>
+      </div>
+      <div class="grid grid-3">
+        {featuredWork.map((item) => (
+          <a class="card work-card" href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined}>
+            <span class="badge">{item.tag}</span>
+            <h3>{item.title}</h3>
+            <p class="skill-desc">{item.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* "Latest from the blog" — commented out for now, not query-removed, so it's a one-line
+      uncomment (plus the `posts` query above) to bring back later.
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">From the blog</span>
+          <h2>Latest posts</h2>
+        </div>
+        <a class="btn btn-secondary" href="/blog/">View all posts</a>
+      </div>
+      <div class="grid grid-2">
+        {posts.map((post) => (
+          <a class="card post-card" href={`/blog/${post.id}/`}>
+            <span class="badge">{post.data.category}</span>
+            <h3>{post.data.title}</h3>
+            <p class="skill-desc">{post.data.excerpt}</p>
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  */}
+</BaseLayout>
+
+<style>
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .hero-media {
+    justify-self: center;
+  }
+
+  .hero-media :global(img) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 860px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .hero-actions { justify-content: center; }
+    .hero-media { order: -1; }
+  }
+
+  .now-banner {
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .now-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .now-inner .lede { max-width: 34rem; }
+  .now-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .now-title :global(img) { flex-shrink: 0; }
+
+  .skill-card h3 { margin-bottom: 0.6rem; }
+  .tool-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+  .skill-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .work-card, .post-card {
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .work-card h3, .post-card h3 { margin: 0.6rem 0 0.5rem; }
+  .post-card time {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+</style>

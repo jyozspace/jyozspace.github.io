@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import abdulKalam from '../../assets/images/abdul-kalam.png';
+---
+
+<BaseLayout title="Beyond the Lab" description="A bit more about Jyothish J. Kumar outside of work.">
+  <section class="section">
+    <div class="container prose">
+      <a class="back-link" href="/about/">&larr; Back to About</a>
+      <span class="eyebrow">Beyond the lab</span>
+      <h1>A bit more about me</h1>
+
+      <p>
+        I'm originally from Aranmula, Pathanamthitta, in Kerala, but grew up in Ajmer, Rajasthan —
+        which means I speak Hindi, Malayalam, and English fluently, and think of both states as home.
+        I come from a family of four: my father is a retired army serviceman, my mother is a nurse,
+        and I have an elder sister.
+      </p>
+      <p>
+        Outside of building robots, I like to DIY things — making things is genuinely my favourite
+        hobby. I also enjoy music (an amateur, self-taught harmonium and guitar player), driving, and
+        cooking. I like a good, learned debate about a topic I'm interested in, and I'm mildly
+        obsessed with having a systematic arrangement for everything.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container inspirations">
+      <div class="prose">
+        <span class="eyebrow">Inspiration</span>
+        <h2>Dr. A.P.J. Abdul Kalam</h2>
+        <p>
+          Dr. Abdul Kalam is my idol — his journey, his words, and his genius are something that
+          keeps me moving. His autobiography, <em>Wings of Fire</em>, has been my soul food for a
+          long time.
+        </p>
+        <blockquote>
+          "Every age has a hero, and every hero has a story."
+          <footer>— Dr. A.P.J. Abdul Kalam, the "Rocket Man of India"</footer>
+        </blockquote>
+      </div>
+      <Image src={abdulKalam} alt="Dr. A.P.J. Abdul Kalam" width={320} height={282} densities={[1, 1.5, 2]} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .inspirations {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .inspirations :global(img) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    justify-self: center;
+  }
+  .inspirations blockquote footer {
+    margin-top: 0.5rem;
+    font-style: normal;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 860px) {
+    .inspirations { grid-template-columns: 1fr; text-align: center; }
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+// A dark, indigo/purple gradient hero band with soft blurred "glow" orbs —
+// matched to affybo.com's hero treatment. Used on every primary page.
+// Everything inside inherits light-on-dark tokens (--text, --border,
+// --accent, etc. are overridden on .dark-hero and cascade to slotted
+// content via normal CSS custom-property inheritance), so existing
+// components (.eyebrow, .btn, .lede, .badge) render correctly with no
+// per-page changes needed.
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<section class:list={['dark-hero', { 'dark-hero-compact': compact }]}>
+  <div class="glow glow-a" aria-hidden="true"></div>
+  <div class="glow glow-b" aria-hidden="true"></div>
+  <div class="glow glow-c" aria-hidden="true"></div>
+  <div class="container dark-hero-inner">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .dark-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, #05060f 0%, #0a0d1c 55%, #150c28 100%);
+    padding-block: clamp(3rem, 8vw, 6rem);
+
+    --text: #f8f7ff;
+    --text-muted: #c7c3e6;
+    --border: rgba(255, 255, 255, 0.18);
+    --surface: rgba(255, 255, 255, 0.07);
+    --accent: #a78bfa;
+    --accent-strong: #e9d5ff;
+    --accent-2: #f0abfc;
+    --accent-soft: rgba(255, 255, 255, 0.12);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.4);
+    color: var(--text);
+  }
+
+  .dark-hero-compact { padding-block: clamp(2.25rem, 5vw, 3.5rem); }
+
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+  }
+  .glow-a { width: 24rem; height: 24rem; top: -8rem; left: -7rem; background: #4f46e5; opacity: 0.75; filter: blur(70px); }
+  .glow-b { width: 28rem; height: 28rem; bottom: -11rem; right: -6rem; background: #a855f7; opacity: 0.7; filter: blur(70px); }
+  .glow-c { width: 20rem; height: 20rem; top: 25%; right: 15%; background: #ec4899; opacity: 0.45; filter: blur(80px); }
+
+  .dark-hero-inner {
+    position: relative;
+    z-index: 1;
+  }
+</style>

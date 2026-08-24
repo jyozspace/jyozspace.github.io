@@ -1,0 +1,70 @@
+---
+// The JyozSpace logo mark, sourced live from src/assets/logo/jyozspace-mark.svg
+// (a single traced ink-stamp path) at build time. The path itself is recolored via
+// `currentColor` so it's black in light mode / white in dark mode — see
+// `color: var(--text)` set on the .brand link in Header.astro, which the
+// SVG inherits. The "Jyo's" lettering is a *hole* in that same path (the
+// trace has no separate colored region for it), so a small yellow disc is
+// placed behind it, confined to just the text's own bounding circle —
+// sized narrower than the full ink ring so the ring's own grunge-texture
+// gaps don't also pick up yellow.
+// Vite's `?raw` suffix inlines the file's text content into the JS bundle at
+// build time — unlike a plain node:fs readFileSync, this survives Astro's
+// bundling (a raw fs read resolves relative to wherever the bundled chunk
+// ends up in dist/, which doesn't carry loose source files along with it).
+import svgSource from '../assets/logo/jyozspace-mark.svg?raw';
+
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const { width = 80, height = 46 } = Astro.props;
+
+const match = svgSource.match(/<path[^>]*\sd="([^"]+)"/);
+if (!match) throw new Error('Logo.astro: could not find a <path d="..."> in jyozspace-mark.svg');
+const pathData = match[1];
+
+// Geometry below (viewBox crop + yellow-disc placement) was measured once by
+// walking the traced path's "d" string into absolute coordinates and
+// rendering it with a coordinate-grid overlay to read off the "Jyo's" text's
+// true bounding circle. If the source SVG is ever replaced, this needs
+// re-measuring the same way (rough process, not scripted into the repo).
+const viewBox = '26 26 163 94';
+---
+
+<svg
+  viewBox={viewBox}
+  width={width}
+  height={height}
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="JyozSpace"
+  class="jyoz-logo"
+>
+  <circle class="jyoz-logo-yellow" cx="73" cy="73" r="34" />
+  <path class="jyoz-logo-ink" d={pathData} />
+</svg>
+
+<style>
+  .jyoz-logo-ink {
+    fill: currentColor;
+  }
+  .jyoz-logo-yellow {
+    fill: #fbb03b;
+  }
+
+  /* Dark mode: swap the disc behind the "Jyo's" hole from yellow to a dark
+     violet so the lettering reads clearly against the white (currentColor)
+     ink in dark mode. Light mode is untouched. Mirrors the explicit
+     [data-theme='dark'] + prefers-color-scheme pattern used in global.css. */
+  :global(:root[data-theme='dark']) .jyoz-logo-yellow {
+    fill: #2e1a63;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .jyoz-logo-yellow {
+      fill: #2e1a63;
+    }
+  }
+</style>

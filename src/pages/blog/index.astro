@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DarkHero from '../../components/DarkHero.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="Blog" description="Posts about tech, robotics, and whatever else, from Jyothish J. Kumar.">
+  <DarkHero compact>
+    <span class="eyebrow">✍️ Blog</span>
+    <h1>Whatever's <span class="text-gradient">on my mind</span></h1>
+    <p class="lede">
+      My posts are generally about whatever — some tech tips, maybe a dash of philosophy of
+      life, a pinch of storytelling. Basically, whatever I feel like sharing.
+    </p>
+  </DarkHero>
+
+  <section class="section section-alt">
+    <div class="container">
+      {posts.length === 0 ? (
+        <p>No posts yet — check back soon.</p>
+      ) : (
+        <div class="grid grid-2">
+          {posts.map((post) => (
+            <a class="card post-card" href={`/blog/${post.id}/`}>
+              <span class="badge">{post.data.category}</span>
+              <h3>{post.data.title}</h3>
+              <p class="post-excerpt">{post.data.excerpt}</p>
+              <time datetime={post.data.date.toISOString()}>
+                {post.data.date.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </time>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .post-card {
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .post-card h3 { margin: 0.6rem 0 0.5rem; }
+  .post-excerpt { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
+  .post-card time {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+</style>

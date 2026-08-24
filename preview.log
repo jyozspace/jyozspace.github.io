@@ -1,0 +1,5 @@
+﻿
+> jyozspace@1.0.0 preview
+> astro preview --host
+
+{"message":"Preview server running at http://localhost:4321 (pid 15464)\n  Network:\n    http://100.71.119.121:4321/\n    http://192.168.137.1:4321/\n    http://192.168.1.8:4321/\n    http://10.242.177.202:4321/\n    http://10.147.18.74:4321/\n  Stop:   astro preview stop\n  Status: astro preview status\n  Logs:   astro preview logs","label":"SKIP_FORMAT","level":"info"}

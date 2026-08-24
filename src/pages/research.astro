@@ -1,0 +1,187 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarkHero from '../components/DarkHero.astro';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import dataJig from '../assets/images/data-collection-jig.jpg';
+
+const RESUME_URL = '/resume.pdf';
+const THESIS_URL = 'https://idr.niser.ac.in/jspui/handle/123456789/564';
+
+const publicationEntries = (await getCollection('publications')).sort((a, b) => a.data.order - b.data.order);
+const publications = await Promise.all(
+  publicationEntries.map(async (pub) => ({ pub, ...(await render(pub)) }))
+);
+
+const patents = [
+  {
+    status: 'In hearing',
+    title: 'Multifunctional IoT-based menstrual aid for menstrual health and comfort',
+    inventors: 'Jyothish K. J., Shivangi S., Bibhu A., Mishra S., Saha S.',
+    ref: 'Indian Patent Application No. 202531001119 (2025), Indian Patent Office',
+  },
+  {
+    status: 'Applied for',
+    title: 'System for Non-Contact Railway Gauge Measurement',
+    inventors: 'Jyothish K. J., Panda S.',
+    ref: 'Indian Patent Application No. 202631090427 (2026), Indian Patent Office',
+  },
+];
+---
+
+<BaseLayout title="Research" description="Publications, patents, and thesis research by Jyothish J. Kumar — sensor fusion, autonomous driving, and robotic prosthetics.">
+  <DarkHero compact>
+    <span class="eyebrow">🔬 Research</span>
+    <h1>Publications &amp; <span class="text-gradient">patents</span></h1>
+    <p class="lede">
+      My research spans sensor-fusion perception for autonomous vehicles, and soft-robotics-based
+      prosthetics — a glimpse below, with links to the full work.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href={RESUME_URL} target="_blank" rel="noopener noreferrer">Download resume</a>
+      <a class="btn btn-secondary" href="/contact/">Contact me</a>
+    </div>
+  </DarkHero>
+
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Publications</h2>
+      <div class="pub-list">
+        {publications.map(({ pub, Content }) => (
+          <article class="card pub-card">
+            {pub.data.image === 'data-collection-jig.jpg' && (
+              <Image src={dataJig} alt="" width={220} height={225} densities={[1, 1.5, 2]} class="pub-image" />
+            )}
+            <div>
+              <h3>{pub.data.title}</h3>
+              <p class="pub-authors">{pub.data.authors}</p>
+              <p class="pub-venue">{pub.data.venue}</p>
+              <div class="pub-links">
+                {pub.data.doi && <a href={pub.data.doi} target="_blank" rel="noopener noreferrer">DOI: {pub.data.doiLabel}</a>}
+                {pub.data.arxiv && <a href={pub.data.arxiv} target="_blank" rel="noopener noreferrer">arXiv preprint</a>}
+              </div>
+              <details class="pub-abstract">
+                <summary>Read abstract</summary>
+                <div class="prose">
+                  <Content />
+                </div>
+              </details>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Patents</h2>
+      <div class="pub-list">
+        {patents.map((p) => (
+          <article class="card patent-card">
+            <span class="badge">{p.status}</span>
+            <h3>{p.title}</h3>
+            <p class="pub-authors">{p.inventors}</p>
+            <p class="pub-venue">{p.ref}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container thesis-inner">
+      <div class="prose">
+        <h2>M.Sc. thesis: soft robotics for prosthetics</h2>
+        <p>
+          My thesis, <strong>"Soft robotics based prosthetics and other mobility assistance
+          robots,"</strong> developed a PVDF-HFP and polyaniline-based ionic electroactive polymer (EAP)
+          actuator, paired with an LSTM-based control system driven by real-time EMG sensor data — a
+          step toward low-cost, responsive prosthetic control. It was guided by Dr. Himansu S. Biswal
+          (School of Chemical Sciences, NISER) and Dr. Subhankar Mishra (School of Computer Sciences,
+          NISER).
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={THESIS_URL} target="_blank" rel="noopener noreferrer">Read the full thesis</a>
+          <a class="btn btn-secondary" href="/research/msc-thesis-journey/">See the semester-by-semester journey</a>
+        </div>
+      </div>
+      <div class="thesis-video">
+        <div class="video-frame">
+          <iframe
+            src="https://www.youtube.com/embed/pPjAmcR79Ts"
+            title="PVDF-HFP, EMIMBF4 Based Ionic Electroactive Polymer (Ionic EAP) — demo"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="video-caption">Demo: the ionic EAP actuator in action</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+  .pub-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .pub-card { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .pub-card :global(.pub-image) {
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    width: 140px;
+    height: auto;
+  }
+  .pub-authors { margin: 0.2rem 0; font-weight: 600; }
+  .pub-venue { margin: 0 0 0.6rem; color: var(--text-muted); font-size: 0.92rem; }
+  .pub-links { display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .pub-abstract summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent-strong);
+    font-size: 0.9rem;
+  }
+  .pub-abstract .prose { margin-top: 0.75rem; font-size: 0.95rem; }
+
+  .patent-card h3 { margin: 0.5rem 0 0.3rem; }
+
+  @media (max-width: 620px) {
+    .pub-card { flex-direction: column; }
+    .pub-card :global(.pub-image) { width: 100%; height: auto; }
+  }
+
+  .thesis-inner {
+    display: grid;
+    grid-template-columns: 1.3fr 0.9fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .thesis-video { max-width: 100%; }
+  .video-frame {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-caption {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 860px) {
+    .thesis-inner { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const semesters = [
+  {
+    label: '7th Semester',
+    title: 'Literature review',
+    detail: 'A literature review was conducted to analyse and evaluate the current state of the technology, which shaped the project plan for the following semesters.',
+    links: [
+      { label: 'Mid-semester presentation', href: 'https://drive.google.com/file/d/1TdbfzCJYZwohhYYq3uSUtkjPZBQjgSLY/view?usp=sharing' },
+      { label: 'Semester report', href: 'https://drive.google.com/file/d/1wxfhADy_RubrsbtD7Y0YEJJr3WnDTHll/view?usp=sharing' },
+    ],
+  },
+  {
+    label: '8th Semester',
+    title: 'Fabrication plan and initial work',
+    detail: "A focused study of published EAP recipes was conducted to design our own ionic EAP fabrication recipe, in association with Dr. Bisnu P. Biswal's Lab, School of Chemical Sciences, NISER.",
+    links: [
+      { label: 'Semester report', href: 'https://drive.google.com/file/d/1dj5N105H4s5umNmPs1xRuvzN_unjYE50/view?usp=sharing' },
+      { label: 'Summary of work', href: 'https://drive.google.com/file/d/1WZrl5aVpi1kDCClS7raHxF9h0-SKxuSU/view?usp=sharing' },
+    ],
+  },
+  {
+    label: '9th Semester',
+    title: 'Fabrication of ionic EAP',
+    detail: 'We fabricated an ionic EAP using PANI (polyaniline) electrodes and a PVDF-HFP, EMIMBF4-based ionomer layer, and successfully demonstrated a working sample using commercially available conductive (carbon-based) paint as the electrode layer.',
+    links: [
+      { label: 'Semester presentation', href: 'https://drive.google.com/file/d/1Qi9dqEa0MTe_3qpTYM7EYBc1lCUJLct6/view?usp=sharing' },
+      { label: 'Semester report', href: 'https://drive.google.com/file/d/1P64N02DVNx616XvDOM9I0un63CM17VS1/view?usp=sharing' },
+    ],
+  },
+  {
+    label: '10th Semester',
+    title: 'SMA hand and control strategies for robotic prosthetics',
+    detail: 'We collected EMG data from relevant forearm muscles to train an LSTM neural network, achieving 99% accuracy on binary classification of clenching vs. releasing a fist. We continued collecting data for other hand gestures, aiming to implement the trained model in a feasible powered prosthetic hand.',
+    links: [
+      { label: 'Semester presentation', href: 'https://drive.google.com/file/d/1CU-qef-EBID3XCxGMPJg2GNKnHALz83b/view?usp=sharing' },
+      { label: 'Thesis', href: 'https://idr.niser.ac.in/jspui/handle/123456789/564' },
+    ],
+  },
+];
+---
+
+<BaseLayout title="M.Sc. Thesis Journey" description="Semester-by-semester progress on Jyothish J. Kumar's M.Sc. thesis on soft robotics for prosthetics.">
+  <section class="section">
+    <div class="container prose">
+      <a class="back-link" href="/research/">&larr; Back to Research</a>
+      <span class="eyebrow">M.Sc. thesis</span>
+      <h1>Soft robotics for prosthetics — the journey</h1>
+      <p class="lede">
+        A semester-by-semester log of the M.Sc. thesis project, <strong>"Soft robotics based
+        prosthetics and other mobility assistance robots,"</strong> guided by Dr. Himansu S. Biswal
+        (School of Chemical Sciences, NISER) and Dr. Subhankar Mishra (School of Computer Sciences,
+        NISER).
+      </p>
+    </div>
+    <div class="container">
+      <ol class="timeline">
+        {semesters.map((s) => (
+          <li class="timeline-item">
+            <span class="timeline-when">{s.label}</span>
+            <div>
+              <h3>{s.title}</h3>
+              <p>{s.detail}</p>
+              <div class="pub-links">
+                {s.links.map((l) => <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>)}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="video-wrap">
+        <p class="lede" style="margin-bottom:0.75rem;">Demo: PVDF-HFP, EMIMBF4-based ionic electroactive polymer (ionic EAP)</p>
+        <div class="video-frame">
+          <iframe
+            src="https://www.youtube.com/embed/pPjAmcR79Ts"
+            title="PVDF-HFP, EMIMBF4 Based Ionic Electroactive Polymer (Ionic EAP)"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .pub-links { display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+  .timeline {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    max-width: var(--content-width);
+    border-left: 2px solid var(--border);
+  }
+  .timeline-item { position: relative; padding: 0 0 2rem 1.5rem; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0.3rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline-when { display: inline-block; font-weight: 700; color: var(--accent-strong); font-size: 0.85rem; margin-bottom: 0.2rem; }
+  .timeline-item h3 { margin: 0.1rem 0 0.4rem; }
+  .timeline-item p { margin: 0 0 0.6rem; color: var(--text-muted); }
+
+  .video-wrap { margin-top: 2.5rem; max-width: var(--content-width); }
+  .video-frame {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>

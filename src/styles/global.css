@@ -1,0 +1,292 @@
+/* ---------------------------------------------------------------
+   Design tokens — modern gradient/SaaS palette (matched to
+   affybo.com). Change values here to re-theme the whole site.
+   --------------------------------------------------------------- */
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* kept as an alias so nothing needs to hunt down every heading rule —
+     the site is intentionally all-sans now, no separate display face */
+  --font-serif: var(--font-sans);
+
+  --bg: #ffffff;
+  --bg-alt: #f5f5fc;
+  --surface: #ffffff;
+  --text: #100c22;
+  --text-muted: #64607d;
+  --border: #e5e3f0;
+  --accent: #6366f1;
+  --accent-strong: #7c3aed;
+  --accent-2: #a855f7;
+  --accent-soft: #eef0ff;
+  --link: var(--accent-strong);
+
+  --shadow-sm: 0 1px 2px rgba(16, 12, 34, 0.06), 0 1px 1px rgba(16, 12, 34, 0.04);
+  --shadow-md: 0 8px 24px rgba(16, 12, 34, 0.08), 0 2px 6px rgba(16, 12, 34, 0.05);
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --container-width: 68rem;
+  --content-width: 44rem;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0a0e1a;
+  --bg-alt: #10142a;
+  --surface: #141830;
+  --text: #f2f1fb;
+  --text-muted: #a5a1c4;
+  --border: #292c4a;
+  --accent: #818cf8;
+  --accent-strong: #c4b5fd;
+  --accent-2: #f0abfc;
+  --accent-soft: #211f3c;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0a0e1a;
+    --bg-alt: #10142a;
+    --surface: #141830;
+    --text: #f2f1fb;
+    --text-muted: #a5a1c4;
+    --border: #292c4a;
+    --accent: #818cf8;
+    --accent-strong: #c4b5fd;
+    --accent-2: #f0abfc;
+    --accent-soft: #211f3c;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.4);
+
+    color-scheme: dark;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Reset
+   --------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5em;
+  color: var(--text);
+}
+
+h1 { font-size: clamp(2.25rem, 4vw + 1rem, 3.5rem); }
+h2 { font-size: clamp(1.65rem, 2vw + 1rem, 2.25rem); }
+h3 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; }
+h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+
+p { margin: 0 0 1.1em; }
+
+ul, ol {
+  padding-left: 1.3em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 0.2em 0 0.2em 1.3em;
+  border-left: 3px solid var(--accent);
+  font-size: 1.15em;
+  font-style: italic;
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------
+   Gradient utilities
+   --------------------------------------------------------------- */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------------------------------------------------------------
+   Layout utilities
+   --------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.prose {
+  max-width: var(--content-width);
+}
+
+.section {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+
+.section-alt {
+  background: var(--bg-alt);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  padding: 0.35em 0.9em;
+  border-radius: 999px;
+  margin-bottom: 0.9rem;
+}
+
+.lede {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  max-width: 42rem;
+}
+
+/* ---------------------------------------------------------------
+   Components
+   --------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.75em 1.6em;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, filter 0.15s ease, color .15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* every card in a .grid gets a thin gradient accent bar along its top
+   edge, cycling through a 5-color set — echoes affybo's per-card colors */
+.grid .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+.grid .card:nth-of-type(5n+1)::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+.grid .card:nth-of-type(5n+2)::before { background: linear-gradient(90deg, #10b981, #34d399); }
+.grid .card:nth-of-type(5n+3)::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.grid .card:nth-of-type(5n+4)::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+.grid .card:nth-of-type(5n+5)::before { background: linear-gradient(90deg, #a855f7, #d946ef); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
