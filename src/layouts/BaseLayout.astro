@@ -48,11 +48,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <script is:inline>
       // Set theme before first paint to avoid a flash of the wrong theme.
+      // Always resolve to an explicit 'dark'/'light' — even with no stored
+      // preference — so data-theme matches what's actually rendered (the
+      // dark CSS also activates via prefers-color-scheme when unset). If
+      // this only set the attribute for a *stored* preference, a first-time
+      // dark-OS visitor would render dark while data-theme stayed absent,
+      // leaving ThemeToggle's icon (which keys off data-theme='dark') stuck
+      // showing light until clicked twice.
       (function () {
         const stored = localStorage.getItem('theme');
-        if (stored === 'dark' || stored === 'light') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
+        const theme =
+          stored === 'dark' || stored === 'light'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
   </head>
