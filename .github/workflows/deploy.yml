@@ -23,6 +23,10 @@ jobs:
 
       - name: Install, build, and upload
         uses: withastro/action@v3
+        with:
+          # withastro/action@v3's own Node default (20) predates Astro 7's
+          # ">=22.12.0" requirement — pin explicitly instead of relying on it.
+          node-version: 22
 
   deploy:
     needs: build
