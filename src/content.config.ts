@@ -24,6 +24,8 @@ const projects = defineCollection({
     affiliation: z.string(),
     task: z.string(),
     link: z.string().url().optional(),
+    // Optional live demo/app URL — renders as a prominent button on the card.
+    demo: z.string().optional(),
     order: z.number().default(0),
     // Major/professional projects render as full cards on /projects; everything
     // else (RoboTech-club-era tinkering) collapses into the "hobby projects" list.

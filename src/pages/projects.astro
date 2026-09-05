@@ -38,11 +38,23 @@ const hobbyProjects = allProjects.filter((p) => !p.data.featured).sort((a, b) =>
               </div>
               <p class="project-meta"><strong>Affiliation:</strong> {project.data.affiliation}</p>
               <p class="project-meta"><strong>Role:</strong> {project.data.task}</p>
-              {project.data.link && (
-                <a class="project-link" href={project.data.link} target="_blank" rel="noopener noreferrer">
-                  {project.data.link.includes('affybo.com') ? 'Visit affybo.com' : 'Reference'} &rarr;
-                </a>
-              )}
+              <div class="project-actions">
+                {project.data.demo && (
+                  <a class="demo-btn" href={project.data.demo}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="7" y="2" width="10" height="20" rx="2.5" />
+                      <line x1="11" y1="18" x2="13" y2="18" />
+                    </svg>
+                    <span>Demo app</span>
+                    <span class="demo-btn-arrow">&rarr;</span>
+                  </a>
+                )}
+                {project.data.link && (
+                  <a class="project-link" href={project.data.link} target="_blank" rel="noopener noreferrer">
+                    {project.data.link.includes('affybo.com') ? 'Visit affybo.com' : 'Reference'} &rarr;
+                  </a>
+                )}
+              </div>
             </article>
           );
         })}
@@ -106,12 +118,52 @@ const hobbyProjects = allProjects.filter((p) => !p.data.featured).sort((a, b) =>
     margin: 0 0 0.35rem;
   }
   .project-meta strong { color: var(--text); }
-  .project-link {
+  .project-actions {
     margin-top: auto;
-    padding-top: 0.75rem;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .project-link {
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none;
+  }
+
+  .demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 1.15em;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 60%, transparent);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  }
+  .demo-btn svg {
+    width: 1.05em;
+    height: 1.05em;
+  }
+  .demo-btn-arrow {
+    transition: transform 0.15s ease;
+  }
+  .demo-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 14px 28px -10px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  .demo-btn:hover .demo-btn-arrow {
+    transform: translateX(3px);
+  }
+  .demo-btn:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
   }
 
   .hobby-details summary {

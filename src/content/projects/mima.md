@@ -4,6 +4,7 @@ status: commercialisation
 affiliation: "National Institute of Fashion Technology, Bhubaneswar"
 task: "System design and development (IoT module + app)"
 link: "https://www.niser.ac.in/~smishra/project/mima2022/"
+demo: "/projects/mima/demo/"
 order: 5
 featured: true
 ---
