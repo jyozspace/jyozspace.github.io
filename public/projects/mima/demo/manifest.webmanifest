@@ -1,0 +1,14 @@
+{
+  "name": "MIMA — Multifunctional IoT Integrated Menstrual Aid",
+  "short_name": "MIMA",
+  "description": "Demo app for MIMA: IoT device control, physiological analytics, community, teleconsultation and emergency support.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#17101E",
+  "theme_color": "#8E4EC6",
+  "icons": [
+    { "src": "assets/MIMA_Logo.png", "sizes": "516x516", "type": "image/png", "purpose": "any" },
+    { "src": "assets/MIMA_Logo.png", "sizes": "516x516", "type": "image/png", "purpose": "maskable" }
+  ]
+}

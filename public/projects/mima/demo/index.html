@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#8E4EC6" />
+<title>MIMA — Menstrual Integrated Menstrual Aid</title>
+<meta name="description" content="MIMA demo app — IoT Integrated Menstrual Aid. Device control, physiological analytics, community, teleconsultation and emergency support." />
+<link rel="icon" type="image/png" href="assets/MIMA_Logo.png" />
+<link rel="apple-touch-icon" href="assets/MIMA_Logo.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="MIMA" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app-frame">
+  <div id="phone">
+
+    <!-- ===== Top bar ===== -->
+    <header id="topbar">
+      <button class="icon-btn" id="menu-btn" aria-label="Menu">
+        <img src="assets/MIMA_Logo.png" alt="MIMA" class="topbar-logo" />
+      </button>
+      <div class="topbar-title">
+        <span class="wordmark">MIMA</span>
+        <span class="topbar-sub" id="topbar-sub">Device</span>
+      </div>
+      <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg class="ico-sun" viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </header>
+
+    <!-- ===== Screens mount here ===== -->
+    <main id="screen"></main>
+
+    <!-- ===== Emergency FAB ===== -->
+    <button id="sos-fab" aria-label="Emergency support">
+      <span class="sos-pulse"></span>
+      <span class="sos-label">SOS</span>
+    </button>
+
+    <!-- ===== Bottom nav ===== -->
+    <nav id="bottomnav">
+      <button class="nav-item" data-screen="device">
+        <svg viewBox="0 0 24 24"><path d="M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M12 7v5l3 2"/></svg>
+        <span>Device</span>
+      </button>
+      <button class="nav-item" data-screen="analytics">
+        <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-4"/><path d="M13 16V8"/><path d="M18 16v-6"/></svg>
+        <span>Insights</span>
+      </button>
+      <button class="nav-item" data-screen="community">
+        <svg viewBox="0 0 24 24"><path d="M17 8a5 5 0 0 1 0 8"/><path d="M7 16a5 5 0 0 1 0-8"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Community</span>
+      </button>
+      <button class="nav-item" data-screen="assistance">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>
+        <span>Assist</span>
+      </button>
+      <button class="nav-item" data-screen="profile">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+    <!-- ===== Modal / sheet root ===== -->
+    <div id="sheet-root"></div>
+
+  </div>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
