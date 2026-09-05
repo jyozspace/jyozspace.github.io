@@ -26,6 +26,9 @@ const projects = defineCollection({
     link: z.string().url().optional(),
     // Optional live demo/app URL — renders as a prominent button on the card.
     demo: z.string().optional(),
+    // Optional in-site project page — when set, the card links here instead of
+    // (or alongside) the external reference.
+    page: z.string().optional(),
     order: z.number().default(0),
     // Major/professional projects render as full cards on /projects; everything
     // else (RoboTech-club-era tinkering) collapses into the "hobby projects" list.
