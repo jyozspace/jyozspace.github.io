@@ -315,6 +315,24 @@ const screens = [
       .nav-links a:hover { color: var(--plum); background: var(--bg-alt); }
       .nav-links a.cta { color: #fff; background: var(--grad); }
       .nav-links a.cta:hover { color: #fff; filter: brightness(1.07); }
+      .theme-toggle {
+        display: inline-grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        flex: none;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--plum);
+        cursor: pointer;
+        transition: border-color 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+      }
+      .theme-toggle:hover { border-color: var(--purple); transform: translateY(-1px); }
+      .theme-toggle svg { width: 18px; height: 18px; }
+      .theme-toggle .i-sun { display: none; }
+      :root[data-theme='dark'] .theme-toggle .i-sun { display: block; }
+      :root[data-theme='dark'] .theme-toggle .i-moon { display: none; }
       @media (max-width: 640px) {
         .nav-links a.back { display: none; }
       }
@@ -550,6 +568,80 @@ const screens = [
       .node ul { margin: 0; padding-left: 1.1em; }
       .node li { margin-bottom: 0.4em; color: var(--muted); font-size: 0.95rem; }
       .node li::marker { color: var(--purple); }
+      .node-figure {
+        background: color-mix(in srgb, var(--purple) 7%, transparent);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 0.4rem 0.6rem;
+        margin-bottom: 1.1rem;
+      }
+      .node-svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        fill: none;
+        stroke: var(--plum);
+        stroke-width: 3.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ---------- pillars ---------- */
+      .pillars-section {
+        padding-block: clamp(2.75rem, 6vw, 4rem);
+        background: color-mix(in srgb, var(--purple) 6%, var(--bg));
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .pillars-lead {
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: clamp(1.1rem, 1.4vw + 0.8rem, 1.35rem);
+        margin: 0 auto 1.8rem;
+        max-width: 34rem;
+      }
+      .pillars-lead strong { color: var(--plum); }
+      .pillars {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+      .pillars li {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.1rem 0.9rem;
+        text-align: center;
+      }
+      .pillars .pi {
+        width: 30px;
+        height: 30px;
+        margin: 0 auto 0.6rem;
+        color: var(--plum);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .pillars b {
+        display: block;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 0.95rem;
+        line-height: 1.25;
+      }
+      .pillars span {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.3rem;
+      }
+      @media (max-width: 900px) { .pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 520px) { .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
       /* ---------- loop ---------- */
       .loop {
@@ -721,6 +813,10 @@ const screens = [
         </a>
         <div class="nav-links">
           <a class="back" href="https://jyozspace.in/projects/">← Projects</a>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle light / dark">
+            <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
+          </button>
           <a class="cta" href="/projects/mima/demo/">Open the demo app</a>
         </div>
       </div>
@@ -767,6 +863,41 @@ const screens = [
         </div>
       </div>
     </header>
+
+    <section class="pillars-section" aria-label="What MIMA brings together">
+      <div class="wrap">
+        <p class="pillars-lead">
+          Comfort, hygiene, therapeutic relief, physiological insight, community and digital care
+          &mdash; <strong>all on one platform</strong>.
+        </p>
+        <ul class="pillars">
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.5-9.2-9A5 5 0 0 1 12 6a5 5 0 0 1 9.2 6C19 16.5 12 21 12 21z"/></svg>
+            <b>Comfort</b><span>Targeted warmth and a stable, discreet fit</span>
+          </li>
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 5 6 10a6 6 0 0 1-12 0c0-5 6-10 6-10z"/><path d="M9.5 13a2.5 2.5 0 0 0 5 0"/></svg>
+            <b>Hygiene</b><span>Leak-proof gusset, antibacterial fabric, pad wing-pockets</span>
+          </li>
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.4 3.2 4.2 4.4 4.2 8.4A4.2 4.2 0 0 1 8 12c0-2 .9-3.1 1.8-4-.1 1.8 1 2.7 1 2.7C10.7 8.3 12 5.5 12 2z"/><path d="M8 15.5h8M9 19h6"/></svg>
+            <b>Therapeutic relief</b><span>Closed-loop heat that scales to cramp intensity</span>
+          </li>
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2 5 4-12 2 7h6"/></svg>
+            <b>Physiological monitoring</b><span>EMG, pulse and intimate-area temperature, onboard</span>
+          </li>
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 7a3 3 0 0 1 0 6"/><path d="M17.5 19a5.5 5.5 0 0 0-3-4.9"/></svg>
+            <b>Community</b><span>Peer forums and an anonymous "request a pad" network</span>
+          </li>
+          <li>
+            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M10.5 6h3"/><path d="M9 13.5h1.7l1-2 1.5 3 1-1.5h1.6"/></svg>
+            <b>Digital healthcare</b><span>Cycle tracking and clinician-ready teleconsultation</span>
+          </li>
+        </ul>
+      </div>
+    </section>
 
     <section class="alt" id="problem">
       <div class="wrap">
@@ -855,13 +986,59 @@ const screens = [
         </div>
 
         <div class="nodes">
-          {nodes.map((n) => (
-            <div class="node">
-              <span class="tag">{n.tag}</span>
-              <h3>{n.title}</h3>
-              <ul>{n.points.map((p) => <li>{p}</li>)}</ul>
+          <div class="node">
+            <div class="node-figure">
+              <svg class="node-svg" viewBox="0 0 200 130" role="img" aria-label="High-waisted undergarment with a dashed module pocket, a highlighted leak-proof gusset and pad wing-pockets">
+                <path d="M26 40 Q100 24 174 40" />
+                <path d="M26 40 L30 58 Q44 92 74 84 Q100 118 126 84 Q156 92 170 58 L174 40" />
+                <rect x="80" y="33" width="40" height="24" rx="5" stroke-dasharray="5 5" />
+                <rect x="90" y="39" width="20" height="12" rx="2.5" fill="var(--purple)" stroke="none" />
+                <path d="M84 70 Q100 62 116 70 Q112 99 100 105 Q88 99 84 70 Z" fill="var(--pink)" fill-opacity="0.85" stroke="none" />
+                <path d="M84 70 Q100 62 116 70 Q112 99 100 105 Q88 99 84 70 Z" />
+                <path d="M40 60 l15 4 M160 60 l-15 4" stroke="var(--pink)" />
+              </svg>
             </div>
-          ))}
+            <span class="tag">{nodes[0].tag}</span>
+            <h3>{nodes[0].title}</h3>
+            <ul>{nodes[0].points.map((p) => <li>{p}</li>)}</ul>
+          </div>
+
+          <div class="node">
+            <div class="node-figure">
+              <svg class="node-svg" viewBox="0 0 200 130" role="img" aria-label="Detachable IoT module with a controller chip, heat waves and a wireless link">
+                <rect x="50" y="32" width="100" height="64" rx="13" />
+                <rect x="83" y="50" width="34" height="28" rx="4" fill="var(--purple)" stroke="none" />
+                <path d="M92 50 v-8 M108 50 v-8 M92 78 v8 M108 78 v8 M83 60 h-9 M83 70 h-9 M117 60 h9 M117 70 h9" />
+                <path d="M72 110 q7 -9 14 0 t14 0 t14 0" stroke="var(--pink)" />
+                <path d="M150 36 q11 -11 22 0 M156 42 q6 -6 12 0" stroke="var(--pink)" />
+                <circle cx="162" cy="48" r="2.4" fill="var(--pink)" stroke="none" />
+              </svg>
+            </div>
+            <span class="tag">{nodes[1].tag}</span>
+            <h3>{nodes[1].title}</h3>
+            <ul>{nodes[1].points.map((p) => <li>{p}</li>)}</ul>
+          </div>
+
+          <div class="node">
+            <div class="node-figure">
+              <svg class="node-svg" viewBox="0 0 200 130" role="img" aria-label="Care app on a phone connected to community members and a clinician">
+                <rect x="74" y="18" width="52" height="94" rx="10" />
+                <path d="M92 26 h16" />
+                <path d="M82 92 L94 76 L104 84 L120 58" stroke="var(--pink)" />
+                <circle cx="34" cy="40" r="12" />
+                <circle cx="34" cy="96" r="12" />
+                <circle cx="166" cy="40" r="12" />
+                <circle cx="166" cy="96" r="12" />
+                <path d="M46 44 L74 40 M46 92 L74 92 M154 44 L126 40 M154 92 L126 92" stroke-dasharray="4 5" />
+                <path d="M166 34 v12 M160 40 h12" stroke="var(--pink)" />
+                <circle cx="34" cy="36" r="3.4" fill="var(--pink)" stroke="none" />
+                <path d="M27 46 q7 -9 14 0" stroke="var(--pink)" />
+              </svg>
+            </div>
+            <span class="tag">{nodes[2].tag}</span>
+            <h3>{nodes[2].title}</h3>
+            <ul>{nodes[2].points.map((p) => <li>{p}</li>)}</ul>
+          </div>
         </div>
       </div>
     </section>
@@ -998,5 +1175,18 @@ const screens = [
         front-end demo only — it does not connect to a real device or collect any data.
       </div>
     </footer>
+
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var root = document.documentElement;
+          var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        });
+      })();
+    </script>
   </body>
 </html>

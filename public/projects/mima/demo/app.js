@@ -165,7 +165,7 @@
       <div class="divider"></div>
       <div class="row-between">
         <div><b style="font-size:14px">Heating element</b>
-          <div class="muted" style="font-size:12px">Now at ${d.currentTemp.toFixed(1)}°C · ${d.heating ? "active" : "idle"}</div>
+          <div class="muted" style="font-size:12px">Now at <span id="live-current-temp">${d.currentTemp.toFixed(1)}</span>°C · ${d.heating ? "active" : "idle"}</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="heat-toggle" ${d.heating ? "checked" : ""} ${d.mode === "auto" ? "disabled" : ""}>
@@ -182,12 +182,12 @@
     <div class="card">
       <div class="card-title">Live physiological sensing</div>
       <div class="stat-grid">
-        <div class="stat"><div class="k">Intimate-area temp</div><div class="v">${d.skinTemp}<small>°C</small></div></div>
-        <div class="stat"><div class="k">Pulse rate</div><div class="v">${d.pulse}<small> bpm</small></div></div>
+        <div class="stat"><div class="k">Intimate-area temp</div><div class="v"><span id="live-skin-temp">${d.skinTemp}</span><small>°C</small></div></div>
+        <div class="stat"><div class="k">Pulse rate</div><div class="v"><span id="live-pulse">${d.pulse}</span><small> bpm</small></div></div>
       </div>
       <div style="margin-top:10px">
         <div class="k" style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)">
-          sEMG muscle activity · ${d.emg}%
+          sEMG muscle activity · <span id="live-emg">${d.emg}</span>%
         </div>
         <div class="emg-bars">${Array.from({ length: 22 }, (_, i) =>
           `<i style="animation-delay:${(i * 0.07).toFixed(2)}s"></i>`).join("")}</div>
@@ -819,14 +819,21 @@
   $("#menu-btn").addEventListener("click", () => go("profile"));
 
   /* ---- live sensor jitter for realism ---- */
+  // Patch just the changing values in place — a full rerender() here made the
+  // whole device screen flash (DOM rebuild + fade-in replay) every tick.
   setInterval(() => {
     if (state.screen !== "device") return;
+    if ($("#sheet-root").hasChildNodes()) return;
     const d = state.dev;
     d.pulse = 78 + Math.round(Math.random() * 8);
     d.emg = state.dev.mode === "auto" ? 45 + Math.round(Math.random() * 30) : 20 + Math.round(Math.random() * 15);
     d.currentTemp = +(d.targetTemp - 0.4 - Math.random() * 0.8).toFixed(1);
     d.skinTemp = +(36.2 + Math.random() * 0.5).toFixed(1);
-    if (!$("#sheet-root").hasChildNodes()) rerender();
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set("live-current-temp", d.currentTemp.toFixed(1));
+    set("live-skin-temp", d.skinTemp);
+    set("live-pulse", d.pulse);
+    set("live-emg", d.emg);
   }, 4000);
 
   /* ---- init ---- */
