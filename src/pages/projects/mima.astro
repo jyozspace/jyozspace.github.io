@@ -4,6 +4,7 @@
 // to read as its own small product site. Content is distilled from the MIMA
 // pitch deck (C:/Users/jyoti/OneDrive/Desktop/Projects/MIMA/MIMA Deck.pptx)
 // and the interactive demo that lives at /projects/mima/demo/.
+import CloudflareAnalytics from '../../components/CloudflareAnalytics.astro';
 const patentNo = '202531001119';
 const canonical = 'https://jyozspace.in/projects/mima/';
 const description =
@@ -802,6 +803,7 @@ const screens = [
       footer .foot-links { display: flex; gap: 1.1rem; flex-wrap: wrap; }
       .disclaimer { margin-top: 1rem; font-size: 0.82rem; opacity: 0.8; }
     </style>
+    <CloudflareAnalytics />
   </head>
 
   <body>

@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CloudflareAnalytics from '../components/CloudflareAnalytics.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -66,6 +67,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
+    <CloudflareAnalytics />
   </head>
   <body>
     <a class="visually-hidden" href="#main">Skip to content</a>
