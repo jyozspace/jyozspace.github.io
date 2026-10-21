@@ -35,6 +35,8 @@ adb reverse --list
 
 Expect TcpTestSucceeded True, one authorized device and a reverse rule for tcp:8443. Run these adb commands from Windows, using the Platform Tools executable. If there are several devices, choose the intended serial with `adb -s SERIAL reverse tcp:8443 tcp:8443`. A phone listed as unauthorized needs its on-device approval.
 
+If PowerShell reports that adb is not recognized, download and extract the official Platform Tools linked above. Open PowerShell in the extracted platform-tools directory and use `./adb.exe devices`, `./adb.exe reverse tcp:8443 tcp:8443` and `./adb.exe reverse --list`, or add that directory to your user PATH and open a fresh terminal. Installing the Android APK or Ubuntu does not install Windows ADB. Without a connected, authorized phone, stop at the receiver/localhost check and record the device steps as untested.
+
 4. In the Android app, enter **wss://127.0.0.1:8443/ws/android**, the receiver token and certificate SHA-256 printed inside Ubuntu. Tap Start. The reverse rule carries the phone’s localhost socket through USB to Windows localhost, which forwards to the running WSL server.
 5. In another sourced Ubuntu terminal, inspect the topics and open image_view. Confirm real camera pixels and native sensor messages before starting SLAM.
 
@@ -97,8 +99,8 @@ Remove-NetFirewallRule -DisplayName 'ROS phone lab NAT 8443'
 
 ## Complete the same ROS and mapping exercise
 
-Once connected, the ROS commands, camera calibration, monocular backend and bag workflow are identical to the native-Ubuntu lesson. Keep ROS_LOCALHOST_ONLY=1 and ROS_DOMAIN_ID consistent across Ubuntu terminals. The phone communicates with a TCP receiver; it does not need ROS discovery across the Windows/WSL boundary.
+Once connected, the ROS commands, camera calibration, monocular backend and bag workflow are identical to the native-Ubuntu lesson. Keep ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST and ROS_DOMAIN_ID consistent across Ubuntu terminals. The phone communicates with a TCP receiver; it does not need ROS discovery across the Windows/WSL boundary.
 
 Check /phone/camera/image_raw, /phone/camera/camera_info, /phone/imu/accelerometer and /phone/imu/gyroscope. Calibrate the Android app’s actual image mode. Run the separately prepared mapper and set RViz Fixed Frame to phone_slam_world. For replay, stop live sources and use /clock with use_sim_time on consumers.
 
-Record which route worked, all relevant software versions, the app’s camera ID/clock source and topic rates. On this authoring host, no live WSL/phone mapping run has been performed. Rehearse the selected route on classroom machines, including any VPN or institutional firewall, before relying on it during a lecture.
+Record which route worked, all relevant software versions, the app's camera ID/clock source and topic rates. Test the complete route on classroom machines, including any VPN or institutional firewall, before relying on it during a lecture. Windows localhost reachability checks only the host-to-receiver segment; confirm actual phone images and sensor messages before starting mapping.

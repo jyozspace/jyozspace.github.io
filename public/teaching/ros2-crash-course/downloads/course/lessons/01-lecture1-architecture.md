@@ -28,6 +28,8 @@ ros2 run turtlesim turtle_teleop_key
 
 Keep terminal B focused and press the arrow keys. Expected: the turtle moves in its window. Keyboard commands reach the simulator through `/turtle1/cmd_vel`.
 
+Run turtle_teleop_key in an interactive Ubuntu terminal. A piped command, background task or automation without a TTY can abort with `Failed to get old console mode`. Reopen it in a normal Ubuntu terminal; use topic pub below for scripted motion checks.
+
 In terminal C:
 
 ```bash

@@ -4,7 +4,7 @@ Prepare the Android APK, a secure connection, measured camera calibration and a 
 
 ## Choose a connection route
 
-Choose [Option 1: wired USB or Option 2: wireless](../annexes/android-connections.md). On native Ubuntu, USB uses adb reverse tcp:8443 tcp:8443 with wss://127.0.0.1:8443/ws/android. Run ADB on the computer hosting the receiver. For wireless, connect the laptop to the phone’s hotspot and inspect its actual IPv4 address with ip -4 addr. Give each classroom hotspot a distinct name/password. A separate hotspot keeps each pair’s addressing separate; nearby hotspots still share radio airtime. Keep ROS_LOCALHOST_ONLY=1 and consistent ROS_DOMAIN_ID values in all Ubuntu terminals.
+Choose [Option 1: wired USB or Option 2: wireless](../annexes/android-connections.md). On native Ubuntu, USB uses adb reverse tcp:8443 tcp:8443 with wss://127.0.0.1:8443/ws/android. Run ADB on the computer hosting the receiver. For wireless, connect the laptop to the phone’s hotspot and inspect its actual IPv4 address with ip -4 addr. Give each classroom hotspot a distinct name/password. A separate hotspot keeps each pair’s addressing separate; nearby hotspots still share radio airtime. Keep ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST and consistent ROS_DOMAIN_ID values in all Ubuntu terminals.
 
 For WSL, start with [Annex F’s USB route](../annexes/wsl-capstone.md): Windows ADB forwards the phone’s socket to Windows localhost, and WSL’s normal localhost forwarding reaches the Ubuntu receiver. The same annex gives mirrored-network and scoped NAT-proxy routes for Wi-Fi. Rehearse the selected route before class and retain the firewall’s protections.
 

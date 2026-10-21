@@ -42,7 +42,8 @@ In a sourced Ubuntu terminal, run the updated receiver with the certificate and 
 ```bash
 source /opt/ros/jazzy/setup.bash
 source ~/ros2_ws/install/setup.bash
-export ROS_LOCALHOST_ONLY=1
+unset ROS_LOCALHOST_ONLY
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export ROS_DOMAIN_ID=42
 ros2 run ros2_course_py phone_bridge \
   --cert ~/phone-lab/laptop.pem --key ~/phone-lab/laptop-key.pem

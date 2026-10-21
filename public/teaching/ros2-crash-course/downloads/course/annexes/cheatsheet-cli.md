@@ -7,7 +7,8 @@ Run these commands in Ubuntu 24.04 Bash. UPPERCASE names are placeholders. Sourc
 ```bash
 source /opt/ros/jazzy/setup.bash
 source ~/ros2_ws/install/setup.bash
-export ROS_LOCALHOST_ONLY=1
+unset ROS_LOCALHOST_ONLY
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export ROS_DOMAIN_ID=42
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y

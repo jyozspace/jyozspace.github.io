@@ -33,6 +33,8 @@ ros2 run camera_calibration cameracalibrator \
 
 Move the target slowly through the image: center and edges, near and far, then tilted about different axes. Keep the whole board visible for useful samples. The X/Y/Size/Skew indicators help you collect varied views. Sharp, well-lit images help corners be detected accurately. If detection fails, inspect inner-corner counts, glare, blur and target flatness first.
 
+Start the bridge and confirm its image publisher before starting the calibrator. If the image stays blank, inspect `ros2 topic info /phone/camera/image_raw --verbose` and compare the publisher and subscriber QoS. The bridge offers BEST_EFFORT; a reliable subscription cannot receive its images. Restart the calibrator after the publisher is available so it can select compatible QoS. Warnings for unused /left and /right topics can occur in this monocular exercise.
+
 When coverage is sufficient, choose **Calibrate**, inspect the result and then **Save**. The standard tool normally writes /tmp/calibrationdata.tar.gz. List its contents, locate the monocular YAML and copy that file to ~/phone-lab/camera.yaml. Save works with this receiver; Commit would require a set_camera_info service that the supplied bridge does not expose.
 
 ```bash

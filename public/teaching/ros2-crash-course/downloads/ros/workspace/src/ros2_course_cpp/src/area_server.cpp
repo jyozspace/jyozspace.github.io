@@ -1,8 +1,8 @@
 // Lecture 3/4 - a C++ service server using our custom interface.
 //
 // Run:  ros2 run ros2_course_cpp area_server
-// Call: ros2 service call /compute_area \
-//         ros2_course_interfaces/srv/ComputeRectangleArea "{width: 3.0, height: 4.0}"
+// Call (one line): ros2 service call /compute_area
+//   ros2_course_interfaces/srv/ComputeRectangleArea "{width: 3.0, height: 4.0}"
 
 #include <cmath>
 #include <functional>

@@ -52,13 +52,41 @@ The ROS installation is your **underlay**. Your built workspace supplies an **ov
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-export ROS_LOCALHOST_ONLY=1
+unset ROS_LOCALHOST_ONLY
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export ROS_DOMAIN_ID=42
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws
 ```
 
-Use the same values in every lab terminal. ROS_DOMAIN_ID separates graphs; it is not authentication. ROS_LOCALHOST_ONLY affects ROS discovery, not the separate HTTPS/WSS server. A phone does not need DDS or ROS installed. For a physical ROS robot on another machine, deliberately reconfigure discovery and networking.
+Use the same values in every lab terminal. ROS_DOMAIN_ID separates graphs; it is not authentication. ROS_AUTOMATIC_DISCOVERY_RANGE affects ROS discovery, not the separate HTTPS/WSS server. A phone does not need DDS or ROS installed. For a physical ROS robot on another machine, deliberately reconfigure discovery and networking.
+
+### Save ROS sourcing and DDS settings in .bashrc
+
+Run this **inside Ubuntu as your normal Linux user**. It appends one labelled block only once. The underlay loads first; the overlay loads only when its build exists. Jazzy's default Fast DDS implementation is selected explicitly so all course terminals use the same middleware. No separate DDS XML file is supplied or required for this local lab.
+
+```bash
+if ! grep -q '^# BEGIN ROS2 COURSE$' ~/.bashrc; then
+  cat >> ~/.bashrc <<'EOF'
+
+# BEGIN ROS2 COURSE
+source /opt/ros/jazzy/setup.bash
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+unset ROS_LOCALHOST_ONLY
+unset ROS_STATIC_PEERS
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DOMAIN_ID=42
+if [ -f "$HOME/ros2_ws/install/setup.bash" ]; then
+  source "$HOME/ros2_ws/install/setup.bash"
+fi
+# END ROS2 COURSE
+EOF
+fi
+source ~/.bashrc
+printenv ROS_DISTRO RMW_IMPLEMENTATION ROS_AUTOMATIC_DISCOVERY_RANGE ROS_DOMAIN_ID
+```
+
+Expected, on separate lines: jazzy, rmw_fastrtps_cpp, LOCALHOST, 42. Open a fresh Ubuntu terminal and repeat the printenv check. After the first successful workspace build, source ~/ros2_ws/install/setup.bash in existing terminals; new interactive Bash terminals load it automatically. Keep optional SLAM overlays explicit, after the course overlay. If changing middleware or domain during diagnosis, stop lab nodes and run `ros2 daemon stop`, then reopen terminals with consistent settings. Jazzy warns that ROS_LOCALHOST_ONLY is deprecated. Unset that legacy variable and use ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST consistently; do not combine conflicting discovery profiles or DDS XML settings from another lab.
 
 ## Build and verify the supplied packages
 
