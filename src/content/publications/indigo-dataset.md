@@ -4,7 +4,7 @@ authors: "Jyothish J. Kumar, Shriman Keshri, Anubhav Vishwakarma, Subhankar Mish
 venue: "Springer Nature — Discover Robotics"
 doi: "https://doi.org/10.1007/s44430-025-00013-1"
 doiLabel: "10.1007/s44430-025-00013-1"
-image: "data-collection-jig.jpg"
+image: "indigo-sensor-scooter.webp"
 order: 1
 ---
 

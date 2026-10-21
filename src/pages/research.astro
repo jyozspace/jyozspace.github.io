@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import DarkHero from '../components/DarkHero.astro';
 import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
-import dataJig from '../assets/images/data-collection-jig.jpg';
+import indigoScooter from '../assets/images/indigo-sensor-scooter.webp';
 
 const RESUME_URL = '/resume.pdf';
 const THESIS_URL = 'https://idr.niser.ac.in/jspui/handle/123456789/564';
@@ -49,8 +49,8 @@ const patents = [
       <div class="pub-list">
         {publications.map(({ pub, Content }) => (
           <article class="card pub-card">
-            {pub.data.image === 'data-collection-jig.jpg' && (
-              <Image src={dataJig} alt="" width={220} height={225} densities={[1, 1.5, 2]} class="pub-image" />
+            {pub.data.image === 'indigo-sensor-scooter.webp' && (
+              <Image src={indigoScooter} alt="Engineering drawing of the IndiGo scooter with cameras, an onboard computer, and sensor coverage, including a top-view inset" width={220} height={220} densities={[1, 1.5, 2]} class="pub-image" />
             )}
             <div>
               <h3>{pub.data.title}</h3>

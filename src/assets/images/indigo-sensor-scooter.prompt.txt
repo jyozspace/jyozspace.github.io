@@ -1,0 +1,9 @@
+Generated with the built-in image_gen tool using 44430_2025_13_Fig5_HTML.webp as a subject reference.
+
+Use case: scientific-educational
+Asset type: square academic publication thumbnail, clear at 140 pixels wide.
+Primary request: Create an engineering drawing themed illustration of the IndiGo multimodal two-wheeler dataset research scooter using the supplied paper figure as the subject reference.
+Input image role: factual reference for scooter shape, cameras at front and rear, side-facing time-of-flight sensors at the handlebar, and bracket-mounted onboard computer in the footwell.
+Style: meticulous mechanical engineering drafting, fine dark navy technical linework on warm white drafting paper, clean contour lines with selective hatching, subtle construction lines and sparse dimension-style ticks without numbers or lettering. Restrained cyan accents identify sensing modules and translucent field-of-view wedges. No photorealism, shaded 3D rendering, or painterly texture.
+Composition: one dominant rear three-quarter isometric drawing of the complete step-through scooter occupying the center, front oriented upper right, both wheels, mirrors, seat, and sensor mount brackets clearly recognizable. A small simplified top-view engineering inset in the upper-left corner shows the scooter silhouette and sensor coverage. Keep the drawing uncluttered with safe margins, strong silhouette and strong line contrast for thumbnail readability.
+Constraints: illustrative schematic rather than an exact dimensional blueprint. Keep real-world sensor layout from reference, no invented sensor towers. No text, letters, numbers, labels, logos, title blocks, watermarks, people, or unrelated objects.
