@@ -29,11 +29,11 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 - [Visual checkpoints](annexes/visual-guide.md)
 - [Troubleshooting](annexes/troubleshooting.md)
 - [Official references and glossary](annexes/references.md)
-- [Course scope and verification](annexes/verification.md)
+- [Course scope and learning outcomes](annexes/verification.md)
 - [Scenario quiz bank](assessment/quiz-bank.md)
 - [Written prompts and model explanations](assessment/descriptive-questions.md)
 - [Worked exercise explanations and rubric](assessment/exercise-solutions.md)
 
-Quizzes and written prompts are generated from maintenance/tools/course-meta.mjs. Edit that metadata to change the questions; edit the other Markdown files directly. Scientific/software illustrations are labelled simulated and should be replaced with real evidence in student reports.
+Scientific/software illustrations are labelled simulated and should be replaced with real evidence in student reports.
 
 Course text and teaching illustrations are licensed under CC BY 4.0. Preserve attribution when sharing. Code archives include their own licenses: Apache-2.0 for the core and Android app, GPL-3.0-or-later for the optional SLAM adapter.

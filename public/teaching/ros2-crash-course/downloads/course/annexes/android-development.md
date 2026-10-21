@@ -77,5 +77,3 @@ The app uses protocol version 2 on /ws/android for both USB and wireless. The re
 ## Test a change and prepare a classroom release
 
 First run the supplied transport and protocol tests. Then check a real phone: install, deny/grant camera permission, wrong/right certificate pin, wrong/right token, Start/Stop, backgrounding, reconnect, image dimensions, timestamp-source display, sensor rates and camera calibration. Record the phone/OS, app checksum, camera ID and backend versions with a short bag. Finish with the live/reference monocular mapping exercise.
-
-The current APK has been compiled and its signature verified. Its Java transport has also been exercised against the real receiver over local TLS using synthetic sensor packets. Physical camera, SensorManager and end-to-end mapping qualification remain the instructor’s device rehearsal.

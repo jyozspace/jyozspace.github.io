@@ -37,6 +37,9 @@ including assets, notes, APK and source archives, lives in `public/teaching/ros2
 To refresh it, rebuild and package the original `ros2-course` project, then copy the contents
 of its `website/` folder here together. Preserve the canonical URL and Teaching backlink in
 `index.html`, and the corrected no-JavaScript notes links under `downloads/course/lessons/`.
+Publish learner content only: omit verification results, test reports, error logs and
+maintainer status or authoring notes. Check the rendered pages, overview PDF and nested
+offline/source ZIPs; keep the website text and downloadable notes consistent after cleanup.
 Run `npm run build` before deploying through the existing GitHub Pages workflow.
 
 ### Adding a blog post

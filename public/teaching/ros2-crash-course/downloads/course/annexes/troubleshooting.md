@@ -6,7 +6,7 @@ Change one thing, collect evidence and retest. Separate Android permissions, USB
 
 On a fresh Ubuntu WSL account, sudo normally asks for that account's Linux password. Type it locally when prompted; no characters are displayed. Build the learner workspace as your normal Linux user.
 
-The ROS apt repository must be configured before apt can find ros-jazzy packages. Follow the official Jazzy repository instructions linked from setup, including Universe and ros2-apt-source, then run apt update. If the rendered documentation refuses automated access, the official [Jazzy installation source](https://github.com/ros2/ros2_documentation/blob/jazzy/source/Installation/Ubuntu-Install-Debs.rst) and its included locale/repository files provide the same instructions.
+The ROS apt repository must be configured before apt can find ros-jazzy packages. Follow the official Jazzy repository instructions linked from setup, including Universe and ros2-apt-source, then run apt update.
 
 For persistent ROS sourcing and DDS variables, use the labelled .bashrc block in Before you begin. Verify it from a fresh interactive Ubuntu Bash terminal. A noninteractive `bash -c` may skip the interactive portion of .bashrc; automation should source ROS explicitly. Existing terminals still need the overlay sourced after the first build.
 
