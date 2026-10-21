@@ -4,4 +4,5 @@ export const STATUS_META: Record<string, { label: string; emoji: string }> = {
   completed: { label: 'Completed', emoji: '✅' },
   'on-hold': { label: 'On hold', emoji: '⏸' },
   commercialisation: { label: 'Patent-pending', emoji: '🚩' },
+  patented: { label: 'Patent granted', emoji: '🏅' },
 };

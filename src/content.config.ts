@@ -20,7 +20,8 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    status: z.enum(['startup', 'ongoing', 'completed', 'on-hold', 'commercialisation']),
+    status: z.enum(['startup', 'ongoing', 'completed', 'on-hold', 'commercialisation', 'patented']),
+    patentNumber: z.string().optional(),
     affiliation: z.string(),
     task: z.string(),
     link: z.string().url().optional(),

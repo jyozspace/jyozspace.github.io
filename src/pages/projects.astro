@@ -36,6 +36,9 @@ const hobbyProjects = allProjects.filter((p) => !p.data.featured).sort((a, b) =>
                 <h3>{project.data.title}</h3>
                 <span class="badge">{meta.emoji} {meta.label}</span>
               </div>
+              {project.data.patentNumber && (
+                <p class="project-patent">Indian Patent No. <strong>{project.data.patentNumber}</strong></p>
+              )}
               <p class="project-meta"><strong>Affiliation:</strong> {project.data.affiliation}</p>
               <p class="project-meta"><strong>Role:</strong> {project.data.task}</p>
               <div class="project-actions">
@@ -107,6 +110,15 @@ const hobbyProjects = allProjects.filter((p) => !p.data.featured).sort((a, b) =>
   }
 
   .project-card { display: flex; flex-direction: column; }
+  .project-patent {
+    color: var(--accent-strong);
+    font-size: 0.95rem;
+    margin: 0 0 0.85rem;
+    padding: 0.65rem 0.85rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border-radius: 0 8px 8px 0;
+  }
   .project-head {
     display: flex;
     justify-content: space-between;

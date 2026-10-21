@@ -1,6 +1,7 @@
 ---
 title: "MIMA: Multifunctional IoT Integrated Menstrual Aid"
-status: commercialisation
+status: patented
+patentNumber: "605190"
 affiliation: "National Institute of Fashion Technology, Bhubaneswar"
 task: "System design and development (IoT module + app)"
 page: "/projects/mima/"
@@ -9,4 +10,4 @@ order: 5
 featured: true
 ---
 
-An IoT-integrated intimate wearable addressing menstrual cramps, leakage, rashes, and malodor — now filed as an Indian patent application (No. 202531001119). See the [Research](/research/) page for the associated publications.
+An IoT-integrated intimate wearable designed to address menstrual cramps, leakage, rashes, and malodor. Indian patent granted — Patent No. 605190 (Application No. 202531001119). See the [Research](/research/) page for the associated publications.

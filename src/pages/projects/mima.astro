@@ -5,10 +5,14 @@
 // pitch deck (C:/Users/jyoti/OneDrive/Desktop/Projects/MIMA/MIMA Deck.pptx)
 // and the interactive demo that lives at /projects/mima/demo/.
 import CloudflareAnalytics from '../../components/CloudflareAnalytics.astro';
-const patentNo = '202531001119';
+import { getCollection } from 'astro:content';
+const patentNo = '605190';
+const papers = (await getCollection('publications'))
+  .filter((paper) => ['mima-1', 'mima-2'].includes(paper.id))
+  .sort((a, b) => b.data.order - a.data.order);
 const canonical = 'https://jyozspace.in/projects/mima/';
 const description =
-  'MIMA — a Multifunctional IoT Integrated Menstrual Aid. One platform combining a specialised garment, closed-loop heat therapy, physiological sensing, and a care app. Indian Patent Application No. 202531001119, currently in hearing.';
+  'MIMA — a Multifunctional IoT Integrated Menstrual Aid. One platform combining a specialised garment, closed-loop heat therapy, physiological sensing, and a care app. Granted Indian Patent No. 605190.';
 
 const nodes = [
   {
@@ -17,7 +21,7 @@ const nodes = [
     points: [
       'High-waisted construction for a stable, discreet fit',
       'Leak-proof multilayer gusset',
-      'Antibacterial material against rashes and malodor',
+      'Antibacterial fabric for hygiene and odour management',
       'Wing-pockets that receive sanitary-pad wings, keeping them off the skin',
     ],
   },
@@ -25,7 +29,7 @@ const nodes = [
     tag: 'Node 2',
     title: 'Detachable IoT module',
     points: [
-      'Safe, controlled, targeted heat therapy for cramps',
+      'Controlled, targeted heat for menstrual cramps',
       'Physiological sensing — muscle activity, pulse rate, intimate-area temperature',
       'Closed-loop control: heat scales to real-time cramp intensity',
       'Wireless communication with the app',
@@ -36,55 +40,26 @@ const nodes = [
     title: 'App & care ecosystem',
     points: [
       'Menstrual-cycle tracking and IoT module control',
-      'Physiological-data visualisation, export-ready for clinicians',
-      'Community network and anonymous emergency menstrual support',
-      'Gynaecological support ecosystem',
+      'Physiological trends and data-sharing workflows',
+      'Community and nearby menstrual-supply request workflows',
+      'Gynaecological consultation interface',
     ],
   },
 ];
 
 const novelty = [
   {
-    title: 'Synergistic wearable ecosystem',
-    body:
-      'The core novelty is the functional integration of a multi-modal sensor suite, automated therapeutic heat, a specialised garment, and a socially connected app into one coordinated system.',
+    title: 'The garment is part of the system',
+    body: 'A high-waisted fit supports consistent textile-sensor contact. Dedicated pockets position the module and pad wings, while a multilayer gusset provides leak protection.',
   },
   {
-    title: 'Engineered textile integration',
-    body:
-      'The high-waisted hipster architecture is structurally critical — it holds the ~10% sustained skin strain needed for motion-stable, high-fidelity textile sEMG readings.',
+    title: 'Sensing informs heat control',
+    body: 'Surface electromyography (sEMG) measures muscle activity. The closed-loop design uses this signal to adjust targeted heat, with manual control available through the app.',
   },
   {
-    title: 'Closed-loop bio-responsivity',
-    body:
-      'Unlike a manual heating pad, integrated sEMG sensors automate actuation and thermal scaling of the heater in response to the real-time occurrence and intensity of abdominal muscle contractions.',
+    title: 'One view of menstrual well-being',
+    body: 'The app brings device controls, cycle records and physiological trends together, alongside proposed community support and clinician-sharing workflows.',
   },
-  {
-    title: 'Advanced physiological analytics',
-    body:
-      'Simultaneous EMG, pulse and temperature acquisition into one framework enables richer, "hyper-semantic" wellness tracking and visualisations relevant to gynaecological consultations.',
-  },
-  {
-    title: 'Community & digital support',
-    body:
-      'The app goes beyond hardware control with a secure "request a pad" network and community forums for menstrual well-being.',
-  },
-  {
-    title: 'Consolidated menstrual management',
-    body:
-      'Integrating these physical and digital features removes the dependency on multiple fragmented menstrual-care products.',
-  },
-];
-
-const compare = [
-  ['Cramp heat therapy', 'Separate electric or gel pad, adjusted by hand', 'Built into the garment, app- or auto-controlled'],
-  ['Responds to cramp intensity', 'No', 'Closed-loop sEMG auto-scaling'],
-  ['Leak protection', 'Pad or period underwear alone', 'High-waisted garment + multilayer leak-proof gusset + pad wing-pockets'],
-  ['Friction-rash prevention', 'Not addressed', 'Antibacterial fabric; wing-pockets hold pad wings off the skin'],
-  ['Physiological tracking', 'Separate smartwatch or app, mostly estimated', 'Onboard intimate-area temperature, pulse, muscle activity'],
-  ['Clinician-ready data', 'Manual notes', 'One-tap analytics export'],
-  ['Peer & emergency support', 'Ad hoc', 'In-app community + anonymous "request a pad" network'],
-  ['Products to buy & carry', 'Three to four', 'One platform'],
 ];
 
 const screens = [
@@ -178,7 +153,32 @@ const screens = [
       *::before,
       *::after { box-sizing: border-box; }
 
-      html { scroll-behavior: smooth; }
+      html { scroll-behavior: smooth; scroll-padding-top: 9rem; }
+      :focus-visible { outline: 3px solid var(--plum); outline-offset: 4px; }
+      .skip-link { position: fixed; top: -5rem; left: 1rem; z-index: 50; padding: 0.7rem 1rem; background: var(--surface); color: var(--plum); }
+      .skip-link:focus { top: 1rem; }
+      .section-nav { display: flex; gap: 1.4rem; overflow-x: auto; padding-block: 0.65rem; border-top: 1px solid var(--border); font-size: 0.85rem; }
+      .section-nav a { flex: none; text-decoration: none; font-weight: 700; color: var(--muted); }
+      .section-nav a:hover { color: var(--plum); }
+      .hero-name { color: var(--plum); font-weight: 800; letter-spacing: 0.15em; font-size: 0.85rem; margin-bottom: 0.75rem; }
+      .hero-note { font-size: 0.85rem; color: var(--muted); margin: 1rem 0 0; }
+      .hero-visual { margin: 0; min-height: 22rem; }
+      .hero-visual::before { content: ''; position: absolute; inset: 6%; background: var(--grad); border-radius: 46% 54% 62% 38% / 54% 42% 58% 46%; opacity: 0.16; filter: blur(4px); }
+      .research-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 1.5rem; align-items: start; }
+      .patent-number { font-family: var(--font-display); color: var(--plum); font-size: clamp(1.8rem, 3vw, 2.4rem); margin-bottom: 0.8rem; }
+      .patent-label, .paper-venue { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.5rem; }
+      .paper-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+      .paper-list li { padding: 1.4rem; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+      .paper-list h3 { font-size: 1.1rem; line-height: 1.35; }
+      .paper-list p { font-size: 0.95rem; color: var(--muted); }
+      .paper-links { display: flex; flex-wrap: wrap; gap: 1.2rem; font-size: 0.9rem; font-weight: 800; color: var(--plum); }
+      .project-contact { margin-top: 2rem; padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--bg-alt); border: 1px solid var(--border); border-radius: 20px; }
+      .project-contact p { max-width: 48rem; color: var(--muted); }
+      @media (max-width: 820px) { .research-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 540px) {
+        .wrap { padding-inline: 1.1rem; }
+        .nav-links a.cta { font-size: 0.8rem; }
+      }
 
       body {
         margin: 0;
@@ -264,7 +264,7 @@ const screens = [
       }
       .btn svg { width: 1.1em; height: 1.1em; }
       .btn-primary {
-        background: var(--grad);
+        background: #6d28a8;
         color: #fff;
         box-shadow: 0 14px 30px -12px var(--ring);
       }
@@ -314,7 +314,7 @@ const screens = [
         transition: color 0.15s ease, background-color 0.15s ease;
       }
       .nav-links a:hover { color: var(--plum); background: var(--bg-alt); }
-      .nav-links a.cta { color: #fff; background: var(--grad); }
+      .nav-links a.cta { color: #fff; background: #6d28a8; }
       .nav-links a.cta:hover { color: #fff; filter: brightness(1.07); }
       .theme-toggle {
         display: inline-grid;
@@ -359,7 +359,7 @@ const screens = [
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: clamp(2rem, 5vw, 4rem);
         align-items: center;
       }
@@ -369,39 +369,16 @@ const screens = [
         color: var(--muted);
         max-width: 34rem;
       }
-      .hero-quote {
-        margin: 1.6rem 0 2rem;
-        padding-left: 1.1rem;
-        border-left: 3px solid var(--pink);
-        font-family: var(--font-display);
-        font-style: italic;
-        font-size: 1.12rem;
-        color: var(--text);
-        max-width: 34rem;
-      }
       .hero-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
       .hero-visual {
         position: relative;
         display: grid;
         place-items: center;
       }
-      .hero-visual .blob {
-        position: absolute;
-        inset: 6%;
-        background: var(--grad);
-        border-radius: 46% 54% 62% 38% / 54% 42% 58% 46%;
-        opacity: 0.16;
-        filter: blur(4px);
-      }
-      .hero-visual img {
-        position: relative;
-        width: min(78%, 320px);
-        filter: drop-shadow(0 24px 44px rgba(74, 32, 110, 0.32));
-      }
+      .hero-visual img { position: relative; width: min(78%, 320px); height: auto; filter: drop-shadow(0 24px 44px rgba(74, 32, 110, 0.32)); }
       @media (max-width: 860px) {
         .hero-grid { grid-template-columns: minmax(0, 1fr); }
-        .hero-visual { order: -1; }
-        .hero-visual img { width: min(56%, 240px); }
+        .hero-visual { max-width: 42rem; width: 100%; }
       }
 
       .patent-strip {
@@ -429,20 +406,9 @@ const screens = [
         font-weight: 800;
         color: var(--plum);
       }
-      .status-pill .pulse {
-        width: 9px; height: 9px; border-radius: 50%;
-        background: var(--pink);
-        box-shadow: 0 0 0 0 color-mix(in srgb, var(--pink) 60%, transparent);
-        animation: pulse 2.4s ease-out infinite;
-      }
-      @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pink) 55%, transparent); }
-        70% { box-shadow: 0 0 0 12px transparent; }
-        100% { box-shadow: 0 0 0 0 transparent; }
-      }
       @media (prefers-reduced-motion: reduce) {
-        .status-pill .pulse { animation: none; }
         html { scroll-behavior: auto; }
+        *, *::before, *::after { transition: none !important; }
       }
 
       .alt { background: var(--bg-alt); }
@@ -587,63 +553,6 @@ const screens = [
         stroke-linejoin: round;
       }
 
-      /* ---------- pillars ---------- */
-      .pillars-section {
-        padding-block: clamp(2.75rem, 6vw, 4rem);
-        background: color-mix(in srgb, var(--purple) 6%, var(--bg));
-        border-top: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
-      }
-      .pillars-lead {
-        text-align: center;
-        font-family: var(--font-display);
-        font-size: clamp(1.1rem, 1.4vw + 0.8rem, 1.35rem);
-        margin: 0 auto 1.8rem;
-        max-width: 34rem;
-      }
-      .pillars-lead strong { color: var(--plum); }
-      .pillars {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 0.9rem;
-      }
-      .pillars li {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.1rem 0.9rem;
-        text-align: center;
-      }
-      .pillars .pi {
-        width: 30px;
-        height: 30px;
-        margin: 0 auto 0.6rem;
-        color: var(--plum);
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.9;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-      .pillars b {
-        display: block;
-        font-family: var(--font-display);
-        font-weight: 600;
-        font-size: 0.95rem;
-        line-height: 1.25;
-      }
-      .pillars span {
-        display: block;
-        font-size: 0.78rem;
-        color: var(--muted);
-        margin-top: 0.3rem;
-      }
-      @media (max-width: 900px) { .pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-      @media (max-width: 520px) { .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
       /* ---------- loop ---------- */
       .loop {
         display: grid;
@@ -704,33 +613,6 @@ const screens = [
       .nv h3 { margin: 0.25em 0 0.4em; font-size: 1.08rem; }
       .nv p { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
-      /* ---------- comparison ---------- */
-      .table-scroll { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); }
-      table.cmp {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 620px;
-        background: var(--surface);
-      }
-      table.cmp th, table.cmp td {
-        text-align: left;
-        padding: 0.9rem 1.1rem;
-        border-bottom: 1px solid var(--border);
-        font-size: 0.94rem;
-        vertical-align: top;
-      }
-      table.cmp thead th {
-        font-family: var(--font-display);
-        font-weight: 600;
-        font-size: 1rem;
-        background: var(--bg-alt);
-      }
-      table.cmp thead th:last-child { color: var(--plum); }
-      table.cmp tbody tr:last-child td { border-bottom: none; }
-      table.cmp td:first-child { font-weight: 700; }
-      table.cmp td:last-child { color: var(--text); }
-      table.cmp td:nth-child(2) { color: var(--muted); }
-
       /* ---------- app ---------- */
       .app {
         display: grid;
@@ -743,7 +625,7 @@ const screens = [
         .app-card { position: static; }
       }
       .app-card {
-        background: var(--grad);
+        background: linear-gradient(135deg, #572084, #833572);
         border-radius: 24px;
         padding: 2rem;
         color: #fff;
@@ -807,38 +689,44 @@ const screens = [
   </head>
 
   <body>
-    <nav class="nav">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <nav class="nav" aria-label="Main navigation">
       <div class="wrap nav-inner">
         <a class="brand" href="/projects/mima/">
           <img src="/projects/mima/assets/mima-logo.png" alt="" />
           MIMA
         </a>
         <div class="nav-links">
-          <a class="back" href="https://jyozspace.in/projects/">← Projects</a>
+          <a class="back" href="/projects/">← Projects</a>
           <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle light / dark">
             <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
             <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
           </button>
-          <a class="cta" href="/projects/mima/demo/">Open the demo app</a>
+          <a class="cta" href="/projects/mima/demo/">Try the demo</a>
         </div>
+      </div>
+      <div class="wrap section-nav" aria-label="Page sections">
+        <a href="#problem">The need</a>
+        <a href="#anatomy">The garment</a>
+        <a href="#architecture">The system</a>
+        <a href="#loop">Heat control</a>
+        <a href="#app">App demo</a>
+        <a href="#patent">Patent &amp; research</a>
       </div>
     </nav>
 
+    <main id="main">
     <header class="hero">
       <div class="wrap">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow"><span class="dot"></span>Indian patent pending &middot; App. No. {patentNo}</span>
-            <h1>One system for <span class="grad-text">everything menstrual health</span> needs</h1>
+            <a class="eyebrow" href="#patent">Patent granted &middot; India &middot; {patentNo}</a>
+            <p class="hero-name">MIMA / MENSTRUAL CARE, CONNECTED</p>
+            <h1>Wearable comfort.<br /><span class="grad-text">Connected care.</span></h1>
             <p class="lede">
-              MIMA — a <strong>Multifunctional IoT Integrated Menstrual Aid</strong>. A specialised
-              garment, closed-loop heat therapy, physiological sensing, and a care app, working as
-              one coordinated platform instead of four disconnected products.
-            </p>
-            <p class="hero-quote">
-              “A multifunctional wearable menstrual management platform integrating a specially
-              configured menstrual undergarment, targeted IoT-enabled heat therapy, physiological
-              monitoring, and digital health management into a single coordinated system.”
+              A specialised garment, responsive heat and a companion app, designed to bring
+              menstrual comfort and physiological insight together. Meet <strong>MIMA —
+              Multifunctional IoT Integrated Menstrual Aid</strong>.
             </p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="/projects/mima/demo/">
@@ -849,57 +737,22 @@ const screens = [
               </a>
               <a class="btn btn-ghost" href="#architecture">How it works</a>
             </div>
+            <p class="hero-note">Explore the app with sample data. No device or account needed.</p>
           </div>
           <div class="hero-visual">
-            <div class="blob" aria-hidden="true"></div>
-            <img src="/projects/mima/assets/mima-logo.png" alt="MIMA" width="516" height="516" />
+            <img src="/projects/mima/assets/mima-logo.png" alt="MIMA" width="516" height="516" fetchpriority="high" />
           </div>
         </div>
 
         <div class="patent-strip">
-          <span class="status-pill"><span class="pulse"></span>Currently in patent hearing</span>
+          <span class="status-pill">Indian patent granted</span>
           <span class="sep" aria-hidden="true"></span>
-          <span>Application No. <strong>{patentNo}</strong> · filed 2025, India</span>
+          <span>Patent No. <strong>{patentNo}</strong></span>
           <span class="sep" aria-hidden="true"></span>
           <span>Jyothish Kumar J <em>et al.</em> · NIFT Bhubaneswar</span>
         </div>
       </div>
     </header>
-
-    <section class="pillars-section" aria-label="What MIMA brings together">
-      <div class="wrap">
-        <p class="pillars-lead">
-          Comfort, hygiene, therapeutic relief, physiological insight, community and digital care
-          &mdash; <strong>all on one platform</strong>.
-        </p>
-        <ul class="pillars">
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.5-9.2-9A5 5 0 0 1 12 6a5 5 0 0 1 9.2 6C19 16.5 12 21 12 21z"/></svg>
-            <b>Comfort</b><span>Targeted warmth and a stable, discreet fit</span>
-          </li>
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 5 6 10a6 6 0 0 1-12 0c0-5 6-10 6-10z"/><path d="M9.5 13a2.5 2.5 0 0 0 5 0"/></svg>
-            <b>Hygiene</b><span>Leak-proof gusset, antibacterial fabric, pad wing-pockets</span>
-          </li>
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.4 3.2 4.2 4.4 4.2 8.4A4.2 4.2 0 0 1 8 12c0-2 .9-3.1 1.8-4-.1 1.8 1 2.7 1 2.7C10.7 8.3 12 5.5 12 2z"/><path d="M8 15.5h8M9 19h6"/></svg>
-            <b>Therapeutic relief</b><span>Closed-loop heat that scales to cramp intensity</span>
-          </li>
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2 5 4-12 2 7h6"/></svg>
-            <b>Physiological monitoring</b><span>EMG, pulse and intimate-area temperature, onboard</span>
-          </li>
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 7a3 3 0 0 1 0 6"/><path d="M17.5 19a5.5 5.5 0 0 0-3-4.9"/></svg>
-            <b>Community</b><span>Peer forums and an anonymous "request a pad" network</span>
-          </li>
-          <li>
-            <svg class="pi" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M10.5 6h3"/><path d="M9 13.5h1.7l1-2 1.5 3 1-1.5h1.6"/></svg>
-            <b>Digital healthcare</b><span>Cycle tracking and clinician-ready teleconsultation</span>
-          </li>
-        </ul>
-      </div>
-    </section>
 
     <section class="alt" id="problem">
       <div class="wrap">
@@ -922,7 +775,7 @@ const screens = [
           <div class="problem">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6"/><path d="M5 13a7 7 0 0 0 14 0c0-3-3-6-7-10-4 4-7 7-7 10z"/></svg></span>
             <h3>Leakage &amp; stains</h3>
-            <p>Pads shift, underwear alone is not enough, and the anxiety of a stain is constant.</p>
+            <p>Pad placement and leak protection affect everyday confidence and comfort.</p>
           </div>
           <div class="problem">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span>
@@ -932,7 +785,7 @@ const screens = [
           <div class="problem">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M4 19V9l8-5 8 5v10"/><path d="M9 19v-6h6v6"/></svg></span>
             <h3>No shared data</h3>
-            <p>Cycle apps guess from calendars; smartwatches sit on the wrist, far from where it matters.</p>
+            <p>Cycle records and physiological measurements often live in separate tools.</p>
           </div>
         </div>
 
@@ -963,7 +816,7 @@ const screens = [
           <figure>
             <picture>
               <source srcset="/projects/mima/assets/anatomy.webp" type="image/webp" />
-              <img src="/projects/mima/assets/anatomy.png" alt="Labelled front and back view of the MIMA garment showing the control module, heat-pad, battery and PCB in a front pocket, the leak-proof multilayer gusset, and wing-pockets that hold sanitary-pad wings." width="1800" height="900" />
+              <img src="/projects/mima/assets/anatomy.png" alt="Labelled front and back view of the MIMA garment showing the control module, heat-pad, battery and PCB in a front pocket, the leak-proof multilayer gusset, and wing-pockets that hold sanitary-pad wings." width="1800" height="900" loading="lazy" decoding="async" />
             </picture>
             <figcaption>Front and back of the specialised undergarment with the detachable IoT module in place.</figcaption>
           </figure>
@@ -972,7 +825,7 @@ const screens = [
             <li>Heat-pad pocket seats a detachable control module — PCB, battery, heater</li>
             <li>Leak-proof multilayer gusset</li>
             <li>Wing-pockets receive sanitary-pad wings, holding adhesive off the skin</li>
-            <li>Antibacterial fabric to fight rashes and malodor</li>
+            <li>Antibacterial fabric for hygiene and odour management</li>
             <li>Everything washable once the module is removed</li>
           </ul>
         </div>
@@ -983,21 +836,21 @@ const screens = [
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Architecture</span>
-          <h2>Three nodes, one ecosystem</h2>
+          <h2>Three parts, designed to work together</h2>
           <p>The invention has three distinct nodes that work together as a single coordinated system.</p>
         </div>
 
         <div class="nodes">
           <div class="node">
             <div class="node-figure">
-              <svg class="node-svg" viewBox="0 0 200 130" role="img" aria-label="High-waisted undergarment with a dashed module pocket, a highlighted leak-proof gusset and pad wing-pockets">
-                <path d="M26 40 Q100 24 174 40" />
-                <path d="M26 40 L30 58 Q44 92 74 84 Q100 118 126 84 Q156 92 170 58 L174 40" />
-                <rect x="80" y="33" width="40" height="24" rx="5" stroke-dasharray="5 5" />
-                <rect x="90" y="39" width="20" height="12" rx="2.5" fill="var(--purple)" stroke="none" />
-                <path d="M84 70 Q100 62 116 70 Q112 99 100 105 Q88 99 84 70 Z" fill="var(--pink)" fill-opacity="0.85" stroke="none" />
-                <path d="M84 70 Q100 62 116 70 Q112 99 100 105 Q88 99 84 70 Z" />
-                <path d="M40 60 l15 4 M160 60 l-15 4" stroke="var(--pink)" />
+              <svg class="node-svg" viewBox="0 0 200 130" role="img" aria-label="Front view of high-waisted briefs with a waistband, module pocket and highlighted protective gusset">
+                <path d="M52 22 H148 L160 65 C139 65 123 85 118 107 H82 C77 85 61 65 40 65 Z" />
+                <path d="M49 35 H151" />
+                <path d="M44 61 C67 65 82 82 87 104 M156 61 C133 65 118 82 113 104" />
+                <rect x="84" y="44" width="32" height="23" rx="5" stroke-dasharray="4 4" />
+                <rect x="93" y="50" width="14" height="10" rx="2" fill="var(--purple)" stroke="none" />
+                <path d="M89 81 Q100 76 111 81 L107 103 H93 Z" fill="var(--pink)" fill-opacity="0.65" stroke="var(--pink)" />
+                <path d="M83 82 L77 86 M117 82 L123 86" stroke="var(--pink)" />
               </svg>
             </div>
             <span class="tag">{nodes[0].tag}</span>
@@ -1051,16 +904,16 @@ const screens = [
           <span class="eyebrow">Closed-loop heat therapy</span>
           <h2>Heat that responds to the cramp</h2>
           <p>
-            A manual heating pad has one setting: whatever you last turned it to. MIMA's textile
-            sEMG sensors read the real-time intensity of abdominal muscle contractions, and the
-            module scales its own heat to match — automatically.
+            Surface electromyography (sEMG) measures electrical activity in muscles through
+            sensors at the skin. MIMA's closed-loop design uses abdominal muscle activity as
+            an input to the controller, which adjusts the heater and sends session data to the app.
           </p>
         </div>
         <div class="loop">
           <div class="step"><span class="n">1</span><p>Textile sEMG senses abdominal muscle activity</p></div>
           <div class="step"><span class="n">2</span><p>Controller estimates cramp onset &amp; intensity</p></div>
           <div class="step"><span class="n">3</span><p>Heater actuation &amp; temperature scale to match</p></div>
-          <div class="step"><span class="n">4</span><p>Relief is logged; the loop keeps adapting</p></div>
+          <div class="step"><span class="n">4</span><p>Session data is logged; sensing continues</p></div>
         </div>
       </div>
     </section>
@@ -1069,8 +922,8 @@ const screens = [
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Why it is different</span>
-          <h2>Novelty highlights</h2>
-          <p>The value is in the integration — features that only work because the others are there too.</p>
+          <h2>What the integration makes possible</h2>
+          <p>The textile, electronics and software each serve a specific role in the design.</p>
         </div>
         <div class="novelty-grid">
           {novelty.map((n) => (
@@ -1083,34 +936,13 @@ const screens = [
       </div>
     </section>
 
-    <section id="compare">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">At a glance</span>
-          <h2>MIMA vs. the usual kit</h2>
-        </div>
-        <div class="table-scroll">
-          <table class="cmp">
-            <thead>
-              <tr><th>Capability</th><th>Separate products</th><th>MIMA</th></tr>
-            </thead>
-            <tbody>
-              {compare.map((row) => (
-                <tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
     <section class="alt" id="app">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">The app</span>
           <h2>The whole system in your pocket</h2>
           <p>
-            A working front-end demo of the MIMA app is live — every screen is interactive with
+            Explore the proposed care experience in an interactive front-end demo with
             realistic sample data. No real device, backend, or personal data.
           </p>
         </div>
@@ -1133,30 +965,51 @@ const screens = [
     </section>
 
     <section id="patent">
-      <div class="wrap narrow">
+      <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">Status</span>
-          <h2>Intellectual property</h2>
+          <span class="eyebrow">Patent &amp; research</span>
+          <h2>From research to everyday care</h2>
+          <p>A granted Indian patent and two publications mark the foundations of MIMA.</p>
         </div>
-        <div class="patent-box">
+        <div class="research-grid">
+          <article class="patent-box">
+            <p class="patent-label">Indian Patent</p>
+            <h3 class="patent-number">No. {patentNo}</h3>
+            <p><strong>Multifunctional IoT-Based Menstrual Aid for Menstrual Health and Comfort</strong></p>
+            <p>
+              Developed by Jyothish Kumar J <em>et al.</em> at the National Institute of Fashion
+              Technology, Bhubaneswar.
+            </p>
+          </article>
+          <ul class="paper-list" aria-label="MIMA publications">
+            {papers.map((paper) => (
+              <li>
+                <p class="paper-venue">{paper.data.venue}</p>
+                <h3>{paper.data.title}</h3>
+                <p>{paper.id === 'mima-1'
+                  ? 'The initial concept: combining functional intimate wear and IoT-enabled heat, informed by a survey of menstrual-care needs.'
+                  : 'The next iteration: a compact, integrated design with Bluetooth-controlled heating, developed through feedback from target users.'}</p>
+                <div class="paper-links">
+                  {paper.data.doi && <a href={paper.data.doi} target="_blank" rel="noopener noreferrer">Read paper ↗</a>}
+                  {paper.data.arxiv && <a href={paper.data.arxiv} target="_blank" rel="noopener noreferrer">Open preprint ↗</a>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="project-contact">
+          <h3>Help bring MIMA to the people who need it</h3>
           <p>
-            MIMA is the subject of <span class="num">Indian Patent Application No. {patentNo}</span>
-            (“Multifunctional IoT-Based Menstrual Aid for Menstrual Health and Comfort”), filed in
-            2025 by Jyothish Kumar J <em>et al.</em>
+            We’re working to bring this invention into everyday use, so its benefits can reach
+            more people. We’d love to hear from investors, potential collaborators, and people
+            interested in joining the team to bring MIMA to market.
           </p>
-          <p>
-            Following the First Examination Report and a written response, the application is
-            <strong> currently in hearing before the Indian Patent Office</strong>. The claims cover
-            the integrated garment-plus-module-plus-app system, the closed-loop sEMG-driven heat
-            control, and the multi-parameter physiological analytics.
-          </p>
-          <p>
-            Associated peer-reviewed publications are listed on the
-            <a href="https://jyozspace.in/research/">research page</a>.
-          </p>
+          <p>Or, if you’re simply curious about the project, we’d be happy to hear from you too.</p>
+          <a class="btn btn-primary" href="/contact/">Let’s talk about MIMA →</a>
         </div>
       </div>
     </section>
+    </main>
 
     <footer>
       <div class="wrap foot-inner">
@@ -1173,7 +1026,7 @@ const screens = [
         </div>
       </div>
       <div class="wrap disclaimer">
-        This page is a product overview for a patent-pending concept. The linked application is a
+        Project overview · Indian Patent No. {patentNo} (granted). The linked application is a
         front-end demo only — it does not connect to a real device or collect any data.
       </div>
     </footer>
