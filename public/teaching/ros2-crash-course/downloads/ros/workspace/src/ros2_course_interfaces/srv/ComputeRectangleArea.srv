@@ -1,0 +1,8 @@
+# Request fields go above the three dashes.
+float64 width
+float64 height
+---
+# Response fields go below the three dashes.
+float64 area
+bool    valid       # false if width or height was negative
+string  message

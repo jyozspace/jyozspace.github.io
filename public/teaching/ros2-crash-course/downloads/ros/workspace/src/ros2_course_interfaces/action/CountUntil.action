@@ -1,0 +1,9 @@
+# GOAL: what the client asks for
+int32   target        # count 1, 2, 3 ... up to this number
+float64 period        # seconds to wait between numbers
+---
+# RESULT: what the client gets when the action finishes
+int32   reached_number
+---
+# FEEDBACK: streamed to the client while the action runs
+int32   current_number

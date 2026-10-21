@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DarkHero from '../components/DarkHero.astro';
+
+const courseURL = '/teaching/ros2-crash-course/';
+---
+
+<BaseLayout title="Teaching" description="Hands-on robotics courses and learning resources by Jyothish J. Kumar. Start with Nodes to Maps, a practical ROS 2 Jazzy crash course.">
+  <DarkHero compact>
+    <span class="eyebrow">Teaching</span>
+    <h1>Learn robotics by <span class="text-gradient">building</span></h1>
+    <p class="lede">
+      Practical courses, small experiments, and connected ideas — from your first
+      node to a working robotics system.
+    </p>
+  </DarkHero>
+
+  <section class="section section-alt" aria-labelledby="courses-heading">
+    <div class="container">
+      <h2 id="courses-heading">Courses &amp; workshops</h2>
+      <div class="grid">
+        <article class="card course-card">
+          <div class="course-copy">
+            <div class="course-meta">
+              <span class="badge">ROS 2 Jazzy</span>
+              <span>Ubuntu 24.04</span>
+              <span>Self-study &amp; classroom</span>
+            </div>
+            <h3><a href={courseURL}>Nodes to Maps — ROS 2 Crash Course</a></h3>
+            <p>
+              Build a foundation in ROS 2 through five practical lectures and a phone-sensor
+              capstone. Work with Python and C++ nodes, topics, services, actions, and
+              coordinate frames, then explore camera and IMU data on the way to SLAM.
+            </p>
+            <p class="course-details">
+              Setup guide · Interactive labs &amp; quizzes · Downloadable notes &amp; source code
+            </p>
+            <div class="course-actions">
+              <a class="btn btn-primary" href={courseURL}>Open course &rarr;</a>
+              <a class="course-download" href={`${courseURL}downloads/ros2-course-overview.pdf`}>Course overview (PDF)</a>
+            </div>
+          </div>
+          <a class="course-visual" href={courseURL} aria-label="Explore Nodes to Maps, the ROS 2 crash course">
+            <img src={`${courseURL}assets/phone-lab-illustration.png`} alt="Illustration of the phone-sensor robotics lab" width="1000" height="640" loading="lazy" />
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .course-card { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2rem; align-items: center; }
+  .course-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; color: var(--text-muted); font-size: 0.85rem; }
+  .course-card h3 { margin: 1rem 0; font-size: clamp(1.35rem, 3vw, 1.8rem); }
+  .course-card h3 a { color: var(--text); text-decoration: none; }
+  .course-card h3 a:hover { color: var(--accent-strong); }
+  .course-copy p { color: var(--text-muted); }
+  .course-details { font-size: 0.9rem; }
+  .course-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 1.5rem; }
+  .course-download { font-size: 0.9rem; font-weight: 600; }
+  .course-visual { display: block; border-radius: var(--radius-md); overflow: hidden; background: #f3f1e8; }
+  .course-visual img { display: block; width: 100%; height: auto; }
+  @media (max-width: 780px) { .course-card { grid-template-columns: 1fr; } }
+</style>

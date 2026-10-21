@@ -1,0 +1,7 @@
+{
+  "file": "downloads/nodes-to-maps-sensor-debug.apk",
+  "sha256": "abc1401706ace2eaa0cef64036e3589b6cec3d36d37e09e1b5c077d12a98ab89",
+  "version": "0.1.0",
+  "minAndroid": "8.0",
+  "qualification": "Compiled and signature-checked; real-device qualification pending."
+}

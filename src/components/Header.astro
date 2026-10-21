@@ -7,6 +7,7 @@ const navItems = [
   { label: 'About', href: '/about/' },
   { label: 'Research', href: '/research/' },
   { label: 'Projects', href: '/projects/' },
+  { label: 'Teaching', href: '/teaching/' },
   { label: 'Blog', href: '/blog/' },
   { label: 'Contact', href: '/contact/' },
 ];
@@ -143,7 +144,7 @@ const isActive = (href: string) =>
 
   .nav-mobile a[aria-current='page'] { color: var(--accent-strong); }
 
-  @media (max-width: 780px) {
+  @media (max-width: 960px) {
     .nav-desktop { display: none; }
     .nav-toggle { display: inline-flex; }
     .nav-mobile.open { display: block; }

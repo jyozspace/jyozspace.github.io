@@ -20,6 +20,8 @@ Almost everything editorial lives as plain Markdown with frontmatter — no need
 | Blog posts | `src/content/blog/*.md` — add a new file, copy the frontmatter shape from an existing post |
 | Projects | `src/content/projects/*.md` — `featured: true` puts it in the major-projects grid, `false`/omitted puts it in the collapsible hobby-projects list |
 | Research publications | `src/content/publications/*.md` |
+| Teaching page | `src/pages/teaching.astro` |
+| ROS 2 crash course | `public/teaching/ros2-crash-course/` — complete static course, served at `/teaching/ros2-crash-course/` |
 | Patents | inline array in `src/pages/research.astro` (small enough not to need its own collection) |
 | Home/About/Research/Projects/Contact page text | `src/pages/*.astro` (the prose is inline JSX/HTML — safe to edit directly) |
 | Personal/family content | `src/pages/about/personal.astro` (linked from the bottom of About, not in the main nav) |
@@ -27,6 +29,15 @@ Almost everything editorial lives as plain Markdown with frontmatter — no need
 | Colors, fonts, spacing | `src/styles/global.css` (all design tokens are CSS variables at the top) |
 | Nav links, social links | `src/components/Header.astro`, `src/components/Footer.astro`, `src/pages/contact.astro` |
 | Resume/CV | `public/resume.pdf` — see below |
+
+### Updating the ROS 2 course
+
+The Teaching page links to the **Nodes to Maps — ROS 2 Crash Course**. Its static website,
+including assets, notes, APK and source archives, lives in `public/teaching/ros2-crash-course/`.
+To refresh it, rebuild and package the original `ros2-course` project, then copy the contents
+of its `website/` folder here together. Preserve the canonical URL and Teaching backlink in
+`index.html`, and the corrected no-JavaScript notes links under `downloads/course/lessons/`.
+Run `npm run build` before deploying through the existing GitHub Pages workflow.
 
 ### Adding a blog post
 

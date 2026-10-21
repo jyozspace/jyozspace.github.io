@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153c3a">
+  <meta name="description" content="A hands-on ROS 2 course: five lectures, interactive labs and a camera SLAM capstone. Learn independently or follow along in class.">
+  <title>Nodes to Maps — A practical ROS 2 course</title>
+  <link rel="canonical" href="https://jyozspace.in/teaching/ros2-crash-course/">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="course-data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<aside class="sidebar" id="sidebar" aria-label="Course navigation">
+  <a class="brand" href="#home" aria-label="Nodes to Maps, course overview"><span class="brand-icon" aria-hidden="true">⠿</span><span>nodes<span class="brand-light">to</span>maps<span class="brand-sub">THE ROS 2 FIELD COURSE</span></span></a>
+  <button class="search-launch" id="open-search"><span>⌕ &nbsp; Find a topic</span><kbd>/</kbd></button>
+  <div class="nav-caption">YOUR WORKBENCH</div>
+  <nav id="navigation"></nav>
+  <div class="sidebar-bottom"><div class="edition"><span class="status-dot"></span> ROS 2 JAZZY <span>· Ubuntu 24.04</span></div><p>Small programs.<br>Connected ideas.<br>Robots that make sense.</p><a href="#resources">Sources & course files <span>↗</span></a></div>
+</aside>
+<div class="workspace">
+  <header class="topbar"><button class="icon-button mobile-menu" id="menu" aria-label="Toggle course navigation" aria-expanded="false">☰</button><div id="breadcrumb">THE COURSE / OVERVIEW</div><div class="header-actions"><div class="mode-switch" role="group" aria-label="Learning mode"><button id="study-mode" aria-pressed="true">Self-study</button><button id="lecture-mode" aria-pressed="false">Lecture <span class="mode-dot"></span></button></div><button class="icon-button" id="theme" aria-label="Switch color theme" title="Switch color theme">◐</button></div></header>
+  <main id="main" tabindex="-1"></main>
+  <footer class="footer"><a href="/teaching/">← Teaching · JyozSpace</a><span>Course: CC BY 4.0 · Core: Apache-2.0 · Optional SLAM: GPL-3.0+</span><a href="#verification">Review notes ↗</a></footer>
+</div>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="dialog-top"><h2 id="search-title">Find your next idea</h2><button class="icon-button" id="close-search" aria-label="Close search">✕</button></div><label class="sr-only" for="search-input">Search course content</label><input id="search-input" placeholder="Try ‘QoS’, ‘camera’, ‘build’…" type="search" autocomplete="off"><div id="search-results" aria-live="polite"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><div class="noscript">Enable JavaScript for the interactive course. You can also read the <a href="downloads/course/lessons/00-setup-guide.md">setup notes</a> and <a href="downloads/course/lessons/01-lecture1-architecture.md">lecture 1 notes</a> directly.</div></noscript>
+</body>
+</html>
