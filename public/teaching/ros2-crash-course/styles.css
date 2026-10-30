@@ -24,3 +24,11 @@ dialog{border:1px solid var(--line);border-radius:12px;padding:26px;background:v
 .lecture-body .learning-figure{max-width:980px}
 @media print{.learning-figure{break-inside:avoid}.learning-figure figcaption span{display:none}}
 .callout a{display:inline-block;max-width:100%;font-weight:650;text-decoration:underline;text-underline-offset:3px}
+/* Expected results are readable examples, never copy-and-run commands. */
+.expected-output{background:#edf3fa;color:#18364d;border-color:#a8bfce;border-left:4px solid #497e9c}
+.expected-output .code-head{color:#254e68;border-bottom-color:#c8d8e3;background:#e1ebf4;flex-wrap:wrap;gap:8px}
+.expected-output .output-hint{font-family:"Segoe UI",sans-serif;letter-spacing:0;font-size:11px}
+:root[data-theme=dark] .expected-output{background:#1b2a3c;color:#dbe9f7;border-color:#597b98}
+:root[data-theme=dark] .expected-output .code-head{background:#22364b;color:#c4def3;border-bottom-color:#405d78}
+.learning-figure img{height:auto}
+.reader-section p,.reader-section li,.resource-body p,.resource-body li{overflow-wrap:anywhere}

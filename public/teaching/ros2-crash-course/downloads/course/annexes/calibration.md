@@ -19,7 +19,7 @@ For Android, record the displayed rear camera ID, native YUV dimensions, sensor 
 
 Print a checkerboard on a flat rigid backing. Count **inner corners**, where four squares meet: a board with 9×7 squares has 8×6 inner corners. Measure a square edge on the final print, since printer scaling can change it. In this example each square is 24 mm, so the tool receives 0.024 metres. Use your own measured values.
 
-![Simulated calibration view: a 9-by-7 square target has 8-by-6 inner corners. Coverage bars represent varied position, size and tilt.](../assets/calibration-screen.svg)
+![A 9-by-7 checkerboard marks its 8-by-6 inner corners. Separate target poses illustrate collecting varied position, size and tilt.](../assets/learning-calibration.svg)
 
 ## Collect coverage, calibrate and save
 
@@ -71,7 +71,7 @@ The converter supports measured pinhole plumb_bob models with four or five disto
 
 Hold the phone still, then rotate it slowly about one device axis at a time. Echo /phone/imu/gyroscope and record which angular component responds and with which sign. Echo /phone/imu/accelerometer separately to inspect acceleration. At rest the gyroscope should be close to zero, while the magnitude of acceleration including gravity is often near 9.8 m/s². Record the phone orientation and compare signs with Android’s device-axis definition. The camera optical axes describe the unrotated transmitted image and need a measured extrinsic relationship to the device axes.
 
-![Illustrative IMU inspection checklist: stationary values and one-axis rotations test units and signs, while physical camera–IMU calibration remains a separate measurement.](../assets/imu-check.svg)
+Use a small results table in your lab notes: phone orientation; motion performed; dominant acceleration/gyro component; sign; observed rate. A rest or axis test checks basic sensor behavior; it does not estimate camera-IMU mounting or temporal alignment.
 
 Collect a short stationary recording and plot all six components. Look for missing values, irregular intervals, saturation and obvious bias. A stationary mean is an observation under those conditions; the API’s sensor calibration/filtering and actual timing quality limit what can be inferred from it. Native events retain separate accelerometer/gyroscope times. REALTIME camera timestamps share their phone clock domain, while UNKNOWN camera devices use this app’s labelled image callback fallback. The bridge marks orientation unavailable and leaves unknown covariance explicit. Use the [Imu message contract](https://docs.ros.org/en/jazzy/p/sensor_msgs/msg/Imu.html) when describing this data.
 

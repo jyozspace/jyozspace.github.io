@@ -24,7 +24,7 @@ Download the [Android classroom test APK](../../downloads/nodes-to-maps-sensor-d
 
 Start the updated phone_bridge on Ubuntu. Its terminal prints a session token and **ANDROID SERVER CERTIFICATE SHA-256**. Enter three values in the app: the wss:// endpoint ending in /ws/android, the token and that 64-digit fingerprint. Tap **Start camera + sensors**. Grant camera permission if requested, then tap Start again. Sensor support is reported after connection. Keep this screen visible during the run.
 
-![Simulated Android app checkpoint: endpoint, pairing token, certificate fingerprint, camera clock source and independent sensor counters.](../assets/android-screen.svg)
+Expected app state after pairing: capture is active, the camera ID/dimensions and clock source are reported, and available image/motion counters increase. The precise values are device dependent. If pairing fails, compare all three connection fields before changing camera settings.
 
 For wireless, use the laptop’s IPv4 address on the phone hotspot. For wired USB, establish adb reverse and enter wss://127.0.0.1:8443/ws/android. [Annex E](../annexes/android-connections.md) gives both options on native Ubuntu, with [Annex F](../annexes/wsl-capstone.md) covering WSL. Stop releases capture; switching away from the app also stops the session.
 

@@ -2,11 +2,29 @@
 
 Turn the graph into code, one callback at a time.
 
+## Start from the robot's job
+
+In lecture 1 you connected existing programs. Now imagine replacing the keyboard with a distance sensor: one program reads measurements, another decides what to do. Each needs a clear input or output and a repeatable way to run. We start with text messages so packaging and callback behavior are visible before adding camera data.
+
+You need Python functions, classes, imports and indentation. A class bundles state and functions: here `self.count` remembers the count between calls, and `tick` is a method operating on that state. `Hello(Node)` inherits ROS behavior; `super().__init__('hello')` initializes the ROS node with its graph name. You do not need to implement networking yourself.
+
+**90-minute route:** workspace 10 min; publisher 20; matching subscriber 15; packaging 15; custom-interface inspection 10; practice 20. The interface-edit homework is a second pass, not a prerequisite for the first working pair. Open fresh Ubuntu Bash terminals after lecture 00; its `.bashrc` block loads the environment. After a build, source the updated overlay in terminals that were already open.
+
 ## Understand the workspace
 
 A **workspace** contains source packages and generated build, install and log directories. A **package** groups code, interfaces and metadata. An **executable** is a runnable entry point; a **node** participates in the graph. These are related concepts, not synonyms.
 
 The reference workspace contains ros2_course_py, ros2_course_cpp, ros2_course_interfaces and ros2_course_bringup. Use it to catch up, but type this first experiment yourself. **By the end:** write timer and subscription callbacks, build a package and explain interface generation.
+
+| Location or concept | What belongs there | What to edit |
+| --- | --- | --- |
+| `~/ros2_ws/src/` | Your package source directories | Python, C++, interface and launch source |
+| `build/` | Compiler and generator work | Let colcon manage it |
+| `install/` | Files exposed to ROS after a build | Source its setup file; edit the source instead |
+| `log/` | Build diagnostics | Read the first failing package's error |
+| Package → executable → node | Distribution unit → command to run → graph participant | One executable can create several nodes |
+
+The import `std_msgs.msg.String` names a generated Python type. The topic name `chatter` identifies a connection. The node name `hello` identifies this participant. None of these has to equal the source filename.
 
 ## Write a complete publisher
 
@@ -48,7 +66,26 @@ if __name__ == '__main__':
 
 Node gives the object a graph identity. A **callback** is a function ROS invokes when work is ready, such as a timer expiring or a message arriving. The **executor** chooses and runs ready callbacks while `spin` is active. The publisher specifies String and keep-last depth 10 using the default profile. The timer requests a callback roughly twice per second; scheduling can vary on an ordinary laptop.
 
-In another terminal, `ros2 topic echo /chatter` should show frame 0, frame 1 and increasing counts. Keep callbacks short: a long sleep or expensive computation in a single-threaded callback delays other callbacks on that executor.
+The publishing terminal stays quiet because this minimal program has no logging call. In **another Ubuntu terminal**, run:
+
+```bash
+ros2 topic echo /chatter
+```
+
+Example received output (your starting count will usually be higher because the publisher started first):
+
+```output
+data: frame 12
+---
+data: frame 13
+---
+```
+
+Press Ctrl+C in the echo terminal when finished; the publisher continues in its own terminal. No output means you should check that the publisher is still running and that both terminals use the same ROS domain.
+
+![A single executor thread handles a timer callback and a subscription callback in turn; a long timer callback delays an already-ready subscription.](../assets/learning-executor.svg)
+
+Read the diagram from left to right. Ready work is not the same as running work: with one executor thread, a subscription cannot run while that thread is inside a long timer callback. Keep callbacks short. Multiple threads need deliberate callback-group and shared-state design; they are not an automatic cure for slow processing. See the [executor explanation](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Executors.html).
 
 ## Install a package entry point
 
@@ -60,7 +97,23 @@ ros2 pkg create my_camera_lab --build-type ament_python \
   --license Apache-2.0 --dependencies rclpy std_msgs
 ```
 
-Copy hello.py into `my_camera_lab/my_camera_lab/hello.py`. Add `'hello = my_camera_lab.hello:main'` to the console_scripts list in setup.py. package.xml declares dependencies and setup.cfg places scripts where ros2 run expects them.
+Stop the scratch publisher with Ctrl+C. Copy your file into the generated Python module directory:
+
+```bash
+cp ~/ros2_ws/hello.py ~/ros2_ws/src/my_camera_lab/my_camera_lab/hello.py
+```
+
+Open `~/ros2_ws/src/my_camera_lab/setup.py` in your editor and put the following inside its existing `setup(...)` call, replacing the empty `entry_points` dictionary. This is **Python file content**, not a terminal command:
+
+```python
+entry_points={
+    'console_scripts': [
+        'hello = my_camera_lab.hello:main',
+    ],
+},
+```
+
+Left of `=` is the executable name for `ros2 run`; right of it is the module and function to call. Keep the other generated setup fields. `package.xml` declares dependencies and `setup.cfg` places scripts where `ros2 run` expects them. The two `my_camera_lab` directory names are normal: the outer one is the ROS package and the inner one is the Python module.
 
 ```bash
 cd ~/ros2_ws
@@ -147,9 +200,26 @@ ros2 run ros2_course_py robot_status_publisher
 
 In another terminal, `ros2 topic echo /robot_status --once` should show the fields. This example simulates battery state; it does not measure a real battery. Document units, valid ranges and unavailable values. Use a Header when timestamp and coordinate frame matter.
 
+An early sample could look like this; battery_percent decreases by 2.5 each publication:
 
+```output
+robot_name: tb3_01
+battery_percent: 97.5
+is_moving: true
+fault_code: 0
+```
 
-![Simulated installed talker and listener terminals. Compare their resolved topic, type and increasing message values.](../assets/pubsub-terminal.svg)
+## Diagnose the layer that failed
+
+| Observation | Likely layer | First useful check |
+| --- | --- | --- |
+| `ModuleNotFoundError: rclpy` | Python/environment | Use Ubuntu's system Python and check the Jazzy environment |
+| `Package ... not found` | Installation discovery | Build, then source `~/ros2_ws/install/setup.bash` |
+| Package found but no `hello` executable | Entry-point installation | Check `console_scripts`, rebuild, run `ros2 pkg executables my_camera_lab` |
+| Node exists but no data reaches the listener | ROS connection | Inspect the resolved topic, type and QoS with `ros2 topic info /chatter --verbose` |
+| Callbacks pause when computation starts | Scheduling | Time the callback before changing queue depth or language |
+
+Building discovers and installs your package; sourcing makes that installation visible to a terminal; running starts a process. Treat these as three separate checks.
 
 ## Practice and prove it
 

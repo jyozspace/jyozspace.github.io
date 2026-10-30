@@ -5,7 +5,7 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 ## Start here
 
 1. [Setup and prerequisites](lessons/00-setup-guide.md)
-2. [Lecture 1: nodes and messages](lessons/01-lecture1-architecture.md)
+2. [Lecture 1: robotics and ROS foundations](lessons/01-lecture1-architecture.md)
 3. [Lecture 2: Python nodes](lessons/02-lecture2-python-nodes.md)
 4. [Lecture 3: C++ and QoS](lessons/03-lecture3-cpp-nodes.md)
 5. [Lecture 4: services, actions, launch and TF](lessons/04-lecture4-services-actions-tf.md)
@@ -19,6 +19,9 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 - [D: More ROS workflows](annexes/ros-workflows.md)
 - [E: Connect Android by USB or wireless](annexes/android-connections.md)
 - [F: WSL 2 capstone](annexes/wsl-capstone.md)
+- [G: Sharing Windows and Linux files](annexes/wsl-files.md)
+- [H: Forwarding USB sensors into WSL](annexes/wsl-usb.md)
+- [I: Windows–Linux networking](annexes/wsl-networking.md)
 
 ## References and assessment
 
@@ -27,6 +30,7 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 - [Command field guide](annexes/cheatsheet-cli.md)
 - [Sensor clients and receiver contracts](annexes/phone-app.md)
 - [Visual checkpoints](annexes/visual-guide.md)
+- [Visual sources and licenses](annexes/visual-sources.md)
 - [Troubleshooting](annexes/troubleshooting.md)
 - [Official references and glossary](annexes/references.md)
 - [Course scope and learning outcomes](annexes/verification.md)
@@ -34,6 +38,6 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 - [Written prompts and model explanations](assessment/descriptive-questions.md)
 - [Worked exercise explanations and rubric](assessment/exercise-solutions.md)
 
-Scientific/software illustrations are labelled simulated and should be replaced with real evidence in student reports.
+Quizzes and written prompts are generated from maintenance/tools/course-meta.mjs. Edit that metadata to change the questions; edit the other Markdown files directly. Concept diagrams explain relationships; simulated interfaces and upstream screenshots are labelled individually. Use your own captured evidence in student reports. Expected-output blocks are labelled and use a distinct blue panel without a Copy button on the website.
 
-Course text and teaching illustrations are licensed under CC BY 4.0. Preserve attribution when sharing. Code archives include their own licenses: Apache-2.0 for the core and Android app, GPL-3.0-or-later for the optional SLAM adapter.
+Course text and original teaching diagrams are licensed under CC BY 4.0. Third-party images retain their credited licenses; see the visual source register. Preserve attribution when sharing. Code archives include their own licenses: Apache-2.0 for the core and Android app, GPL-3.0-or-later for the optional SLAM adapter.

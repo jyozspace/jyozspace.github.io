@@ -2,6 +2,14 @@
 
 Choose the right interaction. Give every measurement a place and a time.
 
+## From individual nodes to a system
+
+The first three lectures established how to publish, receive and diagnose streams. A working robot also needs to ask for an operation, monitor a job, load a repeatable configuration and relate measurements from different locations. Those are the four problems in this lecture. A camera image can arrive perfectly over ROS and still be unusable if its coordinate frame or timestamp is wrong.
+
+Think of a mobile inspection robot: images arrive continuously; a service requests one calibration status; a navigation action travels to the next inspection point; parameters set camera exposure; launch starts the programs; TF relates camera observations to the robot body. Each tool answers a different question.
+
+**90-minute core:** communication patterns 10 min; service/action experiments 20; parameters/launch 15; frames and one point transform 20; integrated practice 25. Read implementation details and the full frame mathematics in the annexes after class. All node commands below run in Ubuntu terminals prepared in lecture 00.
+
 ## Choose topics, services or actions
 
 Use a **topic** for a continuing stream, such as camera frames. Use a **service** for a short request and response, such as reading a setting or computing an area. Use an **action** for a longer goal that needs feedback and cancellation, such as navigating to a pose.
@@ -9,6 +17,12 @@ Use a **topic** for a continuing stream, such as camera frames. Use a **service*
 A service client sends a request and waits for a response from a server. If a connection fails, retrying may repeat work, so operations such as saving a file need an application-level retry policy. Keep service callbacks short so other work can be processed. An action adds goal acceptance, feedback and a final status; its server also needs to check and respond to cancellation requests.
 
 **By the end:** call a custom service, send an action goal, configure nodes through parameters and launch, and explain a TF chain. This lecture is dense: the core path is CLI use plus the supplied files; implementing a new action server is an extension.
+
+![Time runs downward in three interaction diagrams: repeated topic samples, one service request/response, and an action goal with acceptance, feedback and a terminal result.](../assets/learning-interactions.svg)
+
+Read each arrow as one transfer, not a physical cable. A topic has no built-in “job complete” response. A service gives a response for a request. An action gives a goal an identity and lifecycle, allowing feedback and cancellation while work proceeds. A client disappearing does not prove a remote action stopped. [ROS action concepts](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Actions.html) describe that lifecycle.
+
+Before coding, say the sentence your interface represents: “Here is another measurement” suggests a topic; “Please compute this answer” suggests a service; “Please do this job and tell me its progress” suggests an action.
 
 ## Call a service
 
@@ -40,6 +54,16 @@ ros2 run ros2_course_py area_client --ros-args -p width:=5.0 -p height:=2.5
 ```
 
 Expected: valid true with area 12.0 for the CLI call and 12.5 for the client. Negative or non-finite dimensions should be rejected by the application. Run one server at a time: two servers advertising the same service make it unclear which implementation handled a request.
+
+The important fields in the first response are:
+
+```output
+area: 12.0
+valid: true
+message: ok
+```
+
+The CLI may print these in a Python-style response representation. The service schema only specifies numbers; our classroom interpretation uses widths and heights in metres and area in square metres. Document those units in a production interface. The supplied server accepts zero dimensions and rejects negative or non-finite values.
 
 Read area_client.py: call_async returns a Future, and an executor must keep processing work for the response to arrive. The standalone client can spin while waiting. Inside an already-spinning node callback, use an asynchronous continuation and suitable callback groups instead: blocking that callback can prevent its own response from being processed.
 
@@ -75,7 +99,7 @@ To demonstrate cancellation, run `ros2 run ros2_course_py count_until_client --r
 
 
 
-![Simulated service response and action feedback. An action exposes progress and a terminal goal state.](../assets/service-action.svg)
+For the successful goal, look for acceptance, successive `current_number` values, then `reached_number: 8` and SUCCEEDED. For the cancellation experiment, look for CANCELED and the number reached so far; the precise count depends on scheduling. The supplied server checks cancellation between iterations, so cancellation response can be delayed by the current sleep period. Run only one server for `/count_until`.
 
 For a deeper source walkthrough, try [Annex D’s service and action experiments](../annexes/ros-workflows.md).
 
@@ -96,7 +120,9 @@ ros2 param set /params_demo rate_hz 5.0
 ros2 topic hz /chatter
 ```
 
-Expected: new messages use the new text and the output rate changes to about 5 Hz. The reference implementation validates positive finite rates and reads committed parameters and replaces its timer at the next existing timer tick. Stop this node before the next demonstration.
+Expected: new messages use the new text and the output rate changes to about 5 Hz. The reference implementation accepts a finite floating-point `rate_hz` in **[0.1, 100]**; use `5.0` rather than integer `5`. It reads committed parameters and replaces its timer at the next existing timer tick. Stop this node before the next demonstration.
+
+Parameters belong to individual nodes and normally disappear when the process ends. Changing a parameter is configuration, not a way to publish a high-rate sensor stream. Save settings in YAML or a launch description when a later run should reproduce them. See [parameter concepts](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Parameters.html).
 
 Launch files are repeatable system recipes. They configure nodes, remappings and parameters, but textual order alone does not guarantee a dependency is ready. For more complex systems use lifecycle management or explicit readiness checks.
 
@@ -106,6 +132,8 @@ ros2 launch ros2_course_py pubsub_demo.launch.py \
 ```
 
 Expected: my_talker and my_listener exchange messages on /lecture_chatter. A launch argument is an input to the launch description; a parameter belongs to a node. The launch file explicitly passes one into the other.
+
+Trace this particular command through the supplied launch file: `rate:=5.0` sets the launch argument `rate`; the file converts it to the talker's `rate_hz` parameter; the talker uses it to choose its timer period. The remapping independently connects `chatter` to `/lecture_chatter`. Configuration values and connection names are different controls.
 
 ## Give data a coordinate frame
 
@@ -134,11 +162,15 @@ Expected: the translation is 0.1, 0, 0.2 metres. view_frames writes a graph file
 
 
 
-![Frame ownership and a worked transform. This metric mobile-robot example is separate from the arbitrary-scale phone world.](../assets/tf-tree.svg)
+![Two coordinate views of one physical point. A 90-degree sensor rotation and a translation produce new base-frame coordinates; changing the label alone does not.](../assets/learning-transform.svg)
 
 ## Work through one point transform
 
 Suppose demo_sensor is translated by (0.1, 0, 0.2) m in demo_base and yawed +90° around z. Its point (1, 0, 0) m becomes (0, 1, 0) after rotation, then (0.1, 1.0, 0.2) after translation. This is different from changing frame_id: the numbers must change too.
+
+The diagram is a **top view** of that second example; the 0.2 m height is stated separately because it is out of the page. This example includes rotation, unlike the parallel-axis `base_link → camera_link` CLI exercise above. Use the [Frames appendix](../annexes/frames.md) for its separate `demo_base → demo_sensor` command. Keeping these names separate prevents two demonstrations from claiming the same transform.
+
+For a point `p` measured in the sensor frame, compute `p_base = R × p_sensor + t`. Rotate the point's coordinates first, then add the sensor origin expressed in base coordinates. TF supplies the transform; the consumer or a TF helper must still apply it to the measurement.
 
 Use the interactive transform lab, then read the Frames appendix. A lookup_transform(target, source, time) returns the transform mapping source coordinates into target coordinates at that time. Optical axes, body axes and phone-device axes use separate conventions. The phone camera–IMU mounting becomes an edge in this tree only after its geometry and axis conventions have been measured.
 

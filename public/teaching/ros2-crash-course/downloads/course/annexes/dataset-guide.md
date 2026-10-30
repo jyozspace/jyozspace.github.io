@@ -31,7 +31,7 @@ Keep the private key on the laptop and outside published files. The terminal pri
 
 Tap Start, grant camera permission if requested and tap Start again. Pass condition: the app reports streaming, its camera mode/clock source is visible, and image_view on Ubuntu shows the phone’s actual scene. Inspect ROS rates and native motion counters. Stop and background the app to verify that capture ends. Repeat with a wrong pin or token to verify rejection, then restore the correct values.
 
-![Simulated native pairing screen. Compare the camera ID, size, timestamp source and counters with your own run.](../assets/android-screen.svg)
+Record the camera ID, dimensions, timestamp source and actual received rates from this run. They belong in the reference recording's manifest, alongside the app checksum and calibration file.
 
 ## Calibrate the actual transmitted mode
 

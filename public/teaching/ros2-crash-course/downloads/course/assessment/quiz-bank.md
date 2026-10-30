@@ -16,7 +16,7 @@ Answer: A. Jazzy’s Ubuntu binary target is Noble 24.04. Prepare that environme
 - B. Source Jazzy and the workspace install/setup.bash in this terminal
 - C. Delete the source package and reinstall the phone app
 
-Answer: B. The overlay must be in this terminal’s environment. A successful build does not automatically source future terminals.
+Answer: B. The overlay must be in this terminal’s environment. The saved .bashrc block should source new Bash terminals; inspect it if the overlay is missing. Existing terminals need to load the newly built overlay.
 
 3. A student has installed the Android APK and configured adb reverse tcp:8443 tcp:8443 to a running laptop receiver. Which app address uses this wired USB route?
 
@@ -34,9 +34,33 @@ Answer: A. ADB reverse forwards the phone localhost port over USB to the host re
 
 Answer: A. The Android app transports measurements over USB or wireless. Calibration and a working SLAM engine are separate required dependencies.
 
-## Think in nodes and messages
+## From a robot to the ROS graph
 
-1. A native phone app sends JPEGs over WSS to a Python receiver that publishes Image messages. Which component participates directly in the ROS graph?
+1. A mobile robot measures a nearby obstacle and slows its wheels. Which explanation correctly connects sensing, processing and actuation?
+
+- A. The distance sensor measures, a controller decides, and motor hardware changes motion
+- B. The sensor alone chooses the route and directly becomes the operating system
+- C. RViz supplies motor power whenever it displays a point cloud
+
+Answer: A. Sensors provide observations, processing uses those observations and goals to choose commands, and actuators physically change the world; later observations close the feedback loop.
+
+2. A student sees the name Robot Operating System and expects ROS 2 to replace Ubuntu. Where does ROS actually fit on this course laptop?
+
+- A. It replaces the Linux kernel and BIOS
+- B. Its libraries and tools run in user space above the operating system, supporting robotics applications
+- C. It is a device firmware update installed directly onto every sensor
+
+Answer: B. Ubuntu and its Linux kernel still manage processes, memory, devices and networking. ROS supplies application libraries, communication conventions and tools used by robotics programs.
+
+3. A robot needs repeated camera frames, a short reset request and a cancellable drive-to-goal task. Which ROS interface selection fits these needs?
+
+- A. A topic for images, a service for reset and an action for the longer task
+- B. A parameter for every camera pixel and one service that never returns
+- C. One unnamed shared file with no message types for all three interactions
+
+Answer: A. Topics carry streams, services pair requests with responses, and actions add goal management, feedback, results and cancellation for longer operations. Parameters configure nodes.
+
+4. A native phone app sends JPEGs over WSS to a Python receiver that publishes Image messages. Which component participates directly in the ROS graph?
 
 - A. The phone’s hotspot configuration page
 - B. The ROS receiver node on the laptop
@@ -44,7 +68,7 @@ Answer: A. The Android app transports measurements over USB or wireless. Calibra
 
 Answer: B. The phone is a web sensor client; phone_bridge is the ROS participant publishing typed topics.
 
-2. Two nodes appear in ros2 node list, but the turtle does not move. Which observation best establishes a correctly connected command stream?
+5. Two nodes appear in ros2 node list, but the turtle does not move. Which observation best establishes a correctly connected command stream?
 
 - A. Both nodes use the same source language
 - B. The publisher and subscriber resolve to the same topic/type with compatible QoS, and samples are observed
@@ -52,7 +76,7 @@ Answer: B. The phone is a web sensor client; phone_bridge is the ROS participant
 
 Answer: B. Process existence alone does not establish endpoint compatibility or data flow.
 
-3. A second turtlesim is launched under namespace /robot2. Which command topic sends velocity commands to /robot2/turtle1?
+6. A second turtlesim is launched under namespace /robot2. Which command topic sends velocity commands to /robot2/turtle1?
 
 - A. /robot2/turtle1/cmd_vel
 - B. /turtle1/cmd_vel without any remapping
@@ -60,7 +84,7 @@ Answer: B. Process existence alone does not establish endpoint compatibility or 
 
 Answer: A. The namespace prefixes the relative command-topic name. Namespaces do not merge all interfaces into one stream.
 
-4. A publisher’s relative chatter name is remapped to camera_events, while its subscriber is unchanged. What behavior should you predict?
+7. A publisher’s relative chatter name is remapped to camera_events, while its subscriber is unchanged. What behavior should you predict?
 
 - A. The subscriber automatically follows the publisher’s new name
 - B. Both endpoints connect because message types still match
@@ -68,7 +92,7 @@ Answer: A. The namespace prefixes the relative command-topic name. Namespaces do
 
 Answer: C. Remapping is applied to individual endpoints. Type agreement cannot compensate for different resolved names.
 
-5. You stop a velocity publisher with Ctrl+C while a physical base is moving. Which statement is appropriate before claiming the base is safely stopped?
+8. You stop a velocity publisher with Ctrl+C while a physical base is moving. Which statement is appropriate before claiming the base is safely stopped?
 
 - A. Process exit guarantees a zero command reaches the motor
 - B. A zero command and independent stop/watchdog behavior must be considered

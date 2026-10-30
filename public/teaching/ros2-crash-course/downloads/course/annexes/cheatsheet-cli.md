@@ -1,6 +1,8 @@
 # Jazzy command field guide
 
-Run these commands in Ubuntu 24.04 Bash. UPPERCASE names are placeholders. Source ROS in every terminal; source the overlay after it has been built.
+Run these commands in Ubuntu 24.04 Bash. UPPERCASE names are placeholders. This is a reference menu: choose the command for your current step instead of pasting a whole section. Long-running nodes, echo, hz, viewers and recorders each occupy a terminal until Ctrl+C.
+
+After lecture 00, fresh Ubuntu Bash terminals load ROS and the built workspace through `.bashrc`. The explicit source commands below are useful in an already-open terminal after a build or when checking an environment that was not configured that way.
 
 ## Environment and builds
 
@@ -19,6 +21,8 @@ colcon test-result --verbose
 ```
 
 Use --packages-up-to when dependencies may need rebuilding too. Keep environment settings consistent across terminals. Localhost-only ROS does not prevent the separate HTTPS server from listening on the laptop’s hotspot interface.
+
+`colcon test` only runs tests that packages actually register. A clean result with zero registered tests is not proof that nodes communicate correctly. Also collect the build, executable-discovery and live graph evidence from the lessons.
 
 ## Inspect the graph and its interfaces
 

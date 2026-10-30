@@ -16,15 +16,21 @@ Evidence: Draw the two machines and identify where each program runs.
 
 Model explanation: The laptop runs the updated ROS receiver with TLS and a session token. The APK needs its reachable /ws/android endpoint, certificate fingerprint and token. The optional mapper additionally needs its prepared engine and measured settings.
 
-## Think in nodes and messages
+## From a robot to the ROS graph
 
-1. Draw the phone-to-laptop data path and label the boundary where a WebSocket packet becomes a ROS message.
+1. Explain the sensing–processing–actuation loop for a robot of your choice, and place ROS and the OS in your design.
+
+Evidence: Draw labelled arrows and name one component ROS does not provide automatically.
+
+Model explanation: Identify a measurement, a decision, a motor command and the changed world being measured again. The OS manages hardware/processes; ROS libraries and tools support the user-space nodes exchanging those data.
+
+2. Draw the phone-to-laptop data path and label the boundary where a WebSocket packet becomes a ROS message.
 
 Evidence: Name the image topic and type.
 
 Model explanation: The Android app sends WSS packets to phone_bridge, which validates/decodes them and publishes typed ROS topics. The estimator subscribes through ROS.
 
-2. A topic is listed but its subscriber is silent. Describe your diagnosis in an order that can distinguish a naming problem from a QoS problem.
+3. A topic is listed but its subscriber is silent. Describe your diagnosis in an order that can distinguish a naming problem from a QoS problem.
 
 Evidence: Include one relevant CLI command for each stage.
 

@@ -10,7 +10,7 @@ ROS body frames conventionally use x forward, y left, z up. Android sensor axes 
 
 
 
-![Transform ownership and a point calculation: a positive 90-degree yaw rotates sensor x toward base y.](../assets/tf-tree.svg)
+![Positive 90-degree yaw rotates sensor x toward base y. The same physical point has different coordinates in the two frames.](../assets/learning-transform.svg)
 
 ## Transform a point, step by step
 

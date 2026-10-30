@@ -21,7 +21,7 @@ Expect area 12.0, valid true and an explanatory message. Repeat with a negative 
 
 **Extend:** add a separate perimeter service using a new .srv interface, build its generated types and consumers, then test a valid rectangle and an invalid dimension. Give it its own service name. Follow the official [Python service/client tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Service-And-Client.html) for a full implementation pattern.
 
-![Simulated service response and action feedback. The two interaction patterns expose different information to a client.](../assets/service-action.svg)
+![Interaction sequences compare continuous samples, a request/response and a goal with feedback and a final status.](../assets/learning-interactions.svg)
 
 ## Actions: trace goal, feedback, cancellation and result
 
@@ -55,7 +55,7 @@ ros2 bag record -o ~/phone-lab/walk01 \
 
 Stop the recorder with Ctrl+C so metadata is finalized. Run ros2 bag info and compare topic types, message counts and duration. Images may use substantial space, so start with a short run. Keep calibration files and a manifest beside the bag. Record physical TF topics too when your system has measured transforms that downstream consumers need.
 
-![Simulated bag inspection and replay checklist. Actual counts, duration and storage format come from your recording.](../assets/bag-terminal.svg)
+Expected `ros2 bag info` fields include Storage id, Duration, Messages and per-topic types/counts. These are observations from your recording; there is no required sample count to copy. A missing camera topic or zero image count is a recording failure to fix before replay.
 
 For replay, stop live publishers and restart relevant consumers with use_sim_time:=true. For example, append -p use_sim_time:=true to the optional mapper’s --ros-args parameters in lecture 5, keeping the same vocabulary and camera settings. Start a fresh engine so its internal map belongs to this run, then play:
 
@@ -70,7 +70,7 @@ Run the echo in another terminal if play occupies yours. --clock publishes recor
 
 Complete the Frames appendix’s demo_base/demo_sensor experiment. Use tf2_echo to inspect the transform and view_frames to inspect the tree. Calculate the transformed point before comparing with the interactive lesson. Explain who owns each edge and whether it should change over time.
 
-![A metric mobile-robot frame chain and worked point transform. Phone monocular coordinates require a separate scale and alignment step.](../assets/tf-tree.svg)
+![A sensor-frame point rotates and translates into base-frame coordinates; the physical point stays the same.](../assets/learning-transform.svg)
 
 Next read the [TF2 Python listener tutorial](https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Py.html). A buffer stores transform history; a listener fills it. lookup_transform(target, source, time) retrieves the mapping from source into target. For sensor processing, request the measurement timestamp and handle missing data or extrapolation. A latest lookup is useful for inspection, but a moving system’s current pose can differ from its pose when the sample was acquired.
 

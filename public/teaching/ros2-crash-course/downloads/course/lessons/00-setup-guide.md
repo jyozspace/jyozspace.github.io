@@ -10,17 +10,22 @@ You need basic Python variables, functions and classes. Robotics knowledge is no
 
 Allow 1–2 hours for setup and a separate capstone rehearsal. A laptop with 16 GB RAM and 30 GB free disk is comfortable. The project device is an Android 8.0+ phone with a rear camera and preferably accelerometer/gyroscope sensors. A native APK is supplied. The mapper uses camera images; unsupported motion sensors can be documented without blocking that part of the project.
 
-The website has two reading modes. **Self-study** shows the full guide with exercises and model explanations. **Lecture** shows one section at a time with presentation controls and a timer. Your progress, notes and written answers are saved in this browser; export them from Resources before changing computers. The interactive labs illustrate concepts, while commands marked Ubuntu · Bash run in your Linux terminal.
+The website has two reading modes. **Self-study** shows the full guide with exercises and model explanations. **Lecture** shows one section at a time with presentation controls and a timer. Your progress, notes and written answers are saved in this browser; export them from Resources before changing computers. The interactive labs illustrate concepts, while commands marked Ubuntu · Bash run in your Linux terminal. Dark panels with Copy contain commands; blue **EXPECTED OUTPUT · READ ONLY** panels contain results to compare, not commands to paste.
 
 ## Native Ubuntu or Windows with WSL
 
 Native Ubuntu and Ubuntu 24.04 inside WSL 2 can host the receiver. WSL adds a Windows-to-Ubuntu network boundary. [Annex F](../annexes/wsl-capstone.md) gives a USB route using Windows ADB and two Wi-Fi routes, with explicit checks at each boundary.
 
-For Windows, run in administrator PowerShell, restart when requested, and create a Linux account:
+For Windows, open **PowerShell as administrator** and install Ubuntu:
+
+```powershell
+wsl --install -d Ubuntu-24.04
+```
+
+Restart Windows if requested. Open **Ubuntu 24.04 LTS** from Start and complete its first-run Linux username/password prompts. Those credentials belong to Ubuntu. Once setup finishes, **return to Windows PowerShell** (open a new PowerShell tab if needed) for these checks:
 
 ```powershell
 wsl --update
-wsl --install -d Ubuntu-24.04
 wsl --version
 wsl -l -v
 ```
@@ -29,7 +34,14 @@ wsl -l -v
 
 If Ubuntu's VERSION column says 1, run `wsl --set-version Ubuntu-24.04 2` in PowerShell, wait for conversion, then check `wsl -l -v` again.
 
-![Simulated PowerShell checkpoint: WSL app 3.0.3 and Ubuntu-24.04 running with VERSION 2.](../assets/setup-wsl-versions.svg)
+**Expected output from `wsl -l -v` (example):**
+
+```output
+  NAME             STATE           VERSION
+* Ubuntu-24.04     Running         2
+```
+
+`Stopped` is also normal when Ubuntu is closed. Check the final column, not the running/stopped state.
 
 ### Open Ubuntu again after installation
 
@@ -43,7 +55,7 @@ The name is **Ubuntu-24.04**, including the hyphen and decimal point. If yours d
 
 Alternatively, open the Windows **Start menu**, search for **Ubuntu 24.04 LTS**, and open it. In Windows Terminal, you can also use the **down-arrow menu beside the + button → Ubuntu-24.04**, if that profile is listed. Each new Ubuntu tab/window is another terminal in the same Linux installation.
 
-![Simulated Windows launch options: PowerShell command, Start menu search and Windows Terminal profile.](../assets/setup-launch-ubuntu.svg)
+![Three distinct ways to reopen Ubuntu on Windows 11: a PowerShell command, Start search, or the Windows Terminal profile menu. AI-generated simulated interfaces; exact layout may differ.](../assets/setup-launch-windows.png)
 
 From now on, run the course's Bash commands **inside Ubuntu**, not PowerShell. An Ubuntu prompt typically looks like `student@laptop:~$`. Run `cd ~` to reach your Linux home directory. Store the workspace there, where Linux file permissions and build tools work consistently. We will test graphical apps below. Rehearse the WSL connection before class. Keep a reference bag or a prepared teaching laptop available if a student machine needs more setup time.
 
@@ -66,7 +78,7 @@ locale
 
 Check that `LANG` says `en_US.UTF-8`. When `sudo` asks for your Linux password, typing shows no characters; type it and press Enter. The `-y` option automatically answers yes to package-installation prompts; it does not bypass the password.
 
-![Simulated Ubuntu checkpoint: noble release and a UTF-8 locale.](../assets/setup-locale.svg)
+**Expected checks:** `lsb_release -cs` prints `noble`; `locale` includes `LANG=en_US.UTF-8`. Other locale lines may differ.
 
 ### Enable required repositories — before installing ROS
 
@@ -84,7 +96,7 @@ sudo apt update
 
 The `ros2-apt-source` package sets up the ROS repository and its signing keys for you. If a download or repository command fails, resolve that error before continuing. Check the official [Enable required repositories section](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html#enable-required-repositories) if the upstream setup changes.
 
-![Simulated repository checkpoint: Universe enabled, ros2-apt-source configured and ROS package catalogue fetched.](../assets/setup-repositories.svg)
+**Expected progress:** Universe is enabled; `dpkg` reports `Setting up ros2-apt-source`; `apt update` reads a ROS 2 package index for `noble` from `packages.ros.org`. These are checks to look for, not commands to type.
 
 Before installing, update Ubuntu's existing packages:
 
@@ -110,7 +122,7 @@ rosdep update
 
 Run rosdep init once only; if an existing configuration is reported, continue with update. Use the Ubuntu system Python that matches ROS. The base course does not require Gazebo, RTAB-Map or ORB-SLAM3 to be compiled. ORB-SLAM3 is a separately prepared optional backend for the final live demonstration, not an apt package supplied by this course.
 
-![Simulated installation checkpoint: desktop tools installed and rosdep update completed.](../assets/setup-install.svg)
+**Expected progress:** package installation finishes without an error, and `rosdep update` reports an updated cache under your home directory. Version numbers, download sizes and package counts vary.
 
 ## Use the terminal and source your environment
 
@@ -156,7 +168,14 @@ printenv ROS_DISTRO RMW_IMPLEMENTATION ROS_AUTOMATIC_DISCOVERY_RANGE ROS_DOMAIN_
 
 Expected, on separate lines: jazzy, rmw_fastrtps_cpp, LOCALHOST, 42. Open a fresh Ubuntu terminal and repeat the printenv check. After the first successful workspace build, source ~/ros2_ws/install/setup.bash in existing terminals; new interactive Bash terminals load it automatically. Keep optional SLAM overlays explicit, after the course overlay. If changing middleware or domain during diagnosis, stop lab nodes and run `ros2 daemon stop`, then reopen terminals with consistent settings. Jazzy warns that ROS_LOCALHOST_ONLY is deprecated. Unset that legacy variable and use ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST consistently; do not combine conflicting discovery profiles or DDS XML settings from another lab.
 
-![Simulated fresh-terminal check: .bashrc loads Jazzy and the shared discovery settings automatically.](../assets/setup-bashrc.svg)
+**Expected output in a fresh Ubuntu terminal:**
+
+```output
+jazzy
+rmw_fastrtps_cpp
+LOCALHOST
+42
+```
 
 ## Build and verify the supplied packages
 
@@ -177,7 +196,18 @@ test -f ~/ros2_ws/src/ros2_course_py/package.xml && echo "Package layout OK"
 
 Expect `ros2_course_bringup`, `ros2_course_cpp`, `ros2_course_interfaces` and `ros2_course_py` side by side. For example, `~/ros2_ws/src/ros2_course_py/package.xml` must exist. If `ls` cannot find the ZIP, finish moving it to home before unzipping. If you have an older download containing `ros/workspace/src`, download the updated ZIP from Resources to match these commands.
 
-![Simulated extraction checkpoint: ZIP in Ubuntu home and four package directories directly inside ros2_ws/src.](../assets/setup-extract.svg)
+**Expected package layout (directory names, not commands):**
+
+```output
+~/ros2_ws/src/
+  ros2_course_bringup/
+  ros2_course_cpp/
+  ros2_course_interfaces/
+  ros2_course_py/
+    package.xml
+```
+
+The final check prints `Package layout OK`.
 
 ### Build and check the result
 
@@ -191,7 +221,16 @@ ros2 pkg executables ros2_course_py
 
 Expected: four packages finish and the executable list includes talker, listener and phone_bridge. Resolve the first dependency/compiler error before continuing. Rebuild after changing interfaces, package metadata, Python entry points or C++ code. Symlink installation does not remove all rebuild requirements.
 
-![Simulated successful build: four packages finished and the course executables are listed.](../assets/setup-terminal.svg)
+**Expected build summary and selected executable-list lines:**
+
+```output
+Summary: 4 packages finished [your build duration]
+ros2_course_py listener
+ros2_course_py phone_bridge
+ros2_course_py talker
+```
+
+Other executable names may appear. The list above is an excerpt, not an exact transcript.
 
 ### GUI check: open RViz before the two-terminal test
 
@@ -203,7 +242,11 @@ rviz2
 
 A separate **RViz 3D window** should open. For a simple built-in view, expand **Global Options**, set **Fixed Frame** to `map`, and use **Add → By display type → rviz_default_plugins → Grid → OK** if Grid is not already listed. Expect a perspective grid you can rotate by dragging with the left mouse button. This is a display check; no robot or sensor is connected yet. A “Fixed Frame [map] does not exist” warning is expected without a running TF publisher; it does not by itself mean installation failed.
 
-![Simulated RViz window: Displays panel, map fixed frame and built-in Grid in the 3D view.](../assets/setup-rviz.svg)
+![Actual reference screenshot from the upstream RViz user guide: Displays on the left, a perspective Grid in the middle and Views on the right. Older interface styling; Jazzy controls may differ.](../assets/rviz-upstream-empty.png)
+
+Read the screen left to right: **Displays → Fixed Frame** controls the reference frame; the central grid is the rendered view; **Views → Orbit** controls how you look around. **Add** is at the bottom left. The orange warning in this reference is a missing TF frame, matching this empty-scene check.
+
+Image: [ROS RViz user guide, Jazzy source tree](https://github.com/ros2/rviz/blob/jazzy/rviz2/doc/empty-rviz.png), Willow Garage / RViz contributors, [Clear BSD license](https://github.com/ros2/rviz/blob/jazzy/LICENSE). Unmodified; license retained with the course assets.
 
 Close RViz to get your prompt back. If no window opens on WSL, check `echo "$DISPLAY"` inside Ubuntu. For a missing display or a window that fails to open, run `wsl --update` in PowerShell, then `wsl --shutdown` (this closes running WSL sessions), reopen Ubuntu and retry. Use Microsoft's [WSLg GUI-app guide](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps) if the problem persists. Do not continue past a failed build just because RViz opens: RViz is preinstalled software, while the four-package build checks your course workspace.
 
@@ -223,9 +266,16 @@ ros2 run demo_nodes_py listener
 
 Expected: Terminal A prints `Publishing` and Terminal B prints `I heard` with matching, increasing message numbers. Press **Ctrl+C in each terminal** to stop both nodes before starting the lecture exercises. If a new terminal cannot find ROS or the course packages, recheck the `.bashrc` block and the successful build above.
 
-![Simulated two-terminal test: Terminal A publishes while Terminal B receives matching messages.](../assets/setup-two-terminals.svg)
+**Expected message excerpts (timestamps omitted):**
 
-All screenshots in this lecture are **labelled simulations of expected screens**, not recordings of your machine. Log wording, timing and window appearance may differ.
+```output
+Terminal A: [talker] Publishing: 'Hello World: 1'
+Terminal B: [listener] I heard: [Hello World: 1]
+```
+
+The first number received can be larger than 1 because the listener starts later. Look for matching messages while both terminals run.
+
+**Read the panels carefully:** dark command panels include a Copy button. Blue panels labelled **EXPECTED OUTPUT · READ ONLY** show results to compare with your terminal; do not run them. In standalone Markdown notes, outputs are labelled explicitly. The Windows illustration is simulated; the RViz image is an attributed upstream reference, not a recording of your machine.
 
 ## Prepare the phone project before lecture five
 

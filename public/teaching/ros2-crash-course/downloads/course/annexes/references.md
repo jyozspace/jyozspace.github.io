@@ -53,4 +53,16 @@ The course target is Jazzy / Ubuntu 24.04. Use distribution-specific documentati
 
 ## After the crash course
 
+The course provides a foundation in communication, package development, inspection, configuration, geometry and sensor integration. It does not make one phone experiment a complete autonomous robot. Choose a next project based on the missing capability:
+
+| Next capability | Example use | What you need first | Primary reference |
+| --- | --- | --- | --- |
+| Hardware control | Read joint encoders and command a gripper | Hardware interfaces, limits and a tested stop path | [ros2_control Jazzy](https://control.ros.org/jazzy/doc/getting_started/getting_started.html) |
+| Manipulation | Plan an arm motion around an obstacle | Robot description, joint limits, collision geometry and controllers | [MoveIt 2](https://moveit.picknik.ai/main/index.html) (select documentation compatible with your ROS distribution) |
+| Controlled startup | Configure a camera before activating consumers | Node state transitions and supervisory logic | [Managed-node design](https://design.ros2.org/articles/node_lifecycle.html) |
+| Mobile navigation | Drive to a goal on a map | Metric localization, sensors, TF, controller and robot footprint | [Nav2 setup guides](https://docs.nav2.org/setup_guides/index.html) |
+| Robust delivery | Reproduce and diagnose a failing robot run | Recorded inputs, configuration/version manifests and meaningful tests | [rosbag2 Jazzy](https://github.com/ros2/rosbag2/tree/jazzy) |
+
+For each extension, identify its expected topics, types, units, timestamps and transforms before installation. This is the same contract-based reasoning used throughout the course. Illustrations and their reuse terms are documented in [Visual sources](visual-sources.md).
+
 Learn URDF/robot_state_publisher, lifecycle management, integration testing and deployment. Study [robot_localization](https://docs.ros.org/en/jazzy/p/robot_localization/) and [Nav2](https://docs.nav2.org/) after your metric sensor/TF contracts are established. Consult the [ROS/Gazebo compatibility table](https://gazebosim.org/docs/latest/ros_installation/) before adding simulation. Jazzy’s recommended modern pairing is Gazebo Harmonic. The simulator is an optional extension after the core course.

@@ -6,7 +6,7 @@ The native Android APK sends camera and motion data to the laptop receiver using
 
 The phone client reads sensors, records their time/frame meaning, encodes small images and manages a bounded send queue. The laptop’s phone_bridge validates packets, maps phone times to ROS time, decodes JPEGs and publishes messages. The optional phone_mono adapter feeds images into the external ORB-SLAM3 engine. Website hosting distributes instructions and software; the receiver and mapper run on each laptop.
 
-![Native phone and laptop pipeline. Android is the sensor source; ROS runs on the laptop.](../assets/native-pipeline.svg)
+![Camera and motion events cross WSS into the ROS receiver; camera data reaches the mapper while motion topics remain available for inspection and recording.](../assets/learning-phone-pipeline.svg)
 
 ## Qualify the Android capture mode
 

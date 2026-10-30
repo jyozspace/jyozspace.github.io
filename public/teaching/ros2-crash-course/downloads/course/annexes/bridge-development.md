@@ -13,7 +13,7 @@ In Resources, download the workspace or use the source-file selector. Read ros/w
 | RosSink | Decode JPEG and publish ROS messages | Owns ROS-specific dependencies and publishers |
 | main | Parse options, create TLS context and spin ROS | Connects the server and ROS executor lifetimes |
 
-![Phone-to-laptop flow diagram. The WebSocket receiver is the boundary where web packets become ROS messages.](../assets/native-pipeline.svg)
+![phone_bridge changes WebSocket packets into typed ROS measurements; the monocular mapper consumes camera data while separate IMU streams support inspection.](../assets/learning-phone-pipeline.svg)
 
 ## Follow one packet across the boundary
 
@@ -69,11 +69,11 @@ ros2 run image_view image_view --ros-args -r image:=/phone/camera/image_raw
 
 Expect your scene in image_view, plausible dimensions, and increasing received counts. With no calibration, K starts with zero. After restarting with --calibration, compare the dimensions and matrix with the measured YAML. A small received rate compared with the send target suggests you should inspect image size, network load and processing before adding SLAM.
 
-![Simulated sensor pairing and inspection checkpoint. Use a real phone scene in image_view and confirm the bridge node in ROS.](../assets/android-screen.svg)
+Confirm the app's camera mode/clock metadata against receiver diagnostics. Keep the measured dimensions and actual frame rate in your results.
 
 
 
-![Simulated image_view and received topic rate. Compare your own camera scene, dimensions and observed rate.](../assets/image-view.svg)
+Expected GUI result: your own camera scene updates in `image_view`. Briefly cover and uncover the lens to confirm the image is live. Check the `phone_bridge` node separately; a window alone does not identify which publisher supplied the image.
 
 ## Make one controlled change
 
