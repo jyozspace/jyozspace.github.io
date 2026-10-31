@@ -4,17 +4,17 @@ Written responses are self-assessed or reviewed by the instructor.
 
 ## Your robotics workbench
 
-1. Describe the underlay and overlay you source in a new terminal, including their order and why each is needed.
+1. Explain Linux home, the filesystem root and the Windows C: mount. Show how to open Linux home in Windows Explorer.
 
-Evidence: Include your executable-list output.
+Evidence: Include pwd output and identify a suitable path for ros2_ws.
 
-Model explanation: Source /opt/ros/jazzy/setup.bash for ROS, then ~/ros2_ws/install/setup.bash for built course packages. Explain that environment changes are per terminal.
+Model explanation: / is the root of the Linux directory tree; ~ expands to the current user’s home. /mnt/c exposes Windows C: under WSL. In Ubuntu, cd ~ then explorer.exe . opens Linux home in Explorer.
 
-2. Explain which laptop components and pairing information are needed after installing the Android APK.
+2. Explain what the turtle test proves and what the four-package build in lecture 02 will check separately.
 
-Evidence: Draw the two machines and identify where each program runs.
+Evidence: Include the observed node names and explain which terminal receives the arrow keys.
 
-Model explanation: The laptop runs the updated ROS receiver with TLS and a session token. The APK needs its reachable /ws/android endpoint, certificate fingerprint and token. The optional mapper additionally needs its prepared engine and measured settings.
+Model explanation: The test checks installed ROS tools, GUI support and keyboard-to-simulator communication. The later build checks supplied source layout, dependencies and package installation. New terminals load the Jazzy underlay through .bashrc; the course overlay exists only after a successful build.
 
 ## From a robot to the ROS graph
 

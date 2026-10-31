@@ -2,37 +2,53 @@
 
 ## Your robotics workbench
 
-1. A learner has Ubuntu 22.04 and wants to follow this guide’s ROS 2 Jazzy binary installation commands. Which environment matches the course?
+1. A learner is preparing a laptop for this course. Which environment matches the ROS 2 Jazzy installation commands?
 
-- A. Ubuntu 24.04 with ROS 2 Jazzy binaries
-- B. Ubuntu 22.04 with a renamed Jazzy installation directory
-- C. Ubuntu 24.04 with binaries from any ROS distribution
+- A. Ubuntu 24.04 with ROS 2 Jazzy
+- B. Ubuntu 22.04 with the installation directory renamed
+- C. Any Windows PowerShell tab without Ubuntu
 
-Answer: A. Jazzy’s Ubuntu binary target is Noble 24.04. Prepare that environment so the supported packages and course commands match.
+Answer: A. The course uses Ubuntu Noble 24.04, Bash and Jazzy together. Windows learners run these commands inside Ubuntu under WSL 2.
 
-2. The workspace built successfully yesterday. In a newly opened terminal ros2 cannot find ros2_course_py. What is the most direct next check?
+2. wsl --version reports app version 3.x, while wsl -l -v lists Ubuntu-24.04 with VERSION 2. What should you do?
 
-- A. Regenerate every interface without inspecting the environment
-- B. Source Jazzy and the workspace install/setup.bash in this terminal
-- C. Delete the source package and reinstall the phone app
+- A. Convert Ubuntu to VERSION 3
+- B. Continue: the app version and Ubuntu engine version are different numbers
+- C. Downgrade Ubuntu to VERSION 1
 
-Answer: B. The overlay must be in this terminal’s environment. The saved .bashrc block should source new Bash terminals; inspect it if the overlay is missing. Existing terminals need to load the newly built overlay.
+Answer: B. WSL app versions 2 or 3 are suitable here; Ubuntu must use the WSL 2 engine. The distro VERSION column should read 2.
 
-3. A student has installed the Android APK and configured adb reverse tcp:8443 tcp:8443 to a running laptop receiver. Which app address uses this wired USB route?
+3. Where should you keep the course workspace, and how can Windows Explorer open Linux home?
 
-- A. wss://127.0.0.1:8443/ws/android, with the receiver fingerprint and token
-- B. The public course website URL, because it hosts the APK download
-- C. The phone hotspot gateway address, without a receiver port or token
+- A. Keep it in ~/ros2_ws; run cd ~ then explorer.exe . inside Ubuntu
+- B. Keep it inside /opt/ros/jazzy and edit installed system files
+- C. Store it inside WSL’s internal virtual disk by opening the disk file directly
 
-Answer: A. ADB reverse forwards the phone localhost port over USB to the host receiver. The same APK uses the laptop hotspot address for wireless; both routes retain certificate pinning and the session token.
+Answer: A. Linux home is a suitable place for source and builds. explorer.exe . opens the current Linux directory through the supported WSL file-sharing path. Windows C: is available separately under /mnt/c.
 
-4. A class wants the phone-camera project to show a 3D reconstruction. Which pre-class preparation is required beyond installing the Android APK?
+4. A Linux ROS driver needs a USB sensor currently connected to Windows. What is the appropriate next route?
 
-- A. A qualified backend, matching measured calibration, trusted network path and a rehearsed reference run
-- B. Only installation of the APK, with no laptop receiver or calibration
-- C. An arbitrary CameraInfo matrix copied from a different phone
+- A. Rename a topic to make the USB device appear
+- B. Use usbipd-win to share and attach the selected device, then check Linux visibility and driver support
+- C. Copy the device name into ~/ros2_ws/src
 
-Answer: A. The Android app transports measurements over USB or wireless. Calibration and a working SLAM engine are separate required dependencies.
+Answer: B. USB attachment and ROS communication are separate. usbipd-win exposes the selected device to WSL; Linux still needs a compatible driver and permissions. The Android ADB connection follows its own appendix.
+
+5. The turtle window opens, but arrow keys do nothing while that window is focused. What should you try first?
+
+- A. Focus the Ubuntu terminal running turtle_teleop_key and press arrows there
+- B. Rebuild all four supplied packages before using turtlesim
+- C. Run the Ubuntu commands in administrator PowerShell
+
+Answer: A. The keyboard node reads keys in its own interactive terminal. Turtlesim is installed with the desktop tools and needs no course workspace build.
+
+6. A fresh Ubuntu Bash terminal cannot find ros2 after installation. Which check is most useful?
+
+- A. Inspect the saved .bashrc block and whether /opt/ros/jazzy/setup.bash is loaded
+- B. Extract the course ZIP into Windows System32
+- C. Change the phone camera calibration
+
+Answer: A. ROS commands require the Jazzy underlay in that shell. The saved .bashrc block loads it for fresh interactive Bash terminals; the optional overlay is added after the lecture 02 build.
 
 ## From a robot to the ROS graph
 

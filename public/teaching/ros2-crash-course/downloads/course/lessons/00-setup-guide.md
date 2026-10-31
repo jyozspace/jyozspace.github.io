@@ -12,7 +12,20 @@ Allow 1–2 hours for setup and a separate capstone rehearsal. A laptop with 16 
 
 The website has two reading modes. **Self-study** shows the full guide with exercises and model explanations. **Lecture** shows one section at a time with presentation controls and a timer. Your progress, notes and written answers are saved in this browser; export them from Resources before changing computers. The interactive labs illustrate concepts, while commands marked Ubuntu · Bash run in your Linux terminal. Dark panels with Copy contain commands; blue **EXPECTED OUTPUT · READ ONLY** panels contain results to compare, not commands to paste.
 
-## Native Ubuntu or Windows with WSL
+## Linux, Windows and Mac: choose a course environment
+
+**The instructor is using Windows 11 with Ubuntu 24.04 in WSL 2.** Run our ROS commands in an **Ubuntu Bash terminal**. Windows Terminal is the window hosting a shell; its PowerShell and Ubuntu tabs are different environments.
+
+| Computer | Practical course route | What to know |
+| --- | --- | --- |
+| Ubuntu Linux | Native Ubuntu 24.04 and Jazzy binaries | Direct match for our `apt`, Bash and workspace commands |
+| Windows 11 | Ubuntu 24.04 under WSL 2, following lecture 00 | Windows remains available; WSLg presents Linux GUI windows on the desktop |
+| Native Windows ROS | Separate official Windows installation | Supported ROS route, but paths, shells and dependencies differ from this course |
+| macOS | Prepared Ubuntu 24.04 VM or remote Ubuntu machine | Native Jazzy macOS is Tier 3/source-based in REP 2000; GUI, architecture and packages need separate preparation |
+
+Do not assume an Ubuntu install command works in PowerShell or a macOS terminal. Check CPU architecture when selecting a VM image; Apple Silicon and Intel Macs need different choices. Official tiers cover specific OS/architecture combinations, not every package in the ecosystem. See [REP 2000: Jazzy platforms](https://reps.openrobotics.org/rep-2000/#jazzy-jalisco-may-2024-may-2029) and the [installation overview](https://docs.ros.org/en/jazzy/Installation.html).
+
+## Install Ubuntu on Windows with WSL
 
 Native Ubuntu and Ubuntu 24.04 inside WSL 2 can host the receiver. WSL adds a Windows-to-Ubuntu network boundary. [Annex F](../annexes/wsl-capstone.md) gives a USB route using Windows ADB and two Wi-Fi routes, with explicit checks at each boundary.
 
@@ -58,6 +71,112 @@ Alternatively, open the Windows **Start menu**, search for **Ubuntu 24.04 LTS**,
 ![Three distinct ways to reopen Ubuntu on Windows 11: a PowerShell command, Start search, or the Windows Terminal profile menu. AI-generated simulated interfaces; exact layout may differ.](../assets/setup-launch-windows.png)
 
 From now on, run the course's Bash commands **inside Ubuntu**, not PowerShell. An Ubuntu prompt typically looks like `student@laptop:~$`. Run `cd ~` to reach your Linux home directory. Store the workspace there, where Linux file permissions and build tools work consistently. We will test graphical apps below. Rehearse the WSL connection before class. Keep a reference bag or a prepared teaching laptop available if a student machine needs more setup time.
+
+## Three Windows–Linux boundaries to recognize
+
+Files, USB devices and networking cross different WSL boundaries. Solving one does not solve the others.
+
+| Boundary | Mental model | Course consequence | Detailed guide |
+| --- | --- | --- | --- |
+| Files | Windows drives appear under `/mnt`; Linux has its own home | Build in `~/ros2_ws`; `explorer.exe .` opens the current Ubuntu folder in Windows Explorer | [Files and editing](../annexes/wsl-files.md) |
+| USB | A device attached to Windows is not automatically owned by Linux | Some sensors need `usbipd-win` attachment and a Linux driver; the phone's Windows ADB route is different | [USB sensors](../annexes/wsl-usb.md) |
+| Networking | A virtual network boundary can affect incoming traffic; TCP and DDS have different needs | Keep ROS local for the labs; the phone reaches one receiver over WSS | [Networking](../annexes/wsl-networking.md) |
+
+Keep every lab node in the same Ubuntu installation with the settings saved below. The phone does not run ROS or join DDS discovery. It sends WebSocket packets to `phone_bridge`, which turns validated measurements into ROS messages. [Annex F](../annexes/wsl-capstone.md) applies these boundaries to the capstone.
+
+### Access files in both directions
+
+**Open Linux files from Windows:** run `cd ~` followed by `explorer.exe .` in Ubuntu to open your Linux home in Windows File Explorer. You can also enter `\\wsl.localhost\Ubuntu-24.04\home` in Explorer's address bar and open your Linux username folder. Use the exact distribution name shown by `wsl -l -v`.
+
+**Open Windows files from Ubuntu:** your Windows C: drive is mounted at `/mnt/c`. For example, `cd "/mnt/c/Users/YOUR_WINDOWS_NAME/Downloads"` accesses Windows Downloads; replace the username. Copy downloads into Linux home before building. Keep ROS source in `~/ros2_ws/src`, and use Explorer's supported WSL path rather than locating WSL's internal virtual disk. See [Files and editing](../annexes/wsl-files.md) for examples and permissions.
+
+### Forward a USB sensor with usbipd-win
+
+For a Linux ROS driver to read a USB sensor, install **usbipd-win on Windows**, identify the device with `usbipd list`, share its BUSID using `usbipd bind` in administrator PowerShell, then attach it using `usbipd attach --wsl` in normal PowerShell. Keep Ubuntu open and check the device with `lsusb` inside Ubuntu. The selected device is unavailable to Windows while attached; a compatible Linux driver and permissions are still needed. Follow [the USB appendix](../annexes/wsl-usb.md) for installation, exact commands, verification and detaching. This workflow follows [Microsoft's USB guide](https://learn.microsoft.com/en-us/windows/wsl/connect-usb).
+
+The phone project's Windows ADB route forwards a connection instead of attaching the phone to Linux. Use [Annex F](../annexes/wsl-capstone.md) for that route. Networking has its own boundary: copying files or attaching USB does not expose a server to another computer; see [the networking appendix](../annexes/wsl-networking.md).
+
+## Linux file system tree
+
+Linux presents one directory tree rooted at `/`. A folder is also called a directory. Your home is your personal working area; it is different from `/root`, the administrator's home. The tree below is a simplified map, not output to copy.
+
+```output
+/
+  home/
+    student/           ~ for a user named student
+      ros2_ws/         course workspace, created later
+        src/           package source, added in lecture 02
+  opt/ros/jazzy/       installed ROS files, after installation
+  etc/                 system configuration
+  usr/                 installed programs and libraries
+  var/                 changing system data, including logs
+  tmp/                 temporary files
+  dev/                 device interfaces
+  mnt/c/               Windows C: drive under WSL
+```
+
+`/home/student/ros2_ws` is an absolute path; `ros2_ws` is relative to your current directory. `~` means your own home, so commands using it work even if your username is not `student`. Folder names and filenames are case-sensitive. `/opt/ros/jazzy` is managed by the system package installer; edit your own source under home instead. On native Ubuntu, Windows drives are not automatically available at `/mnt/c`.
+
+## Linux terminal crash course
+
+The **terminal** displays input/output; the **shell**, Bash here, interprets commands. A prompt such as `student@laptop:~$` indicates readiness; do not type it. Commands below run in Ubuntu. Expected-output blocks are labelled separately and are not commands to paste.
+
+These original drills use the practice-and-explain approach of Zed Shaw's [Command Line Crash Course](https://learnpythonthehardway.org/python3/appendix-a-cli/introduction.html): type a short exercise, record questions, and repeat until you can explain each part. They are not copied exercises. The [GNU Bash manual](https://www.gnu.org/software/bash/manual/bash.html) is the shell-syntax reference.
+
+### Linux basic commands
+
+| Command/key | Meaning | ROS use |
+| --- | --- | --- |
+| `pwd`, `ls`, `ls -la` | Current directory; files; hidden files/details | Find the workspace and `.bashrc` |
+| `cd ~`, `cd ..`, `cd DIRECTORY` | Home; parent; named directory | Navigate |
+| `mkdir -p PATH` | Create directories and missing parents | Prepare `~/ros2_ws/src` |
+| `cat FILE`, `less FILE` | Print a file; browse it (`q` quits less) | Read manifests/logs |
+| `cp -i A B`, `mv -i A B` | Copy; move/rename, asking before overwrite | Keep configuration backups |
+| `grep PATTERN FILE`, `find DIR -name NAME` | Search contents; locate files | Find a package/error |
+| `COMMAND --help`, `man COMMAND` | Read help (`q` exits man) | Discover flags |
+| Tab, ↑, Ctrl+C | Complete, recall, interrupt foreground program | Avoid spelling errors; stop nodes |
+| `echo "$NAME"`, `source FILE` | Inspect a variable; run a file in this shell | Check/load the ROS environment |
+
+An **absolute path** starts at `/`, the filesystem root. A **relative path** starts at your current directory. `~` expands to home, `.` means here and `..` means the parent. Linux names are case-sensitive. Quote paths containing spaces. `/turtle1/pose` looks like a file path, but it is a ROS graph name; listing files will not reveal it.
+
+### Shell practice: a lab notebook
+
+Run one line at a time. `mktemp -d` makes a fresh practice directory so rerunning the drill does not replace an old notebook.
+
+```bash
+practice_dir=$(mktemp -d "$HOME/ros-cli-practice.XXXXXX")
+cd "$practice_dir"
+pwd
+mkdir notes
+printf 'camera\nmotor\ncamera\n' > notes/components.txt
+cat notes/components.txt
+grep -n camera notes/components.txt
+cp -i notes/components.txt notes/components-backup.txt
+ls notes
+```
+
+**Expected output from `grep -n camera notes/components.txt`:**
+
+```output
+1:camera
+3:camera
+```
+
+The numbers identify lines. `>` writes output to a file, replacing previous contents; `>>` appends. Here the file is in a new practice directory. A pipe, `|`, sends one program's output to the next:
+
+```bash
+grep camera notes/components.txt | wc -l
+```
+
+**Expected output:**
+
+```output
+2
+```
+
+Explain the two matches before continuing. `sudo` runs a command with elevated privileges: use it for installation steps, not ordinary `colcon build`. `rm` deletes without using desktop Trash; practice only with a named expendable file and `rm -i`. You do not need to delete this practice directory.
+
+**More shell practice:** rename the backup with `mv -i`, locate it with `find . -name '*backup*'`, and browse `ls --help` with `less`. Quotes let `find`, rather than the shell, interpret `*backup*`. After installing and sourcing ROS below, check `echo "$ROS_DISTRO"`: expect `jazzy`. Return to Linux home with `cd ~`. The ROS environment check works after the installation and sourcing steps below.
 
 ## Install the correct ROS distribution
 
@@ -126,7 +245,7 @@ Run rosdep init once only; if an existing configuration is reported, continue wi
 
 ## Use the terminal and source your environment
 
-`pwd` prints your current directory; `ls` lists files; `cd` changes directory; `mkdir -p` creates a directory and missing parents. Tab completes paths, the up arrow recalls a command, and Ctrl+C stops a foreground program. A terminal running a node is busy; open another terminal for inspection commands.
+A terminal running a node is busy; open another terminal for inspection commands. The command table above is your reference for navigation and stopping programs.
 
 The ROS installation is your **underlay**. Your built workspace supplies an **overlay** containing your own packages. Source the underlay in every terminal, then the overlay after a successful build. Keep ROS discovery local while the phone uses a WebSocket connection to just one ROS receiver:
 
@@ -177,62 +296,9 @@ LOCALHOST
 42
 ```
 
-## Build and verify the supplied packages
+## Verify graphical applications
 
-### Download to home, then extract into src
-
-Download **ros2-course-code.zip** from Resources and save it in your **Ubuntu home directory** (`~`), before extracting. To reach that directory from Windows File Explorer, run `cd ~` then `explorer.exe .` inside Ubuntu and move the downloaded ZIP into the folder that opens. On native Ubuntu, use Files → Home. If your browser saved it in Windows Downloads, move it to Ubuntu home first.
-
-The ZIP now contains the **four package directories directly at its top level**. Extract them into `~/ros2_ws/src`, then check the layout:
-
-```bash
-cd ~
-ls ros2-course-code.zip
-mkdir -p ~/ros2_ws/src
-unzip ~/ros2-course-code.zip -d ~/ros2_ws/src
-ls ~/ros2_ws/src
-test -f ~/ros2_ws/src/ros2_course_py/package.xml && echo "Package layout OK"
-```
-
-Expect `ros2_course_bringup`, `ros2_course_cpp`, `ros2_course_interfaces` and `ros2_course_py` side by side. For example, `~/ros2_ws/src/ros2_course_py/package.xml` must exist. If `ls` cannot find the ZIP, finish moving it to home before unzipping. If you have an older download containing `ros/workspace/src`, download the updated ZIP from Resources to match these commands.
-
-**Expected package layout (directory names, not commands):**
-
-```output
-~/ros2_ws/src/
-  ros2_course_bringup/
-  ros2_course_cpp/
-  ros2_course_interfaces/
-  ros2_course_py/
-    package.xml
-```
-
-The final check prints `Package layout OK`.
-
-### Build and check the result
-
-```bash
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-colcon build --symlink-install
-source install/setup.bash
-ros2 pkg executables ros2_course_py
-```
-
-Expected: four packages finish and the executable list includes talker, listener and phone_bridge. Resolve the first dependency/compiler error before continuing. Rebuild after changing interfaces, package metadata, Python entry points or C++ code. Symlink installation does not remove all rebuild requirements.
-
-**Expected build summary and selected executable-list lines:**
-
-```output
-Summary: 4 packages finished [your build duration]
-ros2_course_py listener
-ros2_course_py phone_bridge
-ros2_course_py talker
-```
-
-Other executable names may appear. The list above is an excerpt, not an exact transcript.
-
-### GUI check: open RViz before the two-terminal test
+### Open RViz
 
 In the same Ubuntu terminal, run:
 
@@ -248,34 +314,57 @@ Read the screen left to right: **Displays → Fixed Frame** controls the referen
 
 Image: [ROS RViz user guide, Jazzy source tree](https://github.com/ros2/rviz/blob/jazzy/rviz2/doc/empty-rviz.png), Willow Garage / RViz contributors, [Clear BSD license](https://github.com/ros2/rviz/blob/jazzy/LICENSE). Unmodified; license retained with the course assets.
 
-Close RViz to get your prompt back. If no window opens on WSL, check `echo "$DISPLAY"` inside Ubuntu. For a missing display or a window that fails to open, run `wsl --update` in PowerShell, then `wsl --shutdown` (this closes running WSL sessions), reopen Ubuntu and retry. Use Microsoft's [WSLg GUI-app guide](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps) if the problem persists. Do not continue past a failed build just because RViz opens: RViz is preinstalled software, while the four-package build checks your course workspace.
+Close RViz to get your prompt back. If no window opens on WSL, check `echo "$DISPLAY"` inside Ubuntu. For a missing display or a window that fails to open, run `wsl --update` in PowerShell, then `wsl --shutdown` (this closes running WSL sessions), reopen Ubuntu and retry. Use Microsoft's [WSLg GUI-app guide](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps) if the problem persists. RViz checks the installed desktop tools and graphics. You will build your own course workspace in [lecture 02](02-lecture2-python-nodes.md).
 
-### Two-terminal communication check
+## Bring a turtle to life
 
-Open **Terminal A — a new, separate Ubuntu terminal/tab**, and run the command below. **Because we already saved the source commands in `.bashrc`, a new Ubuntu Bash terminal loads both ROS and the built workspace automatically. You do not need to separately run `source /opt/ros/jazzy/setup.bash` or `source ~/ros2_ws/install/setup.bash` here.** The explicit source after the first build above was needed only to update that already-open build terminal.
+Turtlesim is a small simulator for learning ROS. It lets us inspect commands and state without a motor driver. We already saved the ROS source command in `.bashrc`: new Ubuntu Bash terminals load it automatically. You do not need to repeat it for this test. No course workspace build is required.
 
-```bash
-ros2 run demo_nodes_cpp talker
-```
-
-Leave Terminal A running. Open **Terminal B — another separate Ubuntu terminal/tab** with the same saved environment, and run:
+Open **Terminal A — a new Ubuntu terminal/tab**:
 
 ```bash
-ros2 run demo_nodes_py listener
+ros2 run turtlesim turtlesim_node
 ```
 
-Expected: Terminal A prints `Publishing` and Terminal B prints `I heard` with matching, increasing message numbers. Press **Ctrl+C in each terminal** to stop both nodes before starting the lecture exercises. If a new terminal cannot find ROS or the course packages, recheck the `.bashrc` block and the successful build above.
+Read this as `ros2 run PACKAGE EXECUTABLE`. Leave it running; a turtle window should appear.
 
-**Expected message excerpts (timestamps omitted):**
+Open **Terminal B — another Ubuntu terminal/tab**:
+
+```bash
+ros2 run turtlesim turtle_teleop_key
+```
+
+Keep **Terminal B focused**, then press arrow keys. The turtle moves: the keyboard node publishes commands; the simulator subscribes and updates its state. Clicking the turtle window will not direct input to teleop. Use a normal interactive terminal; a piped/background command without a TTY can fail with `Failed to get old console mode`.
+
+Open **Terminal C — a third Ubuntu terminal/tab**:
+
+```bash
+ros2 node list
+ros2 node info /turtlesim
+ros2 topic list -t
+ros2 topic info /turtle1/cmd_vel --verbose
+ros2 topic echo /turtle1/pose --once
+rqt_graph
+```
+
+**Expected core node names from `ros2 node list`:** tool nodes may also appear.
 
 ```output
-Terminal A: [talker] Publishing: 'Hello World: 1'
-Terminal B: [listener] I heard: [Hello World: 1]
+/teleop_turtle
+/turtlesim
 ```
 
-The first number received can be larger than 1 because the listener starts later. Look for matching messages while both terminals run.
+`node info` describes one participant. `topic list -t` shows names/types. `topic info --verbose` shows endpoints/QoS. `echo --once` receives a sample and exits. Pose contains `x`, `y`, `theta`, `linear_velocity` and `angular_velocity`; values depend on your motion. `rqt_graph` opens a graph viewer; close it to regain the prompt. Its filters can hide connections, so compare it with CLI evidence.
 
-**Read the panels carefully:** dark command panels include a Copy button. Blue panels labelled **EXPECTED OUTPUT · READ ONLY** show results to compare with your terminal; do not run them. In standalone Markdown notes, outputs are labelled explicitly. The Windows illustration is simulated; the RViz image is an attributed upstream reference, not a recording of your machine.
+![Conceptual turtlesim graph: keyboard velocity commands enter the simulator, while pose feedback travels to inspection tools.](../assets/lecture01-turtle-flow.svg)
+
+**Read both paths:** commands go from teleop to turtlesim; pose goes from turtlesim to inspection tools. Manual teleop does not need pose input. An automatic controller would subscribe to pose and calculate commands, closing a feedback loop. This is a conceptual diagram, not a captured run; compare it with your live graph. [Turtlesim tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html).
+
+Stop the simulator and teleop with **Ctrl+C in Terminals A and B** when finished. Lecture 01 explains the graph you just observed. Reopen them there for the motion and interface experiments.
+
+## Setup checkpoint
+
+Before continuing, confirm Ubuntu reports `noble`, `echo "$ROS_DISTRO"` reports `jazzy` in a fresh terminal, RViz opens, and arrow keys in the teleop terminal move the turtle. Explain where your Linux home is and how it differs from Windows Downloads. The supplied package download and build now happen in [lecture 02](02-lecture2-python-nodes.md).
 
 ## Prepare the phone project before lecture five
 
@@ -285,4 +374,4 @@ Install the supplied classroom test APK on Android. Pair using the receiver’s 
 
 For mapping, prepare the optional ORB-SLAM3 backend, measure camera calibration in the exact transmitted image mode and rehearse initialization. The baseline result is a sparse monocular reconstruction with arbitrary scale. Native inertial streams are available for inspection and further development. Supply a consented, qualified reference bag and matching calibration for learners whose phone cannot complete the live exercise.
 
-Official references: [Jazzy installation](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html), [Android Camera2](https://developer.android.com/media/camera/camera2), [WSL networking](https://learn.microsoft.com/en-us/windows/wsl/networking), and [WSLg](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps).
+Official references: [Jazzy installation](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html), [Android Camera2](https://developer.android.com/media/camera/camera2), [WSL networking](https://learn.microsoft.com/en-us/windows/wsl/networking), and [WSLg](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps). Content reorganized and setup checkpoints reviewed 1 November 2026.

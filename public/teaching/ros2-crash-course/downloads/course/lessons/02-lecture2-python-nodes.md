@@ -8,7 +8,62 @@ In lecture 1 you connected existing programs. Now imagine replacing the keyboard
 
 You need Python functions, classes, imports and indentation. A class bundles state and functions: here `self.count` remembers the count between calls, and `tick` is a method operating on that state. `Hello(Node)` inherits ROS behavior; `super().__init__('hello')` initializes the ROS node with its graph name. You do not need to implement networking yourself.
 
-**90-minute route:** workspace 10 min; publisher 20; matching subscriber 15; packaging 15; custom-interface inspection 10; practice 20. The interface-edit homework is a second pass, not a prerequisite for the first working pair. Open fresh Ubuntu Bash terminals after lecture 00; its `.bashrc` block loads the environment. After a build, source the updated overlay in terminals that were already open.
+Open fresh Ubuntu Bash terminals after lecture 00; its `.bashrc` block loads the environment. After a build, source the updated overlay in terminals that were already open.
+
+## Build and verify the supplied packages
+
+### Download to home, then extract into src
+
+Download **ros2-course-code.zip** from Resources and save it in your **Ubuntu home directory** (`~`), before extracting. To reach that directory from Windows File Explorer, run `cd ~` then `explorer.exe .` inside Ubuntu and move the downloaded ZIP into the folder that opens. On native Ubuntu, use Files → Home. If your browser saved it in Windows Downloads, move it to Ubuntu home first.
+
+The ZIP now contains the **four package directories directly at its top level**. Extract them into `~/ros2_ws/src`, then check the layout:
+
+```bash
+cd ~
+ls ros2-course-code.zip
+mkdir -p ~/ros2_ws/src
+unzip ~/ros2-course-code.zip -d ~/ros2_ws/src
+ls ~/ros2_ws/src
+test -f ~/ros2_ws/src/ros2_course_py/package.xml && echo "Package layout OK"
+```
+
+Expect `ros2_course_bringup`, `ros2_course_cpp`, `ros2_course_interfaces` and `ros2_course_py` side by side. For example, `~/ros2_ws/src/ros2_course_py/package.xml` must exist. If `ls` cannot find the ZIP, finish moving it to home before unzipping. If you have an older download containing `ros/workspace/src`, download the updated ZIP from Resources to match these commands.
+
+**Expected package layout (directory names, not commands):**
+
+```output
+~/ros2_ws/src/
+  ros2_course_bringup/
+  ros2_course_cpp/
+  ros2_course_interfaces/
+  ros2_course_py/
+    package.xml
+```
+
+The final check prints `Package layout OK`.
+
+### Build and check the result
+
+```bash
+cd ~/ros2_ws
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install
+source install/setup.bash
+ros2 pkg executables ros2_course_py
+```
+
+Expected: four packages finish and the executable list includes talker, listener and phone_bridge. Resolve the first dependency/compiler error before continuing. Rebuild after changing interfaces, package metadata, Python entry points or C++ code. Symlink installation does not remove all rebuild requirements.
+
+**Expected build summary and selected executable-list lines:**
+
+```output
+Summary: 4 packages finished [your build duration]
+ros2_course_py listener
+ros2_course_py phone_bridge
+ros2_course_py talker
+```
+
+Other executable names may appear. The list above is an excerpt, not an exact transcript.
 
 ## Understand the workspace
 

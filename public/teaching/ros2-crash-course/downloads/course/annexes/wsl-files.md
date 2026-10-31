@@ -41,7 +41,7 @@ unzip ~/ros2-course-code.zip -d ~/ros2_ws/src
 ls ~/ros2_ws/src
 ```
 
-Expect four package directories: `ros2_course_bringup`, `ros2_course_cpp`, `ros2_course_interfaces` and `ros2_course_py`. Continue with [lecture 00's dependency and build commands](../lessons/00-setup-guide.md). Moving a ZIP into home alone does not build its contents.
+Expect four package directories: `ros2_course_bringup`, `ros2_course_cpp`, `ros2_course_interfaces` and `ros2_course_py`. Continue with [lecture 02's dependency and build commands](../lessons/02-lecture2-python-nodes.md). Moving a ZIP into home alone does not build its contents.
 
 ## Copy a file from either side
 

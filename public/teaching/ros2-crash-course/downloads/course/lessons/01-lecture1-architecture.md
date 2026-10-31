@@ -104,31 +104,6 @@ Distributed discovery removes the need for a ROS 1-style master; it does not eli
 
 References: [managed nodes](https://design.ros2.org/articles/node_lifecycle.html), [ROS security](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Security.html), [micro-ROS](https://micro.ros.org/), and [ros1_bridge](https://github.com/ros2/ros1_bridge). The [official feature-status catalogue](https://docs.ros.org/en/rolling/The-ROS2-Project/Features.html) provides a wider inventory; Rolling is evolving, so verify features against Jazzy before using them here.
 
-## Linux, Windows and Mac: choose a course environment
-
-**The instructor is using Windows 11 with Ubuntu 24.04 in WSL 2.** Run our ROS commands in an **Ubuntu Bash terminal**. Windows Terminal is the window hosting a shell; its PowerShell and Ubuntu tabs are different environments.
-
-| Computer | Practical course route | What to know |
-| --- | --- | --- |
-| Ubuntu Linux | Native Ubuntu 24.04 and Jazzy binaries | Direct match for our `apt`, Bash and workspace commands |
-| Windows 11 | Ubuntu 24.04 under WSL 2, following lecture 00 | Windows remains available; WSLg presents Linux GUI windows on the desktop |
-| Native Windows ROS | Separate official Windows installation | Supported ROS route, but paths, shells and dependencies differ from this course |
-| macOS | Prepared Ubuntu 24.04 VM or remote Ubuntu machine | Native Jazzy macOS is Tier 3/source-based in REP 2000; GUI, architecture and packages need separate preparation |
-
-Do not assume an Ubuntu install command works in PowerShell or a macOS terminal. Check CPU architecture when selecting a VM image; Apple Silicon and Intel Macs need different choices. Official tiers cover specific OS/architecture combinations, not every package in the ecosystem. See [REP 2000: Jazzy platforms](https://reps.openrobotics.org/rep-2000/#jazzy-jalisco-may-2024-may-2029) and the [installation overview](https://docs.ros.org/en/jazzy/Installation.html).
-
-## Three Windows–Linux boundaries to recognize
-
-Files, USB devices and networking cross different WSL boundaries. Solving one does not solve the others.
-
-| Boundary | Mental model | Course consequence | Detailed guide |
-| --- | --- | --- | --- |
-| Files | Windows drives appear under `/mnt`; Linux has its own home | Build in `~/ros2_ws`; `explorer.exe .` opens the current Ubuntu folder in Windows Explorer | [Files and editing](../annexes/wsl-files.md) |
-| USB | A device attached to Windows is not automatically owned by Linux | Some sensors need `usbipd-win` attachment and a Linux driver; the phone's Windows ADB route is different | [USB sensors](../annexes/wsl-usb.md) |
-| Networking | A virtual network boundary can affect incoming traffic; TCP and DDS have different needs | Keep ROS local for the labs; the phone reaches one receiver over WSS | [Networking](../annexes/wsl-networking.md) |
-
-Keep every lab node in the same Ubuntu installation with lecture 00's settings. The phone does not run ROS or join DDS discovery. It sends WebSocket packets to `phone_bridge`, which turns validated measurements into ROS messages. [Annex F](../annexes/wsl-capstone.md) applies these boundaries to the capstone.
-
 ## A small vocabulary for a large system
 
 An **executable** is a program you can start; a running program is an OS **process**. A ROS **node** is a named participant with a focused responsibility. One process can host one or several nodes. A **package** groups code, interfaces or configuration files. A **workspace** is where related packages are built. These are different things: package `turtlesim` supplies executable `turtlesim_node`, which normally creates node `/turtlesim`.
@@ -170,7 +145,7 @@ Once running, a **node** owns its communication endpoints and settings. The **to
 | Operation | Concrete example | Meaning |
 | --- | --- | --- |
 | Run | `ros2 run turtlesim turtlesim_node` | Start the simulator executable |
-| Launch | `ros2 launch ros2_course_bringup pubsub_demo.launch.py` | Start the supplied talker/listener system; explored in lecture 4 |
+| Launch | `ros2 launch ros2_course_bringup pubsub_demo.launch.py` | Start the supplied talker/listener system after the lecture 02 build; explored in lecture 4 |
 | Inspect nodes | `ros2 node list` | Discover named running participants |
 | Inspect a stream | `ros2 topic info /turtle1/pose` | Inspect the topic type and endpoint counts |
 | Inspect one setting | `ros2 param get /turtlesim background_r` | Read a parameter owned by the simulator |
@@ -193,110 +168,9 @@ Our `.bashrc` limits discovery to `LOCALHOST` and uses `ROS_DOMAIN_ID=42`: all c
 
 A best-effort publisher cannot satisfy a subscription requiring reliable delivery. A reliable publisher can satisfy a best-effort subscription if other policies match. A topic can therefore be visible but silent. Lecture 3 tests this; for now, inspect endpoints using `ros2 topic info TOPIC --verbose`. [Jazzy QoS guide](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html).
 
-## Linux terminal crash course
-
-The **terminal** displays input/output; the **shell**, Bash here, interprets commands. A prompt such as `student@laptop:~$` indicates readiness; do not type it. Commands below run in Ubuntu. Expected-output blocks are labelled separately and are not commands to paste.
-
-These original drills use the practice-and-explain approach of Zed Shaw's [Command Line Crash Course](https://learnpythonthehardway.org/python3/appendix-a-cli/introduction.html): type a short exercise, record questions, and repeat until you can explain each part. They are not copied exercises. The [GNU Bash manual](https://www.gnu.org/software/bash/manual/bash.html) is the shell-syntax reference.
-
-| Command/key | Meaning | ROS use |
-| --- | --- | --- |
-| `pwd`, `ls`, `ls -la` | Current directory; files; hidden files/details | Find the workspace and `.bashrc` |
-| `cd ~`, `cd ..`, `cd DIRECTORY` | Home; parent; named directory | Navigate |
-| `mkdir -p PATH` | Create directories and missing parents | Prepare `~/ros2_ws/src` |
-| `cat FILE`, `less FILE` | Print a file; browse it (`q` quits less) | Read manifests/logs |
-| `cp -i A B`, `mv -i A B` | Copy; move/rename, asking before overwrite | Keep configuration backups |
-| `grep PATTERN FILE`, `find DIR -name NAME` | Search contents; locate files | Find a package/error |
-| `COMMAND --help`, `man COMMAND` | Read help (`q` exits man) | Discover flags |
-| Tab, ↑, Ctrl+C | Complete, recall, interrupt foreground program | Avoid spelling errors; stop nodes |
-| `echo "$NAME"`, `source FILE` | Inspect a variable; run a file in this shell | Check/load the ROS environment |
-
-An **absolute path** starts at `/`, the filesystem root. A **relative path** starts at your current directory. `~` expands to home, `.` means here and `..` means the parent. Linux names are case-sensitive. Quote paths containing spaces. `/turtle1/pose` looks like a file path, but it is a ROS graph name; listing files will not reveal it.
-
-### Shell practice: a lab notebook
-
-Run one line at a time. `mktemp -d` makes a fresh practice directory so rerunning the drill does not replace an old notebook.
-
-```bash
-practice_dir=$(mktemp -d "$HOME/ros-cli-practice.XXXXXX")
-cd "$practice_dir"
-pwd
-mkdir notes
-printf 'camera\nmotor\ncamera\n' > notes/components.txt
-cat notes/components.txt
-grep -n camera notes/components.txt
-cp -i notes/components.txt notes/components-backup.txt
-ls notes
-```
-
-**Expected output from `grep -n camera notes/components.txt`:**
-
-```output
-1:camera
-3:camera
-```
-
-The numbers identify lines. `>` writes output to a file, replacing previous contents; `>>` appends. Here the file is in a new practice directory. A pipe, `|`, sends one program's output to the next:
-
-```bash
-grep camera notes/components.txt | wc -l
-```
-
-**Expected output:**
-
-```output
-2
-```
-
-Explain the two matches before continuing. `sudo` runs a command with elevated privileges: use it for installation steps, not ordinary `colcon build`. `rm` deletes without using desktop Trash; practice only with a named expendable file and `rm -i`. You do not need to delete this practice directory.
-
-**More shell practice:** rename the backup with `mv -i`, locate it with `find . -name '*backup*'`, and browse `ls --help` with `less`. Quotes let `find`, rather than the shell, interpret `*backup*`. Check `echo "$ROS_DISTRO"`: expect `jazzy` after lecture 00. Return with `cd ~/ros2_ws`.
-
-## Bring a turtle to life
-
-Turtlesim is a small simulator for learning ROS. It lets us inspect commands and state without a motor driver. New Ubuntu Bash terminals load lecture 00's `.bashrc`, so there is no need to repeat the source commands.
-
-Open **Terminal A — a new Ubuntu terminal/tab**:
-
-```bash
-ros2 run turtlesim turtlesim_node
-```
-
-Read this as `ros2 run PACKAGE EXECUTABLE`. Leave it running; a turtle window should appear.
-
-Open **Terminal B — another Ubuntu terminal/tab**:
-
-```bash
-ros2 run turtlesim turtle_teleop_key
-```
-
-Keep **Terminal B focused**, then press arrow keys. The turtle moves: the keyboard node publishes commands; the simulator subscribes and updates its state. Clicking the turtle window will not direct input to teleop. Use a normal interactive terminal; a piped/background command without a TTY can fail with `Failed to get old console mode`.
-
-Open **Terminal C — a third Ubuntu terminal/tab**:
-
-```bash
-ros2 node list
-ros2 node info /turtlesim
-ros2 topic list -t
-ros2 topic info /turtle1/cmd_vel --verbose
-ros2 topic echo /turtle1/pose --once
-rqt_graph
-```
-
-**Expected core node names from `ros2 node list`:** tool nodes may also appear.
-
-```output
-/teleop_turtle
-/turtlesim
-```
-
-`node info` describes one participant. `topic list -t` shows names/types. `topic info --verbose` shows endpoints/QoS. `echo --once` receives a sample and exits. Pose contains `x`, `y`, `theta`, `linear_velocity` and `angular_velocity`; values depend on your motion. `rqt_graph` opens a graph viewer; close it to regain the prompt. Its filters can hide connections, so compare it with CLI evidence.
-
-![Conceptual turtlesim graph: keyboard velocity commands enter the simulator, while pose feedback travels to inspection tools.](../assets/lecture01-turtle-flow.svg)
-
-**Read both paths:** commands go from teleop to turtlesim; pose goes from turtlesim to inspection tools. Manual teleop does not need pose input. An automatic controller would subscribe to pose and calculate commands, closing the opening feedback loop. This is a conceptual diagram, not a captured run; compare it with your live graph. [Turtlesim tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html).
-
 ## Read a message, then command a motion
+
+Reopen the simulator in **Terminal A**, keyboard teleop in **Terminal B**, and an inspection shell in **Terminal C**, following [Bring a turtle to life in lecture 00](00-setup-guide.md). Keep the simulator running for the experiments below; these are fresh terminals in the same Ubuntu installation.
 
 Inspect types before choosing values:
 
@@ -432,6 +306,6 @@ Follow the boundary in the picture: the phone uses authenticated WebSocket trans
 
 **Model reasoning:** first make the sensor available to Linux. Topics distribute repeated samples to independent consumers. A service fits a brief operation; an action fits a goal with progress. Discovery and delivery compatibility are separate checks. The kernel is part of Ubuntu's OS; ROS libraries and nodes run above it in user space.
 
-**Further practice:** complete the shell drill/interface sampler, drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
+**Further practice:** complete the interface sampler and revisit the shell drill in [lecture 00](00-setup-guide.md), drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
 
 Concept diagrams are original course artwork, licensed with the course under CC BY 4.0. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 31 October 2026.
