@@ -29,7 +29,3 @@ Attribution: **Willow Garage, Inc. and RViz contributors**. Distributed under th
 Retain the source attribution and license when reusing the upstream RViz screenshot. Original course diagrams use CC BY 4.0. Sources are linked next to the lesson they support.
 
 The conceptual phone-equipment illustration retained in the course is AI generated and labelled conceptual. It is not a calibration target or an experimentally measured reconstruction. Learners should submit their own terminal logs, screenshots and measurements as evidence.
-
-## Shared interfaces, reuse and DDS
-
-The three framework diagrams in lecture 01 are original vector redraws of the teaching concepts in the course-author supplied references. They use the course cream, forest-green and copper palette. The reuse diagram groups software capabilities around the learner’s application. The DDS band is a logical data space, not a central broker or a physical bus; arrows show example roles rather than every topic connection. These diagrams use the course CC BY 4.0 terms.

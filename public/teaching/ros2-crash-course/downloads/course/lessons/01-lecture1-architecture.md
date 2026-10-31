@@ -32,19 +32,11 @@ Without shared conventions, each component needs custom glue. A camera, detector
 
 For example, a camera driver publishes the standard `sensor_msgs/msg/Image` type. A viewer displays it, a recorder saves it and a vision node processes it. The driver does not need a custom connection for each subscriber. A simulated camera or recorded bag can later provide the same interface. Consumers still need correct encoding, timestamps and calibration: sharing a type is the start of the contract.
 
-![Shared interfaces let a real camera, simulation or bag replay feed the same image topic, while RViz, a recorder and a vision node subscribe independently.](../assets/lecture01-shared-interfaces.svg)
-
-**Trace one stream:** choose one image source on the left, follow its typed topic, then compare the three consumers on the right. Replacing a source still requires matching the image encoding, timestamps and camera calibration.
-
 One teammate can write perception in Python while another writes a controller in C++. They test against agreed interfaces. ROS makes these boundaries visible. See Open Robotics' explanation of reusable interfaces and broader deployment needs in [Why ROS 2?](https://design.ros2.org/articles/why_ros2.html).
 
 ### Reuse the plumbing and concentrate on the robot
 
 Mechanical design and electronics give a robot a body, power and connections. Software turns measurements into estimates, plans and commands. ROS helps organize that software and provides an ecosystem of reusable components: Nav2 for mobile navigation, MoveIt for manipulation, drivers for supported hardware, RViz for inspection and rosbag2 for recordings. A package still needs to match your ROS distribution and application requirements.
-
-![Reusable ROS capabilities surround your application: visualization, recording, simulation, navigation, manipulation and hardware integration.](../assets/lecture01-reuse-toolbox.svg)
-
-**Choose the capability, then its interfaces:** RViz helps you inspect data, rosbag2 records it, and Gazebo can supply simulated inputs. Navigation and manipulation packages add algorithms; they still need your robot model, sensor inputs, configuration and hardware integration.
 
 **Hardware abstraction in practice:** replace a lidar driver while continuing to publish `sensor_msgs/msg/LaserScan`, and a downstream obstacle detector may be reusable. Check angular coverage, units, frame, timestamps, rate and QoS before calling the replacement compatible. Standard interfaces reduce integration work; they do not remove it.
 
@@ -164,9 +156,7 @@ A launch argument belongs to a launch description; a node parameter belongs to a
 
 **DDS means Data Distribution Service.** It is a middleware standard with implementations providing discovery and data exchange. We use `rmw_fastrtps_cpp`, backed by Fast DDS. Python/C++ nodes normally use ROS client-library APIs rather than raw DDS APIs. ROS's `rmw` interface separates these from the implementation; ROS 2 is not synonymous with one DDS vendor.
 
-![A distributed ROS graph shares typed topic data between sensing, localization, planning, visualization, control and recording. Each process reaches DDS through its ROS client library and RMW.](../assets/lecture01-dds-network.svg)
-
-**Read the shared band as a data space:** sensors publish measurements; localization and planning consume inputs and publish their own outputs. Tools can subscribe to the streams they need. The band groups these logical exchanges; DDS does not require one central server through which every message passes. A node can be both a publisher and a subscriber. The lower strip shows the software path inside each process.
+![A camera and two subscribers above client-library, RMW and Fast DDS layers; discovery and compatible data delivery are separate steps.](../assets/lecture01-dds-path.svg)
 
 **Discovery** answers “which participants are present?” **Data delivery** answers “did a usable sample reach the subscriber?” Finding a topic does not prove delivery. Common prerequisites are reachable networking, a matching domain, resolved topic name/type agreement and compatible QoS. Domain IDs group discovery traffic; they are not passwords.
 
