@@ -32,3 +32,7 @@ dialog{border:1px solid var(--line);border-radius:12px;padding:26px;background:v
 :root[data-theme=dark] .expected-output .code-head{background:#22364b;color:#c4def3;border-bottom-color:#405d78}
 .learning-figure img{height:auto}
 .reader-section p,.reader-section li,.resource-body p,.resource-body li{overflow-wrap:anywhere}
+
+.motion-controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px}
+.motion-controls a{display:inline;line-height:1.5;font-size:12px}
+@media print{.motion-controls{display:none}}

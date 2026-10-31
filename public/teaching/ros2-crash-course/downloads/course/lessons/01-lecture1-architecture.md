@@ -2,7 +2,7 @@
 
 Understand what ROS connects before learning how to run its commands.
 
-## Start with a robot, not a terminal
+## How a robot senses, decides and acts
 
 Imagine a delivery robot approaching a wall. A distance sensor reports an obstacle 0.8 metres away. A program compares that measurement with the desired clearance and requests a lower wheel speed. The motor driver changes the electrical power delivered to the motors. The robot slows down, and the next measurement reports the changed situation.
 
@@ -10,9 +10,9 @@ That interaction gives us three useful building blocks:
 
 | Part | What it does | Examples | In the delivery robot |
 | --- | --- | --- | --- |
-| **Sensor** | Measures the robot or its surroundings | Camera, encoder, lidar, IMU, force sensor | Measures distance to the wall and actual wheel speed |
-| **Processing / control** | Estimates what is happening, chooses a goal and computes a command | Perception, localization, planning, speed controller | Decides whether to brake and computes a wheel command |
-| **Actuator** | Turns energy into a physical effect | Motor, gripper, valve, steering servo | Applies wheel torque and changes motion |
+| **Sensor** | Measures the robot or its surroundings | Camera, microphone, temperature sensor, encoder, lidar, IMU | Measures distance to the wall and actual wheel speed |
+| **Processing / control** | Estimates what is happening, chooses a goal and computes a command | Logic, computer vision, machine learning, mapping, localization, control | Decides whether to brake and computes a wheel command |
+| **Actuator** | Turns energy into a physical effect | Motor, gripper, valve, light, heater | Applies wheel torque and changes motion |
 
 An IMU measures acceleration and angular velocity; it does not directly report a perfect position. A camera supplies pixels; recognizing a wall is a processing task. A motor needs electrical power and a driver; sending the word “forward” alone cannot power it. Each component needs appropriate units, timing and hardware support.
 
@@ -22,7 +22,7 @@ An IMU measures acceleration and angular velocity; it does not directly report a
 
 Robotics also involves mechanics, power, uncertainty and safety. The sensor–processing–actuator loop is our organizing model. The phone project concentrates on **sensing and processing**: it reconstructs motion and a sparse map without driving a physical actuator. Turtlesim gives us a simulated motion system first.
 
-**Learning route:** the 90-minute class uses 15 minutes for robotics and the computer stack, 10 for ROS/platform choices, 15 for graph vocabulary, 10 for terminal practice, 30 for turtlesim and 10 for diagnosis/checkpoints. The interface sampler, extended shell drill and ecosystem survey are self-study material, revisited in later lectures. Finish [lecture 00](00-setup-guide.md) before running the lab.
+Complete [the setup guide](00-setup-guide.md) before running the examples.
 
 ## Why a robotics framework helps
 
@@ -33,6 +33,16 @@ Without shared conventions, each component needs custom glue. A camera, detector
 For example, a camera driver publishes the standard `sensor_msgs/msg/Image` type. A viewer displays it, a recorder saves it and a vision node processes it. The driver does not need a custom connection for each subscriber. A simulated camera or recorded bag can later provide the same interface. Consumers still need correct encoding, timestamps and calibration: sharing a type is the start of the contract.
 
 One teammate can write perception in Python while another writes a controller in C++. They test against agreed interfaces. ROS makes these boundaries visible. See Open Robotics' explanation of reusable interfaces and broader deployment needs in [Why ROS 2?](https://design.ros2.org/articles/why_ros2.html).
+
+### Reuse the plumbing and concentrate on the robot
+
+Mechanical design and electronics give a robot a body, power and connections. Software turns measurements into estimates, plans and commands. ROS helps organize that software and provides an ecosystem of reusable components: Nav2 for mobile navigation, MoveIt for manipulation, drivers for supported hardware, RViz for inspection and rosbag2 for recordings. A package still needs to match your ROS distribution and application requirements.
+
+**Hardware abstraction in practice:** replace a lidar driver while continuing to publish `sensor_msgs/msg/LaserScan`, and a downstream obstacle detector may be reusable. Check angular coverage, units, frame, timestamps, rate and QoS before calling the replacement compatible. Standard interfaces reduce integration work; they do not remove it.
+
+A small robot may run every node on one computer. A larger system can distribute perception, planning and operator tools across reachable computers. A shared interface makes this possible; network configuration, synchronization and failure handling remain engineering tasks. Python and C++ peers can collaborate without sharing their source language. Gazebo simulates physics and sensors; RViz visualizes published data. They are complementary tools, not interchangeable simulators.
+
+ROS has an international open-source community and is used in research and commercial robotics. Core ROS 2 licensing is permissive, but individual packages, drivers and middleware products have their own licenses: check the components you distribute. See [ROS 2 project](https://docs.ros.org/en/jazzy/The-ROS2-Project.html), [Nav2](https://docs.nav2.org/) and [MoveIt](https://moveit.picknik.ai/main/index.html).
 
 ## Where ROS sits in a computer
 
@@ -47,6 +57,8 @@ Read the stack from bottom to top:
 3. **Kernel:** manages processes, memory and hardware access through drivers. Linux is a kernel; Windows uses its own kernel. A USB sensor needs operating-system support before its ROS driver can read it.
 4. **The rest of the operating system:** libraries, system services, shell and optionally a desktop. Ubuntu combines these with the Linux kernel. The kernel is part of the OS, not a separate competing OS.
 5. **User applications:** editors, browsers, ROS tools and robot programs. A ROS node uses a client library such as `rclpy` for Python or `rclcpp` for C++. Communication passes through ROS's middleware interface, `rmw`, to a middleware implementation and operating-system facilities. These are software dependencies in user space, not additional operating systems.
+
+**Why the name “Operating System”?** ROS supplies robot-oriented services such as standard hardware interfaces, communication between programs and package/build conventions. The host OS still schedules CPU threads, manages RAM and virtual memory, provides IPC and networking, operates devices, and manages files/storage. These are overlapping OS responsibilities, not a universal seven-layer ladder; ROS is not a formal “Layer 8.” ROS driver nodes use host drivers and vendor libraries, while colcon builds packages and system package managers install dependencies.
 
 The useful comparison with familiar software is placement: **VS Code and a browser also run above an OS**. VS Code edits programs; a browser runs web applications; ROS provides robotics libraries and communication tools. The comparison stops there. ROS is not an editor with a robotics theme, and none of these replaces the kernel. In WSL 2, Ubuntu applications use a Linux kernel in a Windows-managed virtual machine; Windows remains the host OS. [Microsoft's WSL overview](https://learn.microsoft.com/en-us/windows/wsl/about).
 
@@ -76,7 +88,21 @@ ROS 2 addresses broader deployment needs, including unreliable networks, multipl
 | Combine several sensors | `tf2` coordinate transforms | Express a camera measurement relative to the body |
 | Distribute computation | Client libraries and middleware | Python perception exchanges data with a C++ planner on another reachable machine |
 
-Composition, security tooling and real-time-oriented designs extend this toolbox. They require system engineering: installing ROS does not automatically enable authentication, meet hard deadlines or make motion safe. The survey at the end shows where to go next.
+### Features for deployment
+
+| Capability | What it makes possible | What you must still provide |
+| --- | --- | --- |
+| Lifecycle nodes | Configure a camera before activating its stream; deactivate before changing a mode | A node implementing the lifecycle and transition/error handling; lifecycle alone is not safety certification |
+| Composition | Load compatible node components into one process to reduce process overhead | Supported components and executor/thread design; one process failure can affect several nodes |
+| DDS Security | Authenticate peers, encrypt traffic and restrict allowed communication | Supported middleware, identities, signed policies and explicit enable/enforcement configuration |
+| Real-time-oriented design | Build a control path with predictable timing | Suitable OS/kernel, bounded callbacks, memory strategy and measured worst-case behavior; ordinary ROS installation gives no deadline guarantee |
+| Middleware choices | Select Fast DDS, Cyclone DDS or another supported RMW implementation | Check distribution/platform compatibility and test your chosen configuration |
+| micro-ROS | Connect resource-constrained microcontroller firmware to a larger ROS system | Supported board/RTOS, transport and an agent; it is not a full desktop ROS installation on a tiny chip |
+| ROS 1 bridge | Exchange supported messages during a migration | A compatible separately built/configured bridge and matching interfaces; do not assume action bridging or all platform combinations |
+
+Distributed discovery removes the need for a ROS 1-style master; it does not eliminate every single point of failure. One indispensable controller, power supply or network link can still stop a robot. ROS 2 parameters are owned by individual nodes, rather than one universal parameter server. Dynamic changes work only when the node supports and validates them.
+
+References: [managed nodes](https://design.ros2.org/articles/node_lifecycle.html), [ROS security](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Security.html), [micro-ROS](https://micro.ros.org/), and [ros1_bridge](https://github.com/ros2/ros1_bridge). The [official feature-status catalogue](https://docs.ros.org/en/rolling/The-ROS2-Project/Features.html) provides a wider inventory; Rolling is evolving, so verify features against Jazzy before using them here.
 
 ## Linux, Windows and Mac: choose a course environment
 
@@ -117,19 +143,39 @@ A topic is not a file or permanent database. A late subscriber does not normally
 
 ### Services request a short operation
 
-A **service client** sends a request to a **service server**, which returns a response: for example, “clear the drawing” or “calculate this rectangle's area.” Use services for operations that complete promptly, not an endless image stream. One service name should have one server. [Service concept](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Services.html).
+A **service client** sends a request to a **service server**, which returns a response: for example, “clear the drawing” or “calculate this rectangle's area.” Use services for operations that complete promptly, not an endless image stream. A service client can wait synchronously or use an asynchronous Future; request/response does not mean the entire node must block. Services do not provide the action goal/feedback/cancellation protocol. One service name should have one server. [Service concept](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Services.html).
 
 ### Actions track a goal over time
 
 An **action client** sends a goal, such as “navigate to this location.” The **action server** accepts/rejects it, reports feedback, handles cancellation requests and eventually returns a result/status. Actions suit work with progress and a lifecycle. Cancellation is a request that the server must handle; it is not an independent emergency stop. Actions use topics and services underneath. [Action concept](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Actions.html).
 
-![Three communication timelines: repeated topic samples, one service request and response, and an action goal followed by feedback and a final result.](../assets/lecture01-communication-patterns.svg)
+![Three communication timelines: repeated topic samples, one service request and response, and an action goal followed by feedback and a final result.](../assets/lecture01-conversations-animated.svg)
 
-**Read the arrows:** time runs downward. Topics send samples without a per-sample response. Services return one response to a request. Actions acknowledge a goal, report progress and return a result; cancellation can be requested during execution. The patterns explain why a camera stream and a long navigation task should not use the same interface design.
+**Read the animation:** each dot represents a message, not a robot. Topic samples continue; a service request is followed by its response; an action goal is accepted, produces feedback and ends with a result. The dashed cancellation route is an alternative to normal completion. Use Pause animation for the labelled static view. Timing is illustrative, not a ROS timing guarantee.
+
+**Read the arrows:** Topics send samples without a per-sample response. Services return one response to a request. Actions acknowledge a goal, report progress and return a result; cancellation can be requested during execution. The patterns explain why a camera stream and a long navigation task should not use the same interface design.
 
 ### Parameters configure a node
 
 A **parameter** is a named, typed setting owned by a node: turtlesim's `background_r`, for example. A node declares supported settings and can reject invalid changes. Some take effect at runtime; others need restart/reconfiguration. Parameters configure behaviour; they do not replace high-rate sensor topics. Runtime values are not automatically permanent; YAML/launch configuration makes them repeatable. [Parameter concept](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Parameters.html).
+
+## From packages to a running graph
+
+![Animated feature map: run starts one executable; launch coordinates configured processes; nodes own parameters and exchange typed messages on topics.](../assets/lecture01-features-animated.svg)
+
+Trace the startup arrows first, then the moving data. A **package** contains installable code and configuration. `ros2 run PACKAGE EXECUTABLE` starts one installed executable; that executable can create one or more nodes. `ros2 launch PACKAGE FILE` executes a launch description, which can coordinate several processes, arguments, parameters and remappings. Launch files can use Python, XML or YAML; launch does not automatically guarantee that every sensor is ready.
+
+Once running, a **node** owns its communication endpoints and settings. The **topic** is the named stream; a **message** is one typed sample travelling on it. A **parameter** such as a camera's exposure configures the owner node; it is not a stream of images. The animation uses illustrative camera nodes, not an additional installation command.
+
+| Operation | Concrete example | Meaning |
+| --- | --- | --- |
+| Run | `ros2 run turtlesim turtlesim_node` | Start the simulator executable |
+| Launch | `ros2 launch ros2_course_bringup pubsub_demo.launch.py` | Start the supplied talker/listener system; explored in lecture 4 |
+| Inspect nodes | `ros2 node list` | Discover named running participants |
+| Inspect a stream | `ros2 topic info /turtle1/pose` | Inspect the topic type and endpoint counts |
+| Inspect one setting | `ros2 param get /turtlesim background_r` | Read a parameter owned by the simulator |
+
+A launch argument belongs to a launch description; a node parameter belongs to a node. A launch file can pass an argument's value into a parameter, but those two names are not automatically linked. [Launch concepts](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Launch.html).
 
 ## DDS: the communication machinery underneath
 
@@ -167,7 +213,7 @@ These original drills use the practice-and-explain approach of Zed Shaw's [Comma
 
 An **absolute path** starts at `/`, the filesystem root. A **relative path** starts at your current directory. `~` expands to home, `.` means here and `..` means the parent. Linux names are case-sensitive. Quote paths containing spaces. `/turtle1/pose` looks like a file path, but it is a ROS graph name; listing files will not reveal it.
 
-### Ten-minute drill: a lab notebook
+### Shell practice: a lab notebook
 
 Run one line at a time. `mktemp -d` makes a fresh practice directory so rerunning the drill does not replace an old notebook.
 
@@ -204,7 +250,7 @@ grep camera notes/components.txt | wc -l
 
 Explain the two matches before continuing. `sudo` runs a command with elevated privileges: use it for installation steps, not ordinary `colcon build`. `rm` deletes without using desktop Trash; practice only with a named expendable file and `rm -i`. You do not need to delete this practice directory.
 
-**Extended self-study, 15 minutes:** rename the backup with `mv -i`, locate it with `find . -name '*backup*'`, and browse `ls --help` with `less`. Quotes let `find`, rather than the shell, interpret `*backup*`. Check `echo "$ROS_DISTRO"`: expect `jazzy` after lecture 00. Return with `cd ~/ros2_ws`.
+**More shell practice:** rename the backup with `mv -i`, locate it with `find . -name '*backup*'`, and browse `ls --help` with `less`. Quotes let `find`, rather than the shell, interpret `*backup*`. Check `echo "$ROS_DISTRO"`: expect `jazzy` after lecture 00. Return with `cd ~/ros2_ws`.
 
 ## Bring a turtle to life
 
@@ -280,7 +326,7 @@ A zero command is a software request. A physical base also needs motion limits, 
 
 ## Try the other interfaces on the same node
 
-**Self-study sampler, 15 minutes; taught in depth in lecture 4.** Keep turtlesim in Terminal A running and stop motion publishers. Run these in Terminal C.
+Lecture 4 explores these interfaces in depth. Keep turtlesim in Terminal A running and stop motion publishers. Run these in Terminal C.
 
 Inspect and call a short service:
 
@@ -364,6 +410,14 @@ This is a map of possibilities, not a requirement to install everything today.
 
 Tools share interfaces but are not interchangeable. A visualization window does not prove navigation works; a graph does not prove a controller is safe. Choose a tool because it solves a defined problem in the sensor–processing–actuator loop.
 
+## Where these ideas lead: the phone capstone
+
+Your Android phone supplies camera images and independent motion measurements. The laptop receiver checks and decodes packets, then publishes ROS messages. A viewer displays the camera, a bag recorder saves samples, and an optional separately prepared mapper uses images and measured camera calibration to estimate motion and sparse landmarks. These consumers reuse the same measurements for different purposes.
+
+![The phone-to-ROS pipeline separates sensor capture, the receiver and downstream consumers.](../assets/learning-phone-pipeline.svg)
+
+Follow the boundary in the picture: the phone uses authenticated WebSocket transport; ROS communication begins in `phone_bridge`. Our supplied mapper uses the camera stream, not fused camera–IMU data. Its monocular map has arbitrary scale. This course first teaches how to build and inspect that pipeline, then how to recognize when transport, calibration or estimation has failed. [Phone lab preparation](../annexes/dataset-guide.md) explains the prerequisites.
+
 ## Practice, explain and carry forward
 
 **Core lab evidence:** save the node list, command-topic type, one pose sample and an explanation of the broken remap. Draw the command and pose arrows; identify the connection needed to close an automatic feedback loop. Stop lab nodes with Ctrl+C in their terminals when finished.
@@ -378,6 +432,6 @@ Tools share interfaces but are not interchangeable. A visualization window does 
 
 **Model reasoning:** first make the sensor available to Linux. Topics distribute repeated samples to independent consumers. A service fits a brief operation; an action fits a goal with progress. Discovery and delivery compatibility are separate checks. The kernel is part of Ubuntu's OS; ROS libraries and nodes run above it in user space.
 
-**Homework, 30–45 minutes:** complete the shell drill/interface sampler, drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
+**Further practice:** complete the shell drill/interface sampler, drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
 
-Concept diagrams are original course artwork, licensed with the course under CC BY 4.0. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 30 October 2026.
+Concept diagrams are original course artwork, licensed with the course under CC BY 4.0. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 31 October 2026.
