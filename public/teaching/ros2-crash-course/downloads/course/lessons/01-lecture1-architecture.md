@@ -1,6 +1,6 @@
 # From a robot to the ROS graph
 
-Understand how robot components communicate, then build and run a small ROS 2 publisher from source.
+Understand how robot components communicate, then start existing nodes and inspect their messages.
 
 ## How a robot senses, decides and acts
 
@@ -22,7 +22,7 @@ An IMU measures acceleration and angular velocity; it does not directly report a
 
 Robotics also involves mechanics, power, uncertainty and safety. The sensor–processing–actuator loop is our organizing model. The phone project concentrates on **sensing and processing**: it reconstructs motion and a sparse map without driving a physical actuator. Turtlesim gives us a simulated motion system first.
 
-Complete [Your robotics workbench](00-setup-guide.md) first: Ubuntu 24.04, Jazzy in fresh Bash terminals, file navigation and the turtle GUI test. Here we explain the graph behind that test, then use Git and colcon to run an existing package. [Write your first Python nodes](02-lecture2-python-nodes.md) follows with your own code and the four supplied course packages.
+Complete [Your robotics workbench](00-setup-guide.md) first: Ubuntu 24.04, Jazzy in fresh Bash terminals, file navigation and the turtle GUI test. That guide also includes downloading and building a package with colcon. Here we explain the graph behind those tests and practise basic node commands. [Write your first Python nodes](02-lecture2-python-nodes.md) follows with your own code and the four supplied course packages.
 
 ## Why a robotics framework helps
 
@@ -86,12 +86,12 @@ ROS 2 addresses broader deployment needs, including unreliable networks, multipl
 | Group | Term | Beginner meaning | Example to recognize |
 | --- | --- | --- | --- |
 | Files and builds | Workspace | A folder of source plus colcon build results | `~/ros2_ws/` |
-| Files and builds | Repository | A Git project; it can contain several ROS packages | `src/examples/` from GitHub |
-| Files and builds | Package | Installable ROS software identified by `package.xml` | `examples_rclpy_minimal_publisher` |
-| Programs | Executable | An installed program selected by `ros2 run` | `publisher_member_function` |
+| Files and builds | Repository | A Git project; it can contain several ROS packages | `src/demos/` from GitHub |
+| Files and builds | Package | Installable ROS software identified by `package.xml` | `demo_nodes_py` |
+| Programs | Executable | An installed program selected by `ros2 run` | `talker` |
 | Programs | Process | An operating-system instance of a running executable | The program occupying Terminal A |
-| Programs | **Node** | A named ROS participant inside a process | `/minimal_publisher` or renamed `/demo_talker` |
-| Communication | **Topic** and **message** | A named stream and one typed sample on it | `/hello` carrying `std_msgs/msg/String` |
+| Programs | **Node** | A named ROS participant inside a process | `/talker` |
+| Communication | **Topic** and **message** | A named stream and one typed sample on it | `/chatter` carrying `std_msgs/msg/String` |
 | Communication | **Publisher / subscriber** | Sends samples / receives samples on a topic | Talker / echo inspection tool |
 | Communication | **Service** and **client / server** | Request an operation / return its response | `/clear` clears a drawing |
 | Communication | **Action** and **client / server** | Request a goal with feedback, result and cancellation | Rotate the turtle toward a heading |
@@ -100,7 +100,14 @@ ROS 2 addresses broader deployment needs, including unreliable networks, multipl
 
 ### Workspaces, packages, executables and nodes
 
-The annotated file-manager and terminal view in **Build and run a small GitHub example** below follows one real package through these stages. Use this table as a reference while tracing that image.
+![Simulated Ubuntu file manager and terminal linking the source package, setup.py entry point and running publisher. The folders shown are a selected subset.](../assets/lecture01-workspace-terminal.png)
+
+**Follow the mapping:** the package folder is `~/ros2_ws/src/demos/demo_nodes_py/`. Its `package.xml` declares the ROS package name `demo_nodes_py`. Its `setup.py` registers the executable name `talker`, pointing to `main` in the Python module `demo_nodes_py/topics/talker.py`. The downloaded repository `demos` contains several packages; `demo_nodes_py` is the one built in lecture 00.
+
+After building, the executable entry point is under `~/ros2_ws/install/demo_nodes_py/lib/demo_nodes_py/`. `ros2 run` locates that installed entry point using the sourced environment. It does not directly search `src` for a similarly named `.py` file. The running program creates the default node `/talker`. The command names the package and executable; the program itself chooses this default node name. [Upstream entry points](https://github.com/ros2/demos/blob/jazzy/demo_nodes_py/setup.py), [publisher source](https://github.com/ros2/demos/blob/jazzy/demo_nodes_py/demo_nodes_py/topics/talker.py).
+
+
+**Read the command:** `ros2 run PACKAGE EXECUTABLE` starts the program. The package and executable are labels supplied by the project; the runtime node name is chosen by the program. The upstream names shown above come from the download/build exercise in [lecture 00](00-setup-guide.md).
 
 An **executable** is a program you can start; a running program is an OS **process**. A ROS **node** is a named participant with a focused responsibility. One process can host one or several nodes. A **package** groups code, interfaces or configuration files. A **workspace** is where related packages are built. These are different things: package `turtlesim` supplies executable `turtlesim_node`, which normally creates node `/turtlesim`.
 
@@ -151,6 +158,16 @@ Lifecycle nodes, composition, security, real-time design, micro-ROS and ROS 1 mi
 
 ## From packages to a running graph
 
+Start with the same short pattern used in setup:
+
+```bash
+ros2 run turtlesim turtlesim_node
+```
+
+`ros2 run` starts the program; **`turtlesim` is the package**; **`turtlesim_node` is the executable**. It creates the node named `/turtlesim`. Tutorials sometimes call the last token a “node,” but the command selects an executable. The two names need not be identical.
+
+![Basic ROS startup command showing the package, executable and resulting node name.](../assets/lecture01-run-command.svg)
+
 ![Animated feature map: run starts one executable; launch coordinates configured processes; nodes own parameters and exchange typed messages on topics.](../assets/lecture01-features-animated.svg)
 
 Trace the startup arrows first, then the moving data. A **package** contains installable code and configuration. `ros2 run PACKAGE EXECUTABLE` starts one installed executable; that executable can create one or more nodes. `ros2 launch PACKAGE FILE` executes a launch description, which can coordinate several processes, arguments, parameters and remappings. Launch files can use Python, XML or YAML; launch does not automatically guarantee that every sensor is ready.
@@ -188,129 +205,6 @@ Our `.bashrc` limits discovery to `LOCALHOST` and uses `ROS_DOMAIN_ID=42`: all c
 **Quality of Service** describes delivery policies. A live camera may tolerate a missing frame because a newer one is available. A configuration exchange has different needs. `BEST_EFFORT` permits loss; `RELIABLE` uses delivery/retry mechanisms. History/depth controls queue retention; durability influences whether suitable late subscribers receive retained data. Reliability alone does not guarantee bounded latency or correct timestamps.
 
 A best-effort publisher cannot satisfy a subscription requiring reliable delivery. A reliable publisher can satisfy a best-effort subscription if other policies match. A topic can therefore be visible but silent. Lecture 3 tests this; for now, inspect endpoints using `ros2 topic info TOPIC --verbose`. [Jazzy QoS guide](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html).
-
-## Build and run a small GitHub example
-
-Use the official [ROS 2 examples repository, Jazzy branch](https://github.com/ros2/examples/tree/jazzy). It contains several small learning packages. We will build **only its minimal Python publisher**, which needs no robot or camera. You are running existing open-source code here; lecture 02 explains how to write and package your own node.
-
-### 1. Prepare the colcon workspace
-
-Run these in **Ubuntu Bash**, as your normal user. Lecture 00 installed Jazzy and development tools; install Git and colcon if needed:
-
-```bash
-sudo apt update
-sudo apt install -y git python3-colcon-common-extensions
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws
-source /opt/ros/jazzy/setup.bash
-```
-
-`ros2_ws` is the workspace root; `src` holds source repositories/packages. **colcon** discovers ROS packages and builds/installs them. It creates `build`, `install` and `log` beside `src`. Run build commands from `~/ros2_ws`, rather than inside the source file's folder. These steps reuse the empty workspace prepared in lecture 00.
-
-### 2. Clone the source; pull later updates
-
-For the **first download**:
-
-```bash
-cd ~/ros2_ws/src
-git clone --branch jazzy --single-branch --depth 1 https://github.com/ros2/examples.git
-```
-
-This creates `~/ros2_ws/src/examples/`. `jazzy` selects the source intended for our ROS release. A repository folder is not necessarily one ROS package: this repository contains many.
-
-**On later visits**, when `examples/` already exists, update that checkout instead of cloning again:
-
-```bash
-cd ~/ros2_ws/src/examples
-git status --short
-git pull --ff-only
-git rev-parse --short HEAD
-```
-
-`git clone` downloads a new checkout; `git pull --ff-only` fetches updates and advances an existing branch without creating a merge commit. `git status --short` is blank for an unchanged checkout. If it shows your edits, preserve them before updating. If Git reports a conflict or divergent history, resolve that message before continuing. Record the printed commit ID when you need to reproduce a run. A Git pull changes source files; it does not build them or load them into your shell.
-
-### 3. Resolve dependencies and build one package
-
-```bash
-cd ~/ros2_ws
-rosdep install --from-paths src/examples/rclpy/topics/minimal_publisher --ignore-src -r -y
-colcon build --symlink-install --packages-select examples_rclpy_minimal_publisher
-source install/setup.bash
-ros2 pkg executables examples_rclpy_minimal_publisher
-ros2 pkg prefix examples_rclpy_minimal_publisher
-```
-
-`rosdep` installs dependencies declared by this package; it uses the configuration initialized in lecture 00. `--packages-select` limits the build to the named package, even though the Git repository contains other examples. `--symlink-install` links supported source files into the installation, which helps during development. **Source the resulting overlay after the build** in this already-open terminal. A fresh Ubuntu Bash terminal loads it automatically through the `.bashrc` block from lecture 00.
-
-**Expected result:** a successful build summary for this package and an executable-list line containing:
-
-```output
-examples_rclpy_minimal_publisher publisher_member_function
-```
-
-The prefix check should point into `~/ros2_ws/install/examples_rclpy_minimal_publisher`, confirming you selected the workspace copy. If colcon warns that this example already exists in `/opt/ros/jazzy`, the system has a binary copy too: this exercise intentionally overlays it with the same Jazzy example from source. Other executable names can appear. If the build fails, resolve the first error before running the node. After a later Git update, repeat the build and source steps so the installed programs match the source.
-
-### 4. Connect source, package, executable and node
-
-![Simulated Ubuntu file manager and terminal linking the source package, setup.py entry point and running publisher. The folders shown are a selected subset.](../assets/lecture01-workspace-terminal.png)
-
-**Follow the mapping:** the package folder is `~/ros2_ws/src/examples/rclpy/topics/minimal_publisher/`. Its `package.xml` declares the ROS package name `examples_rclpy_minimal_publisher`. Its `setup.py` registers the executable name `publisher_member_function`, pointing to `main` in the Python module `examples_rclpy_minimal_publisher/publisher_member_function.py`. The source folder's short name `minimal_publisher` and the declared package name are different; ROS uses the declared name.
-
-After building, the executable entry point is under `~/ros2_ws/install/examples_rclpy_minimal_publisher/lib/examples_rclpy_minimal_publisher/`. `ros2 run` locates that installed entry point using the sourced environment. It does not directly search `src` for a similarly named `.py` file. The running program creates the default node `/minimal_publisher`; a remapping below changes its runtime name without renaming any source file. [Upstream entry points](https://github.com/ros2/examples/blob/jazzy/rclpy/topics/minimal_publisher/setup.py), [publisher source](https://github.com/ros2/examples/blob/jazzy/rclpy/topics/minimal_publisher/examples_rclpy_minimal_publisher/publisher_member_function.py).
-
-### 5. Start and inspect the node
-
-In **Terminal A**, start the installed executable with an explicit node name, a topic remapping and one parameter:
-
-```bash
-ros2 run examples_rclpy_minimal_publisher \
-  publisher_member_function --ros-args \
-  -r __node:=demo_talker -r topic:=/hello \
-  -p use_sim_time:=false
-```
-
-![Anatomy of a ROS run command: package, installed executable, runtime node name, topic remapping and a node parameter. Launch uses a launch file instead of an executable.](../assets/lecture01-run-command.svg)
-
-| Part | What it means here |
-| --- | --- |
-| `ros2 run` | Start one installed executable |
-| `examples_rclpy_minimal_publisher` | Package to look in; declared in `package.xml` |
-| `publisher_member_function` | Installed executable; registered in `setup.py` |
-| `--ros-args` | The following arguments configure ROS behavior |
-| `-r __node:=demo_talker` | Rename the runtime node to `/demo_talker` |
-| `-r topic:=/hello` | Change the example's original `topic` stream to `/hello` |
-| `-p use_sim_time:=false` | Use the normal system clock instead of ROS simulated time |
-
-The upstream example publishes a String about twice per second. The `use_sim_time` parameter is a standard node clock setting; it does not change the text or timer period. Custom settings work only if a node supports them. A backslash at the end of a Bash line continues the same command; do not add a space after it.
-
-**Terminal A — expected log excerpt:**
-
-```output
-[demo_talker] Publishing: "Hello World: 0"
-[demo_talker] Publishing: "Hello World: 1"
-```
-
-Timestamps and the starting count vary. Leave it running. In **Terminal B — a separate new Ubuntu Bash terminal**, inspect it:
-
-```bash
-ros2 node list
-ros2 node info /demo_talker
-ros2 param get /demo_talker use_sim_time
-ros2 topic info /hello
-ros2 topic echo /hello --once
-```
-
-Expect `/demo_talker` among the nodes, `Boolean value is: False` for the clock setting, topic type `std_msgs/msg/String`, and a sample such as:
-
-```output
-data: 'Hello World: 7'
----
-```
-
-The echo command creates a subscriber and exits after one sample. The number may differ. Stop the publisher with **Ctrl+C in Terminal A** before returning to turtlesim.
-
-**Run versus launch:** `ros2 run PACKAGE EXECUTABLE` selects a program. `ros2 launch PACKAGE LAUNCH_FILE` selects a launch description that can start and configure several programs. A launch-file argument such as `name:=value` is defined by that file; it is not automatically a node parameter. Lecture 04 applies this to the course bringup package, after lecture 02 builds it. [Colcon workflow](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Colcon-Tutorial.html), [ROS arguments](https://docs.ros.org/en/jazzy/How-To-Guides/Node-arguments.html).
-
 
 ## Read a message, then command a motion
 
@@ -376,7 +270,9 @@ ros2 action send_goal /turtle1/rotate_absolute turtlesim/action/RotateAbsolute \
 
 Expect goal acceptance and feedback about remaining rotation. The final turtle pose `theta` should be near 1.57 radians; the result's `delta` is the angular displacement from the starting heading, so it depends on where the turtle started. If already aligned, the goal may finish immediately. To demonstrate cancellation, restart teleop in Terminal B, use one of its displayed letter keys to start a rotation, then press lowercase `f` without Shift before it completes. Teleop cancels the goal it started, not the earlier CLI goal. [Actions tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Actions/Understanding-ROS2-Actions.html).
 
-## Names let us reconnect components
+## Optional: names and remapping
+
+The basic lab above works without extra command-line options. This optional experiment introduces naming; you can return to it with lecture 04.
 
 `chatter` is relative to a namespace; `/chatter` is absolute. **Namespaces** group names; **remapping** changes a name when a node starts. Neither changes message contents.
 
@@ -418,7 +314,7 @@ Follow the boundary in the picture: the phone uses authenticated WebSocket trans
 
 ## Practice, explain and carry forward
 
-**Core lab evidence:** save the upstream Git commit, installed package prefix, one `/hello` sample, the turtle command-topic type, one pose sample and an explanation of the broken remap. Explain how `package.xml`, `setup.py`, the executable and the runtime node name are related. Draw the command and pose arrows; identify the connection needed to close an automatic feedback loop. Stop lab nodes with Ctrl+C in their terminals when finished.
+**Core lab evidence:** save the turtle node list, command-topic type, one pose sample and an explanation of the command connection. Explain how `package.xml`, `setup.py`, the executable and the runtime node name are related. Draw the command and pose arrows; identify the connection needed to close an automatic feedback loop. Stop lab nodes with Ctrl+C in their terminals when finished.
 
 **Before lecture 2, explain:**
 

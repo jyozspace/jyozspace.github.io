@@ -105,7 +105,7 @@ Linux presents one directory tree rooted at `/`. A folder is also called a direc
   home/
     student/           ~ for a user named student
       ros2_ws/         course workspace, created later
-        src/           package source, added in lecture 02
+        src/           package source
   opt/ros/jazzy/       installed ROS files, after installation
   etc/                 system configuration
   usr/                 installed programs and libraries
@@ -119,64 +119,94 @@ Linux presents one directory tree rooted at `/`. A folder is also called a direc
 
 ## Linux terminal crash course
 
-The **terminal** displays input/output; the **shell**, Bash here, interprets commands. A prompt such as `student@laptop:~$` indicates readiness; do not type it. Commands below run in Ubuntu. Expected-output blocks are labelled separately and are not commands to paste.
+Open an **Ubuntu terminal**. Type one command, press **Enter**, and wait for the prompt to return before typing the next command. A prompt such as `student@laptop:~$` means the terminal is ready. **Do not type the prompt itself.**
 
-These original drills use the practice-and-explain approach of Zed Shaw's [Command Line Crash Course](https://learnpythonthehardway.org/python3/appendix-a-cli/introduction.html): type a short exercise, record questions, and repeat until you can explain each part. They are not copied exercises. The [GNU Bash manual](https://www.gnu.org/software/bash/manual/bash.html) is the shell-syntax reference.
+A **folder** is also called a **directory**. The terminal always has a current directory: this is the folder your commands are working in. For now, practise moving between folders and reading a small text file.
 
-### Linux basic commands
+### Basic commands to keep nearby
 
-| Command/key | Meaning | ROS use |
+| Command | What it does | Example |
 | --- | --- | --- |
-| `pwd`, `ls`, `ls -la` | Current directory; files; hidden files/details | Find the workspace and `.bashrc` |
-| `cd ~`, `cd ..`, `cd DIRECTORY` | Home; parent; named directory | Navigate |
-| `mkdir -p PATH` | Create directories and missing parents | Prepare `~/ros2_ws/src` |
-| `cat FILE`, `less FILE` | Print a file; browse it (`q` quits less) | Read manifests/logs |
-| `cp -i A B`, `mv -i A B` | Copy; move/rename, asking before overwrite | Keep configuration backups |
-| `grep PATTERN FILE`, `find DIR -name NAME` | Search contents; locate files | Find a package/error |
-| `COMMAND --help`, `man COMMAND` | Read help (`q` exits man) | Discover flags |
-| Tab, ↑, Ctrl+C | Complete, recall, interrupt foreground program | Avoid spelling errors; stop nodes |
-| `echo "$NAME"`, `source FILE` | Inspect a variable; run a file in this shell | Check/load the ROS environment |
+| `pwd` | Shows the full path of your current folder | `pwd` |
+| `ls` | Lists the files and folders here | `ls` |
+| `cd FOLDER` | Moves into a folder | `cd terminal_practice` |
+| `cd ..` | Moves up one folder | `cd ..` |
+| `cd ~` | Returns to your Linux home folder | `cd ~` |
+| `mkdir -p FOLDER` | Creates a folder; `-p` also lets you reuse it if it already exists | `mkdir -p terminal_practice` |
+| `echo "TEXT"` | Prints a line of text | `echo "Hello ROS"` |
+| `cat FILE` | Displays the contents of a text file | `cat notes.txt` |
 
-An **absolute path** starts at `/`, the filesystem root. A **relative path** starts at your current directory. `~` expands to home, `.` means here and `..` means the parent. Linux names are case-sensitive. Quote paths containing spaces. `/turtle1/pose` looks like a file path, but it is a ROS graph name; listing files will not reveal it.
+`FOLDER`, `FILE` and `TEXT` are placeholders in the first column; replace them with actual names, as in the examples. Linux names are case-sensitive: `Notes` and `notes` are different. Use the simple names below without spaces.
 
-### Shell practice: a lab notebook
+**Helpful keys:** Tab completes a partly typed file or folder name; the up arrow recalls your previous command. **Ctrl+C** stops a running program, such as a ROS node, and returns control to the terminal.
 
-Run one line at a time. `mktemp -d` makes a fresh practice directory so rerunning the drill does not replace an old notebook.
+### Exercise: make a folder and read a note
+
+Run each line separately. This exercise stays inside your Linux home folder and needs no `sudo`.
+
+**1. Go home and check where you are.**
 
 ```bash
-practice_dir=$(mktemp -d "$HOME/ros-cli-practice.XXXXXX")
-cd "$practice_dir"
+cd ~
 pwd
-mkdir notes
-printf 'camera\nmotor\ncamera\n' > notes/components.txt
-cat notes/components.txt
-grep -n camera notes/components.txt
-cp -i notes/components.txt notes/components-backup.txt
-ls notes
 ```
 
-**Expected output from `grep -n camera notes/components.txt`:**
+**Expected output:** your own home path. For a Linux user named `student`, it is:
 
 ```output
-1:camera
-3:camera
+/home/student
 ```
 
-The numbers identify lines. `>` writes output to a file, replacing previous contents; `>>` appends. Here the file is in a new practice directory. A pipe, `|`, sends one program's output to the next:
+Your username may differ. `~` is a shortcut for this home folder.
+
+**2. Create a practice folder and enter it.**
 
 ```bash
-grep camera notes/components.txt | wc -l
+mkdir -p terminal_practice
+cd terminal_practice
+pwd
 ```
 
-**Expected output:**
+**Expected output for that same example user:**
 
 ```output
-2
+/home/student/terminal_practice
 ```
 
-Explain the two matches before continuing. `sudo` runs a command with elevated privileges: use it for installation steps, not ordinary `colcon build`. `rm` deletes without using desktop Trash; practice only with a named expendable file and `rm -i`. You do not need to delete this practice directory.
+`mkdir` creates the folder; `cd` moves into it. A successful command may print nothing. That is normal: look for the prompt returning.
 
-**More shell practice:** rename the backup with `mv -i`, locate it with `find . -name '*backup*'`, and browse `ls --help` with `less`. Quotes let `find`, rather than the shell, interpret `*backup*`. After installing and sourcing ROS below, check `echo "$ROS_DISTRO"`: expect `jazzy`. Return to Linux home with `cd ~`. The ROS environment check works after the installation and sourcing steps below.
+**3. Write and read one short note.**
+
+```bash
+echo "Hello ROS" > notes.txt
+ls
+cat notes.txt
+```
+
+The `>` sends the text into `notes.txt` instead of displaying it. It creates the file, or replaces that practice file's contents if you repeat the exercise. `ls` should include `notes.txt`. **Expected output from `cat notes.txt`:**
+
+```output
+Hello ROS
+```
+
+**4. Move back up to home.**
+
+```bash
+cd ..
+pwd
+```
+
+Expect your home path again, such as `/home/student`. You can keep the practice folder and its note for later.
+
+**Check yourself:** which command shows where you are? Which command lists files? Which command reads the note? The answers are `pwd`, `ls` and `cat notes.txt`.
+
+### Two words you will see during ROS setup
+
+**`sudo`** runs a command with administrator privileges. Use it where the installation instructions show it. When it asks for your Linux password, typing displays no characters; type the password and press Enter.
+
+**`source FILE`** loads a setup file into the current terminal. Later, `source /opt/ros/jazzy/setup.bash` makes ROS commands available there. Follow the sourcing steps below when you reach them.
+
+These are original beginner exercises. Further reading: Zed Shaw's [Command Line Crash Course](https://learnpythonthehardway.org/python3/appendix-a-cli/introduction.html) and the [GNU Bash manual](https://www.gnu.org/software/bash/manual/bash.html).
 
 ## Install the correct ROS distribution
 
@@ -362,9 +392,64 @@ rqt_graph
 
 Stop the simulator and teleop with **Ctrl+C in Terminals A and B** when finished. Lecture 01 explains the graph you just observed. Reopen them there for the motion and interface experiments.
 
+## Download, build and run a package
+
+A package downloaded into `src` becomes available to ROS after you **build it and source the workspace**. We will use `demo_nodes_py` from the official [ROS 2 demos project, Jazzy branch](https://github.com/ros2/demos/tree/jazzy/demo_nodes_py). It supplies both a publisher (`talker`) and a subscriber (`listener`).
+
+### Download into src and build
+
+Run in **Ubuntu Bash**. The earlier steps installed ROS and initialized rosdep. Install Git/colcon if needed, then download the source:
+
+```bash
+sudo apt install -y git python3-colcon-common-extensions
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+git clone -b jazzy https://github.com/ros2/demos.git
+```
+
+The downloaded project is `~/ros2_ws/src/demos/`; the package we need is inside `demos/demo_nodes_py/`. Download once; if that folder already exists from this exercise, continue to the build.
+
+Build from the **workspace root**, then load the installed package into this terminal:
+
+```bash
+cd ~/ros2_ws
+rosdep install --from-paths src/demos/demo_nodes_py --ignore-src -r -y
+colcon build --symlink-install --packages-select demo_nodes_py
+source install/setup.bash
+```
+
+`rosdep` installs the package's dependencies. `--packages-select demo_nodes_py` builds just that package rather than all the demos in the repository. Expect `Summary: 1 package finished` with a duration. If colcon mentions an existing copy in `/opt/ros/jazzy`, we are building the same Jazzy demo into our workspace. Resolve any build error before continuing.
+
+### Run publisher and subscriber in two terminals
+
+In **Terminal A**, run the publisher:
+
+```bash
+ros2 run demo_nodes_py talker
+```
+
+Leave it running. Open **Terminal B — a separate new Ubuntu Bash terminal**. The `.bashrc` block already loads the built workspace, so run:
+
+```bash
+ros2 run demo_nodes_py listener
+```
+
+Both commands use **`ros2 run PACKAGE EXECUTABLE`**: `demo_nodes_py` is the package; `talker` and `listener` are its two executables. The first publishes String messages on `/chatter`; the second subscribes to that topic.
+
+**Expected log excerpts:**
+
+```output
+Terminal A: [talker] Publishing: "Hello World: 1"
+Terminal B: [listener] I heard: [Hello World: 1]
+```
+
+Counts and timestamps vary; the listener may join after the first message. Matching messages show the two nodes communicating. Stop both with **Ctrl+C in each terminal**.
+
+**What you have done:** source in `src` → colcon build → source `install/setup.bash` → run the installed package's nodes. Lecture 01 explains the package/executable/node terminology using an annotated file-manager view.
+
 ## Setup checkpoint
 
-Before continuing, confirm Ubuntu reports `noble`, `echo "$ROS_DISTRO"` reports `jazzy` in a fresh terminal, RViz opens, and arrow keys in the teleop terminal move the turtle. Explain where your Linux home is and how it differs from Windows Downloads. The supplied package download and build now happen in [lecture 02](02-lecture2-python-nodes.md).
+Before continuing, confirm Ubuntu reports `noble`, `echo "$ROS_DISTRO"` reports `jazzy` in a fresh terminal, RViz opens, and arrow keys in the teleop terminal move the turtle. Explain where your Linux home is and how it differs from Windows Downloads. Confirm that the GitHub example builds and prints messages using the basic `ros2 run` command. The supplied package download and build now happen in [lecture 02](02-lecture2-python-nodes.md).
 
 ## Prepare the phone project before lecture five
 

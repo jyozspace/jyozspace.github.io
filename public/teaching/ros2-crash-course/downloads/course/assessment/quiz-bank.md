@@ -48,7 +48,7 @@ Answer: A. The keyboard node reads keys in its own interactive terminal. Turtles
 - B. Extract the course ZIP into Windows System32
 - C. Change the phone camera calibration
 
-Answer: A. ROS commands require the Jazzy underlay in that shell. The saved .bashrc block loads it for fresh interactive Bash terminals; the optional overlay is added after the lecture 02 build.
+Answer: A. ROS commands require the Jazzy underlay in that shell. The saved .bashrc block loads it for fresh interactive Bash terminals; the workspace overlay is available after the successful demo-package build later in lecture 00.
 
 ## From a robot to the ROS graph
 
@@ -76,13 +76,13 @@ Answer: B. Ubuntu and its Linux kernel still manage processes, memory, devices a
 
 Answer: A. Topics carry streams, services pair requests with responses, and actions add goal management, feedback, results and cancellation for longer operations. Parameters configure nodes.
 
-4. In ros2 run examples_rclpy_minimal_publisher publisher_member_function --ros-args -r __node:=demo_talker, which name identifies the running ROS node?
+4. In the basic command ros2 run turtlesim turtlesim_node, which parts select the package and the program that starts?
 
-- A. examples_rclpy_minimal_publisher, because package and node names are always identical
-- B. /demo_talker, because __node remaps the runtime name
-- C. publisher_member_function.py, because ros2 run searches src for that filename
+- A. turtlesim is the package; turtlesim_node is the executable
+- B. turtlesim_node is the package; ros2 is the runtime node name
+- C. Both words must be identical to the node name /turtlesim
 
-Answer: B. The first name selects a package and the second selects its installed executable. The node is a running participant; this remapping names it /demo_talker without renaming any source file.
+Answer: A. ros2 run looks up an installed executable in a package. That program creates the runtime node /turtlesim; the executable name and node name can differ.
 
 5. Two nodes appear in ros2 node list, but the turtle does not move. Which observation best establishes a correctly connected command stream?
 
@@ -92,21 +92,21 @@ Answer: B. The first name selects a package and the second selects its installed
 
 Answer: B. Process existence alone does not establish endpoint compatibility or data flow.
 
-6. A second turtlesim is launched under namespace /robot2. Which command topic sends velocity commands to /robot2/turtle1?
+6. After starting ros2 run turtlesim turtlesim_node, which command shows the names of currently running ROS participants?
 
-- A. /robot2/turtle1/cmd_vel
-- B. /turtle1/cmd_vel without any remapping
-- C. /robot2 because all namespaced messages use one topic
+- A. ros2 node list
+- B. ros2 topic list
+- C. ros2 service list
 
-Answer: A. The namespace prefixes the relative command-topic name. Namespaces do not merge all interfaces into one stream.
+Answer: A. ros2 node list inspects the running ROS graph. The topic and service list commands show communication interfaces; ros2 node list shows the current runtime node names.
 
-7. A publisher’s relative chatter name is remapped to camera_events, while its subscriber is unchanged. What behavior should you predict?
+7. A publisher is already running. What does ros2 topic echo /topic --once do when a matching sample arrives?
 
-- A. The subscriber automatically follows the publisher’s new name
-- B. Both endpoints connect because message types still match
-- C. They are disconnected until their resolved topic names agree
+- A. It creates a subscriber, prints one sample and exits
+- B. It rebuilds the publisher from its source files
+- C. It starts every executable in the publisher package
 
-Answer: C. Remapping is applied to individual endpoints. Type agreement cannot compensate for different resolved names.
+Answer: A. The echo tool receives messages on a topic. With --once it finishes after one sample; it does not build code or launch the publisher.
 
 8. You stop a velocity publisher with Ctrl+C while a physical base is moving. Which statement is appropriate before claiming the base is safely stopped?
 

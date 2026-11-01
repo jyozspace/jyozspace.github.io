@@ -12,7 +12,7 @@ Open fresh Ubuntu Bash terminals after lecture 00; its `.bashrc` block loads the
 
 ## Build and verify the supplied packages
 
-Lecture 01 built one upstream example inside `src/examples`. Keep it there. This lecture adds four course packages alongside that repository and selects those four for the build below.
+Lecture 00 built one upstream example inside `src/demos`. Keep it there. This lecture adds four course packages alongside that repository and selects those four for the build below.
 
 ### Download to home, then extract into src
 
