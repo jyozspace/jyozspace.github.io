@@ -21,7 +21,7 @@ function inline(text){
 }
 function codeBlock(code,lang='text') {
  const output=lang==='output';
- const label=output?'EXPECTED OUTPUT · READ ONLY':lang==='bash'?'UBUNTU · BASH':lang==='powershell'?'WINDOWS · POWERSHELL':lang.toUpperCase();
+ const label=output?'EXPECTED OUTPUT · READ ONLY':lang==='bashrc'?'~/.bashrc · FILE CONTENTS':lang==='bash'?'UBUNTU · BASH':lang==='powershell'?'WINDOWS · POWERSHELL':lang.toUpperCase();
  return `<div class="code-block${output?' expected-output':''}"><div class="code-head"><span>${esc(label)}</span>${output?'<span class="output-hint">Compare with your screen</span>':'<button class="copy-button" aria-label="Copy code">Copy</button>'}</div><pre><code>${esc(code)}</code></pre></div>`;
 }
 function imageSize(src){const [width,height]=C.images?.[src]||[1000,640];return `width="${width}" height="${height}"`;}

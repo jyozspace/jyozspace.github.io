@@ -10,7 +10,7 @@ You need basic Python variables, functions and classes. Robotics knowledge is no
 
 Allow 1–2 hours for setup and a separate capstone rehearsal. A laptop with 16 GB RAM and 30 GB free disk is comfortable. The project device is an Android 8.0+ phone with a rear camera and preferably accelerometer/gyroscope sensors. A native APK is supplied. The mapper uses camera images; unsupported motion sensors can be documented without blocking that part of the project.
 
-The website has two reading modes. **Self-study** shows the full guide with exercises and model explanations. **Lecture** shows one section at a time with presentation controls and a timer. Your progress, notes and written answers are saved in this browser; export them from Resources before changing computers. The interactive labs illustrate concepts, while commands marked Ubuntu · Bash run in your Linux terminal. Dark panels with Copy contain commands; blue **EXPECTED OUTPUT · READ ONLY** panels contain results to compare, not commands to paste.
+The website has two reading modes. **Self-study** shows the full guide with exercises and model explanations. **Lecture** shows one section at a time with presentation controls and a timer. Your progress, notes and written answers are saved in this browser; export them from Resources before changing computers. The interactive labs illustrate concepts. Panels marked **Ubuntu · Bash** or **Windows · PowerShell** contain terminal commands; panels marked **FILE CONTENTS** belong in the named file in an editor. Blue **EXPECTED OUTPUT · READ ONLY** panels contain results to compare, not commands to paste.
 
 ## Linux, Windows and Mac: choose a course environment
 
@@ -292,30 +292,48 @@ Use the same values in every lab terminal. ROS_DOMAIN_ID separates graphs; it is
 
 ### Save ROS sourcing and DDS settings in .bashrc
 
-Run this **inside Ubuntu as your normal Linux user**. It appends one labelled block only once. The underlay loads first; the overlay loads only when its build exists. Jazzy's default Fast DDS implementation is selected explicitly so all course terminals use the same middleware. No separate DDS XML file is supplied or required for this local lab.
+Ubuntu reads `.bashrc` when an interactive Bash terminal opens. **Do not put `source ~/.bashrc` inside `.bashrc`: it makes the file load itself repeatedly and can freeze or close the terminal.** The earlier `if ! grep ...` / `cat ... EOF` installer was a command to run at the prompt, not file contents. Replace it using the steps below. If terminals already hang or close, start with **Recover a terminal that closes on startup** below.
+
+**Step 1 — run at the Ubuntu terminal prompt as your normal Linux user.** Back up the existing file, then open it in the editor:
 
 ```bash
-if ! grep -q '^# BEGIN ROS2 COURSE$' ~/.bashrc; then
-  cat >> ~/.bashrc <<'EOF'
-
-# BEGIN ROS2 COURSE
-source /opt/ros/jazzy/setup.bash
-export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-unset ROS_LOCALHOST_ONLY
-unset ROS_STATIC_PEERS
-export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
-export ROS_DOMAIN_ID=42
-if [ -f "$HOME/ros2_ws/install/setup.bash" ]; then
-  source "$HOME/ros2_ws/install/setup.bash"
-fi
-# END ROS2 COURSE
-EOF
-fi
-source ~/.bashrc
-printenv ROS_DISTRO RMW_IMPLEMENTATION ROS_AUTOMATIC_DISCOVERY_RANGE ROS_DOMAIN_ID
+cp -p -- ~/.bashrc ~/.bashrc.before-ros2.$(date +%Y%m%d-%H%M%S)
+nano ~/.bashrc
 ```
 
-Expected, on separate lines: jazzy, rmw_fastrtps_cpp, LOCALHOST, 42. Open a fresh Ubuntu terminal and repeat the printenv check. After the first successful workspace build, source ~/ros2_ws/install/setup.bash in existing terminals; new interactive Bash terminals load it automatically. Keep optional SLAM overlays explicit, after the course overlay. If changing middleware or domain during diagnosis, stop lab nodes and run `ros2 daemon stop`, then reopen terminals with consistent settings. Jazzy warns that ROS_LOCALHOST_ONLY is deprecated. Unset that legacy variable and use ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST consistently; do not combine conflicting discovery profiles or DDS XML settings from another lab.
+**Step 2 — paste only the following file contents at the bottom of `.bashrc` in nano.** Replace any previous ROS2 COURSE block so there is just one copy. Preserve Ubuntu's existing lines above it. If you pasted the old installer into this file, remove that entire addition, including its opening `if ! grep`, `cat`, `EOF`, outer `fi`, `source ~/.bashrc` and `printenv` lines.
+
+```bashrc
+# BEGIN ROS2 COURSE
+if [ -r /opt/ros/jazzy/setup.bash ]; then
+  source /opt/ros/jazzy/setup.bash
+  export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+  unset ROS_LOCALHOST_ONLY
+  unset ROS_STATIC_PEERS
+  export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+  export ROS_DOMAIN_ID=42
+  if [ -r "$HOME/ros2_ws/install/setup.bash" ]; then
+    source "$HOME/ros2_ws/install/setup.bash"
+  fi
+fi
+# END ROS2 COURSE
+```
+
+The underlay loads first; the overlay loads only when its readable setup file exists after a build. Jazzy's default Fast DDS implementation is selected explicitly so all course terminals use the same middleware. No separate DDS XML file is supplied or required for this local lab.
+
+**Step 3 — save and check.** In nano, press **Ctrl+O**, **Enter**, then **Ctrl+X**. Back at the Ubuntu prompt, check syntax without executing the file:
+
+```bash
+bash -n ~/.bashrc
+```
+
+No output means the syntax check passed. If an error appears, reopen nano and correct it before proceeding. This check does not detect recursion; also confirm the file contains no command that sources `.bashrc` itself.
+
+**Step 4 — open a new Ubuntu terminal/tab**, keep the current one open for recovery, and run this verification command **at the new prompt**:
+
+```bash
+printenv ROS_DISTRO RMW_IMPLEMENTATION ROS_AUTOMATIC_DISCOVERY_RANGE ROS_DOMAIN_ID
+```
 
 **Expected output in a fresh Ubuntu terminal:**
 
@@ -325,6 +343,24 @@ rmw_fastrtps_cpp
 LOCALHOST
 42
 ```
+
+If `jazzy` is missing, check that `/opt/ros/jazzy/setup.bash` exists and that installation completed. After the first successful workspace build, run `source ~/ros2_ws/install/setup.bash` at the prompt in existing terminals; new interactive Bash terminals load it automatically. Keep optional SLAM overlays explicit, after the course overlay. If changing middleware or domain during diagnosis, stop lab nodes and run `ros2 daemon stop`, then reopen terminals with consistent settings. Jazzy warns that ROS_LOCALHOST_ONLY is deprecated. Unset that legacy variable and use ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST consistently; do not combine conflicting discovery profiles or DDS XML settings from another lab.
+
+### Recover a terminal that closes on startup
+
+If the old command block was saved inside `.bashrc`, its self-sourcing line can cause recursive shell startup. That explains a terminal hang or exit; it does not by itself establish a full Ubuntu system crash.
+
+**On Windows/WSL, run this in Windows PowerShell** to open Bash without loading the broken startup files:
+
+```powershell
+wsl -d Ubuntu-24.04 --exec /bin/bash --noprofile --norc
+```
+
+If your distro has a different name, find it with `wsl -l -v` in PowerShell and replace `Ubuntu-24.04`. On native Ubuntu, use your terminal's custom-command setting to launch `/bin/bash --noprofile --norc`.
+
+At the clean Bash prompt, follow Steps 1–3 above: back up `.bashrc`, remove the entire old installer and any line that sources `.bashrc` itself, insert the corrected file-content block once, then check syntax. Keep the clean shell open while testing a new normal Ubuntu terminal with Step 4. If startup still hangs, use the clean shell to temporarily comment out the workspace `source "$HOME/ros2_ws/install/setup.bash"` line and test the Jazzy underlay alone.
+
+Bash documents these startup-file bypass options in its [startup-file reference](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html); Microsoft's [WSL command reference](https://learn.microsoft.com/en-us/windows/wsl/basic-commands) explains selecting a distribution.
 
 ## Verify graphical applications
 
