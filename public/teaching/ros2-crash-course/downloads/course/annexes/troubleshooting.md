@@ -8,7 +8,7 @@ On a fresh Ubuntu WSL account, sudo normally asks for that account's Linux passw
 
 The ROS apt repository must be configured before apt can find ros-jazzy packages. Follow the official Jazzy repository instructions linked from setup, including Universe and ros2-apt-source, then run apt update.
 
-For persistent ROS sourcing and DDS variables, follow the editor steps and labelled file-content block in [lecture 00](../lessons/00-setup-guide.md). Keep installer commands and `source ~/.bashrc` out of `.bashrc`: self-sourcing can freeze or close the terminal. If normal terminals fail to open, use lecture 00's recovery steps to start Bash with `--noprofile --norc`, back up and repair the file, then syntax-check it before reopening Ubuntu. Verify settings from a fresh interactive Ubuntu Bash terminal. A noninteractive `bash -c` may skip the interactive portion of .bashrc; automation should source ROS explicitly. Existing terminals still need the overlay sourced after the first build.
+For persistent ROS sourcing and DDS variables, follow the editor steps and labelled file-content block in [lecture 00](../lessons/00-setup-guide.md). Keep installer commands and `source ~/.bashrc` out of `.bashrc`: self-sourcing can freeze or close the terminal. Verify settings from a fresh interactive Ubuntu Bash terminal. A noninteractive `bash -c` may skip the interactive portion of .bashrc; automation should source ROS explicitly. Existing terminals still need the overlay sourced after the first build.
 
 ## ROS or an executable is missing
 
