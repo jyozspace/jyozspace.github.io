@@ -1,6 +1,6 @@
-# From a moving robot to nodes and messages
+# From a robot to the ROS graph
 
-Understand what ROS connects before learning how to run its commands.
+Understand how robot components communicate, then build and run a small ROS 2 publisher from source.
 
 ## How a robot senses, decides and acts
 
@@ -22,7 +22,7 @@ An IMU measures acceleration and angular velocity; it does not directly report a
 
 Robotics also involves mechanics, power, uncertainty and safety. The sensor–processing–actuator loop is our organizing model. The phone project concentrates on **sensing and processing**: it reconstructs motion and a sparse map without driving a physical actuator. Turtlesim gives us a simulated motion system first.
 
-Complete [the setup guide](00-setup-guide.md) before running the examples.
+Complete [Your robotics workbench](00-setup-guide.md) first: Ubuntu 24.04, Jazzy in fresh Bash terminals, file navigation and the turtle GUI test. Here we explain the graph behind that test, then use Git and colcon to run an existing package. [Write your first Python nodes](02-lecture2-python-nodes.md) follows with your own code and the four supplied course packages.
 
 ## Why a robotics framework helps
 
@@ -79,40 +79,28 @@ Older tutorials may say `roscore`, `rosrun`, `rospy` or `catkin_make`: these bel
 
 ROS 2 addresses broader deployment needs, including unreliable networks, multiple robots and controlled startup. ROS 1 also supported distributed robots; these are architectural improvements, not a claim that such tasks were impossible before. The two systems do not automatically communicate. A separately configured bridge can support migration; it is not needed here. [Design motivation](https://design.ros2.org/articles/why_ros2.html), [Jazzy concepts](https://docs.ros.org/en/jazzy/Concepts.html).
 
-## Features become useful when you have a concrete problem
-
-![A mobile robot surrounded by visualization, recording, simulation, hardware control, graph inspection and mapping capabilities, with Nav2, MoveIt and drivers below. AI-assisted conceptual illustration.](../assets/lecture01-robot-capabilities.png)
-
-**Read the capability map:** the connections associate tools with the robot; they are not message-flow arrows. RViz displays data, rosbag2 records and replays it, Gazebo supplies a simulated world, and drivers connect supported hardware. Nav2 and MoveIt solve different motion-planning problems. These are packages you select and configure, rather than features every ROS node automatically runs. The illustrated screens are conceptual views.
-
-| Need | ROS 2 capability | Example and limit |
-| --- | --- | --- |
-| Add a consumer without editing the driver | Typed publish/subscribe topics | A camera feeds a viewer and detector; both must understand its encoding |
-| Use a lossy wireless link | Quality of Service, or QoS | Prefer fresh frames over retrying old frames; choose policies deliberately |
-| Inspect somebody else's system | Graph/interface introspection | `ros2 node info` reveals a running node's connections |
-| Configure without recompiling | Parameters, launch and remapping | Reuse one driver with another device path/topic |
-| Control component startup | Managed lifecycle nodes | Configure before activation; the node must implement lifecycle support |
-| Investigate yesterday's failure | `rosbag2` recording/playback | Replay selected inputs while the physical robot is offline |
-| Combine several sensors | `tf2` coordinate transforms | Express a camera measurement relative to the body |
-| Distribute computation | Client libraries and middleware | Python perception exchanges data with a C++ planner on another reachable machine |
-
-### Features for deployment
-
-| Capability | What it makes possible | What you must still provide |
-| --- | --- | --- |
-| Lifecycle nodes | Configure a camera before activating its stream; deactivate before changing a mode | A node implementing the lifecycle and transition/error handling; lifecycle alone is not safety certification |
-| Composition | Load compatible node components into one process to reduce process overhead | Supported components and executor/thread design; one process failure can affect several nodes |
-| DDS Security | Authenticate peers, encrypt traffic and restrict allowed communication | Supported middleware, identities, signed policies and explicit enable/enforcement configuration |
-| Real-time-oriented design | Build a control path with predictable timing | Suitable OS/kernel, bounded callbacks, memory strategy and measured worst-case behavior; ordinary ROS installation gives no deadline guarantee |
-| Middleware choices | Select Fast DDS, Cyclone DDS or another supported RMW implementation | Check distribution/platform compatibility and test your chosen configuration |
-| micro-ROS | Connect resource-constrained microcontroller firmware to a larger ROS system | Supported board/RTOS, transport and an agent; it is not a full desktop ROS installation on a tiny chip |
-| ROS 1 bridge | Exchange supported messages during a migration | A compatible separately built/configured bridge and matching interfaces; do not assume action bridging or all platform combinations |
-
-Distributed discovery removes the need for a ROS 1-style master; it does not eliminate every single point of failure. One indispensable controller, power supply or network link can still stop a robot. ROS 2 parameters are owned by individual nodes, rather than one universal parameter server. Dynamic changes work only when the node supports and validates them.
-
-References: [managed nodes](https://design.ros2.org/articles/node_lifecycle.html), [ROS security](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Security.html), [micro-ROS](https://micro.ros.org/), and [ros1_bridge](https://github.com/ros2/ros1_bridge). The [official feature-status catalogue](https://docs.ros.org/en/rolling/The-ROS2-Project/Features.html) provides a wider inventory; Rolling is evolving, so verify features against Jazzy before using them here.
-
 ## A small vocabulary for a large system
+
+**Reference for this lecture:** the bold communication terms below are the interfaces you will compare. The file/build terms explain where a runnable node comes from.
+
+| Group | Term | Beginner meaning | Example to recognize |
+| --- | --- | --- | --- |
+| Files and builds | Workspace | A folder of source plus colcon build results | `~/ros2_ws/` |
+| Files and builds | Repository | A Git project; it can contain several ROS packages | `src/examples/` from GitHub |
+| Files and builds | Package | Installable ROS software identified by `package.xml` | `examples_rclpy_minimal_publisher` |
+| Programs | Executable | An installed program selected by `ros2 run` | `publisher_member_function` |
+| Programs | Process | An operating-system instance of a running executable | The program occupying Terminal A |
+| Programs | **Node** | A named ROS participant inside a process | `/minimal_publisher` or renamed `/demo_talker` |
+| Communication | **Topic** and **message** | A named stream and one typed sample on it | `/hello` carrying `std_msgs/msg/String` |
+| Communication | **Publisher / subscriber** | Sends samples / receives samples on a topic | Talker / echo inspection tool |
+| Communication | **Service** and **client / server** | Request an operation / return its response | `/clear` clears a drawing |
+| Communication | **Action** and **client / server** | Request a goal with feedback, result and cancellation | Rotate the turtle toward a heading |
+| Configuration | **Parameter** | A setting owned by a node | `use_sim_time: false` |
+| Startup | `run` / `launch` | Start an executable / execute a launch description | One talker / a configured group of programs |
+
+### Workspaces, packages, executables and nodes
+
+The annotated file-manager and terminal view in **Build and run a small GitHub example** below follows one real package through these stages. Use this table as a reference while tracing that image.
 
 An **executable** is a program you can start; a running program is an OS **process**. A ROS **node** is a named participant with a focused responsibility. One process can host one or several nodes. A **package** groups code, interfaces or configuration files. A **workspace** is where related packages are built. These are different things: package `turtlesim` supplies executable `turtlesim_node`, which normally creates node `/turtlesim`.
 
@@ -141,6 +129,25 @@ An **action client** sends a goal, such as “navigate to this location.” The 
 ### Parameters configure a node
 
 A **parameter** is a named, typed setting owned by a node: turtlesim's `background_r`, for example. A node declares supported settings and can reject invalid changes. Some take effect at runtime; others need restart/reconfiguration. Parameters configure behaviour; they do not replace high-rate sensor topics. Runtime values are not automatically permanent; YAML/launch configuration makes them repeatable. [Parameter concept](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Parameters.html).
+
+## ROS 2 capabilities at a glance
+
+![A mobile robot surrounded by visualization, recording, simulation, hardware control, graph inspection and mapping capabilities, with Nav2, MoveIt and drivers below. AI-assisted conceptual illustration.](../assets/lecture01-robot-capabilities.png)
+
+**Read the capability map:** the connections associate tools with the robot; they are not message-flow arrows. RViz displays data, rosbag2 records and replays it, Gazebo supplies a simulated world, and drivers connect supported hardware. Nav2 and MoveIt solve different motion-planning problems. These are packages you select and configure, rather than features every ROS node automatically runs. The illustrated screens are conceptual views.
+
+Focus first on **communication**, **configuration** and **inspection**. The other groups show where the same ideas lead; you do not need to install or memorize every tool now.
+
+| Category | Important features | A concrete use | Where you use them |
+| --- | --- | --- | --- |
+| **Communicate** | Nodes; typed messages; **topics, services, actions** | Stream camera frames; reset a tool; track a navigation goal | This lecture; deeper practice in lecture 04 |
+| **Configure and start** | **Parameters**; remapping; `run`; `launch` | Name a node, choose a setting, start a repeatable group | Run and remap here; launch in lecture 04 |
+| **Inspect and replay** | ROS CLI; RViz; `rosbag2` | Inspect connections, see sensor data, replay an input | CLI here; recording in the capstone |
+| **Deliver data** | DDS discovery; QoS | Find peers and choose suitable delivery for a camera | DDS here; QoS experiments in lecture 03 |
+| **Describe geometry** | `tf2`; robot models such as URDF | Relate a camera measurement to the robot body | Lecture 04 |
+| **Reuse robot software** | Drivers; Gazebo; Nav2; MoveIt | Connect hardware, simulate, navigate or plan arm motion | Optional applications; not required for this lab |
+
+Lifecycle nodes, composition, security, real-time design, micro-ROS and ROS 1 migration are later deployment topics. [The advanced feature reference](../annexes/ros-workflows.md) explains their purpose and requirements. For now, follow the bold communication/configuration terms into the vocabulary and hands-on examples. [Official ROS concepts](https://docs.ros.org/en/jazzy/Concepts.html).
 
 ## From packages to a running graph
 
@@ -181,6 +188,129 @@ Our `.bashrc` limits discovery to `LOCALHOST` and uses `ROS_DOMAIN_ID=42`: all c
 **Quality of Service** describes delivery policies. A live camera may tolerate a missing frame because a newer one is available. A configuration exchange has different needs. `BEST_EFFORT` permits loss; `RELIABLE` uses delivery/retry mechanisms. History/depth controls queue retention; durability influences whether suitable late subscribers receive retained data. Reliability alone does not guarantee bounded latency or correct timestamps.
 
 A best-effort publisher cannot satisfy a subscription requiring reliable delivery. A reliable publisher can satisfy a best-effort subscription if other policies match. A topic can therefore be visible but silent. Lecture 3 tests this; for now, inspect endpoints using `ros2 topic info TOPIC --verbose`. [Jazzy QoS guide](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html).
+
+## Build and run a small GitHub example
+
+Use the official [ROS 2 examples repository, Jazzy branch](https://github.com/ros2/examples/tree/jazzy). It contains several small learning packages. We will build **only its minimal Python publisher**, which needs no robot or camera. You are running existing open-source code here; lecture 02 explains how to write and package your own node.
+
+### 1. Prepare the colcon workspace
+
+Run these in **Ubuntu Bash**, as your normal user. Lecture 00 installed Jazzy and development tools; install Git and colcon if needed:
+
+```bash
+sudo apt update
+sudo apt install -y git python3-colcon-common-extensions
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws
+source /opt/ros/jazzy/setup.bash
+```
+
+`ros2_ws` is the workspace root; `src` holds source repositories/packages. **colcon** discovers ROS packages and builds/installs them. It creates `build`, `install` and `log` beside `src`. Run build commands from `~/ros2_ws`, rather than inside the source file's folder. These steps reuse the empty workspace prepared in lecture 00.
+
+### 2. Clone the source; pull later updates
+
+For the **first download**:
+
+```bash
+cd ~/ros2_ws/src
+git clone --branch jazzy --single-branch --depth 1 https://github.com/ros2/examples.git
+```
+
+This creates `~/ros2_ws/src/examples/`. `jazzy` selects the source intended for our ROS release. A repository folder is not necessarily one ROS package: this repository contains many.
+
+**On later visits**, when `examples/` already exists, update that checkout instead of cloning again:
+
+```bash
+cd ~/ros2_ws/src/examples
+git status --short
+git pull --ff-only
+git rev-parse --short HEAD
+```
+
+`git clone` downloads a new checkout; `git pull --ff-only` fetches updates and advances an existing branch without creating a merge commit. `git status --short` is blank for an unchanged checkout. If it shows your edits, preserve them before updating. If Git reports a conflict or divergent history, resolve that message before continuing. Record the printed commit ID when you need to reproduce a run. A Git pull changes source files; it does not build them or load them into your shell.
+
+### 3. Resolve dependencies and build one package
+
+```bash
+cd ~/ros2_ws
+rosdep install --from-paths src/examples/rclpy/topics/minimal_publisher --ignore-src -r -y
+colcon build --symlink-install --packages-select examples_rclpy_minimal_publisher
+source install/setup.bash
+ros2 pkg executables examples_rclpy_minimal_publisher
+ros2 pkg prefix examples_rclpy_minimal_publisher
+```
+
+`rosdep` installs dependencies declared by this package; it uses the configuration initialized in lecture 00. `--packages-select` limits the build to the named package, even though the Git repository contains other examples. `--symlink-install` links supported source files into the installation, which helps during development. **Source the resulting overlay after the build** in this already-open terminal. A fresh Ubuntu Bash terminal loads it automatically through the `.bashrc` block from lecture 00.
+
+**Expected result:** a successful build summary for this package and an executable-list line containing:
+
+```output
+examples_rclpy_minimal_publisher publisher_member_function
+```
+
+The prefix check should point into `~/ros2_ws/install/examples_rclpy_minimal_publisher`, confirming you selected the workspace copy. If colcon warns that this example already exists in `/opt/ros/jazzy`, the system has a binary copy too: this exercise intentionally overlays it with the same Jazzy example from source. Other executable names can appear. If the build fails, resolve the first error before running the node. After a later Git update, repeat the build and source steps so the installed programs match the source.
+
+### 4. Connect source, package, executable and node
+
+![Simulated Ubuntu file manager and terminal linking the source package, setup.py entry point and running publisher. The folders shown are a selected subset.](../assets/lecture01-workspace-terminal.png)
+
+**Follow the mapping:** the package folder is `~/ros2_ws/src/examples/rclpy/topics/minimal_publisher/`. Its `package.xml` declares the ROS package name `examples_rclpy_minimal_publisher`. Its `setup.py` registers the executable name `publisher_member_function`, pointing to `main` in the Python module `examples_rclpy_minimal_publisher/publisher_member_function.py`. The source folder's short name `minimal_publisher` and the declared package name are different; ROS uses the declared name.
+
+After building, the executable entry point is under `~/ros2_ws/install/examples_rclpy_minimal_publisher/lib/examples_rclpy_minimal_publisher/`. `ros2 run` locates that installed entry point using the sourced environment. It does not directly search `src` for a similarly named `.py` file. The running program creates the default node `/minimal_publisher`; a remapping below changes its runtime name without renaming any source file. [Upstream entry points](https://github.com/ros2/examples/blob/jazzy/rclpy/topics/minimal_publisher/setup.py), [publisher source](https://github.com/ros2/examples/blob/jazzy/rclpy/topics/minimal_publisher/examples_rclpy_minimal_publisher/publisher_member_function.py).
+
+### 5. Start and inspect the node
+
+In **Terminal A**, start the installed executable with an explicit node name, a topic remapping and one parameter:
+
+```bash
+ros2 run examples_rclpy_minimal_publisher \
+  publisher_member_function --ros-args \
+  -r __node:=demo_talker -r topic:=/hello \
+  -p use_sim_time:=false
+```
+
+![Anatomy of a ROS run command: package, installed executable, runtime node name, topic remapping and a node parameter. Launch uses a launch file instead of an executable.](../assets/lecture01-run-command.svg)
+
+| Part | What it means here |
+| --- | --- |
+| `ros2 run` | Start one installed executable |
+| `examples_rclpy_minimal_publisher` | Package to look in; declared in `package.xml` |
+| `publisher_member_function` | Installed executable; registered in `setup.py` |
+| `--ros-args` | The following arguments configure ROS behavior |
+| `-r __node:=demo_talker` | Rename the runtime node to `/demo_talker` |
+| `-r topic:=/hello` | Change the example's original `topic` stream to `/hello` |
+| `-p use_sim_time:=false` | Use the normal system clock instead of ROS simulated time |
+
+The upstream example publishes a String about twice per second. The `use_sim_time` parameter is a standard node clock setting; it does not change the text or timer period. Custom settings work only if a node supports them. A backslash at the end of a Bash line continues the same command; do not add a space after it.
+
+**Terminal A — expected log excerpt:**
+
+```output
+[demo_talker] Publishing: "Hello World: 0"
+[demo_talker] Publishing: "Hello World: 1"
+```
+
+Timestamps and the starting count vary. Leave it running. In **Terminal B — a separate new Ubuntu Bash terminal**, inspect it:
+
+```bash
+ros2 node list
+ros2 node info /demo_talker
+ros2 param get /demo_talker use_sim_time
+ros2 topic info /hello
+ros2 topic echo /hello --once
+```
+
+Expect `/demo_talker` among the nodes, `Boolean value is: False` for the clock setting, topic type `std_msgs/msg/String`, and a sample such as:
+
+```output
+data: 'Hello World: 7'
+---
+```
+
+The echo command creates a subscriber and exits after one sample. The number may differ. Stop the publisher with **Ctrl+C in Terminal A** before returning to turtlesim.
+
+**Run versus launch:** `ros2 run PACKAGE EXECUTABLE` selects a program. `ros2 launch PACKAGE LAUNCH_FILE` selects a launch description that can start and configure several programs. A launch-file argument such as `name:=value` is defined by that file; it is not automatically a node parameter. Lecture 04 applies this to the course bringup package, after lecture 02 builds it. [Colcon workflow](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Colcon-Tutorial.html), [ROS arguments](https://docs.ros.org/en/jazzy/How-To-Guides/Node-arguments.html).
+
 
 ## Read a message, then command a motion
 
@@ -278,26 +408,6 @@ Press arrows. Predict the result, then inspect `/wrong_cmd_vel` with `ros2 topic
 
 Across computers, also check reachability/discovery transport using the networking appendix. Change one thing at a time so the result explains the failure. Topic discovery or arrival of bytes alone is not proof of useful data.
 
-## The wider ROS toolbox
-
-This is a map of possibilities, not a requirement to install everything today.
-
-| Tool/concept | Question it answers | Course connection / next reference |
-| --- | --- | --- |
-| Client libraries and executors | How do callbacks run when data/timers are ready? | Python in lecture 2; C++ in lecture 3 |
-| Interfaces and builds | How do languages agree on custom data? | `.msg`, `.srv`, `.action`, ament and colcon in lectures 2–4 |
-| Launch and YAML | How do I start a repeatable multi-node system? | Lecture 4; [launch guide](https://docs.ros.org/en/jazzy/Concepts/Basic/About-Launch.html) |
-| `tf2` and URDF | Where is a sensor, and how is a robot assembled? | Lecture 4; [URDF tutorials](https://docs.ros.org/en/jazzy/Tutorials/Intermediate/URDF/URDF-Main.html) |
-| RViz and rqt | What does data look like and which nodes connect? | RViz displays data; it does not simulate physics |
-| `rosbag2` | Can I replay inputs for a repeatable test? | Capstone; [bag tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html) |
-| Gazebo | Can I simulate physics and sensors? | [ROS–Gazebo integration](https://gazebosim.org/docs/harmonic/ros2_integration/) |
-| Nav2 | How can a mobile robot plan/follow paths? | Requires sensors, transforms and a robot interface; [Nav2 concepts](https://docs.nav2.org/concepts/index.html) |
-| MoveIt 2 | How can an arm plan collision-aware motion? | Requires a model/controller integration; [MoveIt tutorials](https://moveit.picknik.ai/main/index.html) |
-| `ros2_control` | How do controllers interact with hardware? | [Controller/hardware framework](https://control.ros.org/jazzy/doc/ros2_control/doc/index.html) |
-| Lifecycle, composition, security, real-time design | How do prototypes become controlled deployments? | [Intermediate concepts](https://docs.ros.org/en/jazzy/Concepts/Intermediate.html) |
-
-Tools share interfaces but are not interchangeable. A visualization window does not prove navigation works; a graph does not prove a controller is safe. Choose a tool because it solves a defined problem in the sensor–processing–actuator loop.
-
 ## Where these ideas lead: the phone capstone
 
 Your Android phone supplies camera images and independent motion measurements. The laptop receiver checks and decodes packets, then publishes ROS messages. A viewer displays the camera, a bag recorder saves samples, and an optional separately prepared mapper uses images and measured camera calibration to estimate motion and sparse landmarks. These consumers reuse the same measurements for different purposes.
@@ -308,7 +418,7 @@ Follow the boundary in the picture: the phone uses authenticated WebSocket trans
 
 ## Practice, explain and carry forward
 
-**Core lab evidence:** save the node list, command-topic type, one pose sample and an explanation of the broken remap. Draw the command and pose arrows; identify the connection needed to close an automatic feedback loop. Stop lab nodes with Ctrl+C in their terminals when finished.
+**Core lab evidence:** save the upstream Git commit, installed package prefix, one `/hello` sample, the turtle command-topic type, one pose sample and an explanation of the broken remap. Explain how `package.xml`, `setup.py`, the executable and the runtime node name are related. Draw the command and pose arrows; identify the connection needed to close an automatic feedback loop. Stop lab nodes with Ctrl+C in their terminals when finished.
 
 **Before lecture 2, explain:**
 
@@ -320,6 +430,6 @@ Follow the boundary in the picture: the phone uses authenticated WebSocket trans
 
 **Model reasoning:** first make the sensor available to Linux. Topics distribute repeated samples to independent consumers. A service fits a brief operation; an action fits a goal with progress. Discovery and delivery compatibility are separate checks. The kernel is part of Ubuntu's OS; ROS libraries and nodes run above it in user space.
 
-**Further practice:** complete the interface sampler and revisit the shell drill in [lecture 00](00-setup-guide.md), drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
+**Further practice:** complete the interface sampler and revisit the shell drill in [lecture 00](00-setup-guide.md), drive a straight segment and turn, send zero velocity and explain your commands. Keep the categorized feature table and advanced workflow appendix as references. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
 
-The highway, shared-interface comparison and robot-capability illustrations are AI-assisted redraws of author-supplied references. Other concept diagrams are original course artwork, licensed with the course under CC BY 4.0. See [visual sources](../annexes/visual-sources.md) for provenance. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 31 October 2026.
+The highway, shared-interface comparison and robot-capability illustrations are AI-assisted redraws of author-supplied references. Other concept diagrams are original course artwork, licensed with the course under CC BY 4.0. See [visual sources](../annexes/visual-sources.md) for provenance. They explain relationships rather than reproduce captured application output. Primary references and the source-package workflow were reviewed on 1 November 2026.

@@ -12,9 +12,10 @@ The capstone connects a native Android sensor app to a ROS receiver. The same AP
 
 | Your question | Start here |
 | --- | --- |
-| What do I install and what is a sourced terminal? | Before you begin |
+| What do I install and what is a sourced terminal? | [00 · Your robotics workbench](../lessons/00-setup-guide.md) |
 | What should my terminal or viewer show? | Visual checkpoints and the figures beside each exercise |
-| How do I create, install and connect nodes? | Lectures 1–3 and the source browser |
+| What are packages, executables and nodes, and how do I build an existing example? | [01 · From a robot to the ROS graph](../lessons/01-lecture1-architecture.md) |
+| How do I write and install my own nodes? | [02 · Write your first Python nodes](../lessons/02-lecture2-python-nodes.md), then lecture 03 |
 | How do I request work and track progress? | Lecture 4 and Annex D’s service/action experiments |
 | How do coordinate frames and timestamps work together? | Frames, transforms & time |
 | How is the app developed? | Annex A: Build the Android app |

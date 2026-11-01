@@ -12,6 +12,8 @@ Open fresh Ubuntu Bash terminals after lecture 00; its `.bashrc` block loads the
 
 ## Build and verify the supplied packages
 
+Lecture 01 built one upstream example inside `src/examples`. Keep it there. This lecture adds four course packages alongside that repository and selects those four for the build below.
+
 ### Download to home, then extract into src
 
 Download **ros2-course-code.zip** from Resources and save it in your **Ubuntu home directory** (`~`), before extracting. To reach that directory from Windows File Explorer, run `cd ~` then `explorer.exe .` inside Ubuntu and move the downloaded ZIP into the folder that opens. On native Ubuntu, use Files → Home. If your browser saved it in Windows Downloads, move it to Ubuntu home first.
@@ -46,8 +48,10 @@ The final check prints `Package layout OK`.
 
 ```bash
 cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-colcon build --symlink-install
+rosdep install --from-paths src/ros2_course_py src/ros2_course_cpp \
+  src/ros2_course_interfaces src/ros2_course_bringup --ignore-src -r -y
+colcon build --symlink-install --packages-select \
+  ros2_course_interfaces ros2_course_py ros2_course_cpp ros2_course_bringup
 source install/setup.bash
 ros2 pkg executables ros2_course_py
 ```

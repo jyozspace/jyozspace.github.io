@@ -2,7 +2,7 @@
 
 Run these commands in Ubuntu 24.04 Bash. UPPERCASE names are placeholders. This is a reference menu: choose the command for your current step instead of pasting a whole section. Long-running nodes, echo, hz, viewers and recorders each occupy a terminal until Ctrl+C.
 
-After lecture 00, fresh Ubuntu Bash terminals load ROS through `.bashrc`. After the successful lecture 02 build, the same block also loads the built workspace. The explicit source commands below are useful in an already-open terminal after a build or when checking an environment that was not configured that way.
+After lecture 00, fresh Ubuntu Bash terminals load ROS through `.bashrc`. After the first source build in lecture 01, the same block also loads the workspace overlay; lecture 02 adds the supplied course packages. The explicit source commands below are useful in an already-open terminal after a build or when checking an environment that was not configured that way.
 
 ## Environment and builds
 

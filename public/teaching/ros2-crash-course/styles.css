@@ -36,3 +36,10 @@ dialog{border:1px solid var(--line);border-radius:12px;padding:26px;background:v
 .motion-controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px}
 .motion-controls a{display:inline;line-height:1.5;font-size:12px}
 @media print{.motion-controls{display:none}}
+
+/* The contents list uses the same H2/H3 text as the rendered lesson. */
+.toc{max-height:62vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.toc a.toc-sub{padding-left:25px;font-size:10px}
+.toc a[aria-current="location"]{border-color:var(--accent);color:var(--accent);background:var(--wash);font-weight:650}
+.reader-section h2,.reader-section h3,.interactive-lab h2,.quiz>h2{scroll-margin-top:110px}
+@media(max-width:950px){.toc{max-height:none;overflow:visible}.toc a.toc-sub{padding-left:10px}}

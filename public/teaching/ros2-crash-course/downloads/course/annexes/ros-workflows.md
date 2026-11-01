@@ -104,3 +104,21 @@ Compare accepted parameter values with observed output behavior. Then inspect pu
 | Simulate before hardware | A robot model and compatible ROS/Gazebo integration | [ROS/Gazebo compatibility](https://gazebosim.org/docs/latest/ros_installation/) |
 
 Jazzy’s recommended modern Gazebo pairing is Harmonic. For each extension, write down the input topics, types, units, timestamps and transforms it expects. That habit turns a collection of working nodes into an understandable system.
+
+## Advanced ROS 2 deployment features
+
+These are reference topics after the core communication and configuration vocabulary.
+
+| Capability | What it makes possible | What you must still provide |
+| --- | --- | --- |
+| Lifecycle nodes | Configure a camera before activating its stream; deactivate before changing a mode | A node implementing the lifecycle and transition/error handling; lifecycle alone is not safety certification |
+| Composition | Load compatible node components into one process to reduce process overhead | Supported components and executor/thread design; one process failure can affect several nodes |
+| DDS Security | Authenticate peers, encrypt traffic and restrict allowed communication | Supported middleware, identities, signed policies and explicit enable/enforcement configuration |
+| Real-time-oriented design | Build a control path with predictable timing | Suitable OS/kernel, bounded callbacks, memory strategy and measured worst-case behavior; ordinary ROS installation gives no deadline guarantee |
+| Middleware choices | Select Fast DDS, Cyclone DDS or another supported RMW implementation | Check distribution/platform compatibility and test your chosen configuration |
+| micro-ROS | Connect resource-constrained microcontroller firmware to a larger ROS system | Supported board/RTOS, transport and an agent; it is not a full desktop ROS installation on a tiny chip |
+| ROS 1 bridge | Exchange supported messages during a migration | A compatible separately built/configured bridge and matching interfaces; do not assume action bridging or all platform combinations |
+
+Distributed discovery removes the need for a ROS 1-style master; it does not eliminate every single point of failure. One indispensable controller, power supply or network link can still stop a robot. ROS 2 parameters are owned by individual nodes, rather than one universal parameter server. Dynamic changes work only when the node supports and validates them.
+
+References: [managed nodes](https://design.ros2.org/articles/node_lifecycle.html), [ROS security](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Security.html), [micro-ROS](https://micro.ros.org/), and [ros1_bridge](https://github.com/ros2/ros1_bridge). The [official feature-status catalogue](https://docs.ros.org/en/rolling/The-ROS2-Project/Features.html) provides a wider inventory; Rolling is evolving, so verify features against Jazzy before using them here.

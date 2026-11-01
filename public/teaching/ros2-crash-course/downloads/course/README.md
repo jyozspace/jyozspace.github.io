@@ -4,12 +4,12 @@ These are the authoritative, standalone Markdown notes. Keep assets/ beside less
 
 ## Start here
 
-1. [Setup and prerequisites](lessons/00-setup-guide.md)
-2. [Lecture 1: robotics and ROS foundations](lessons/01-lecture1-architecture.md)
-3. [Lecture 2: Python nodes](lessons/02-lecture2-python-nodes.md)
-4. [Lecture 3: C++ and QoS](lessons/03-lecture3-cpp-nodes.md)
-5. [Lecture 4: services, actions, launch and TF](lessons/04-lecture4-services-actions-tf.md)
-6. [Lecture 5: phone sensors and monocular SLAM](lessons/05-lecture5-sensors-slam.md)
+1. [00 · Your robotics workbench](lessons/00-setup-guide.md)
+2. [01 · From a robot to the ROS graph](lessons/01-lecture1-architecture.md)
+3. [02 · Write your first Python nodes](lessons/02-lecture2-python-nodes.md)
+4. [03 · The same graph, in C++](lessons/03-lecture3-cpp-nodes.md)
+5. [04 · Connect a complete system](lessons/04-lecture4-services-actions-tf.md)
+6. [05 · A phone that helps build a map](lessons/05-lecture5-sensors-slam.md)
 
 ## Practical annexes
 

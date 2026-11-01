@@ -76,13 +76,13 @@ Answer: B. Ubuntu and its Linux kernel still manage processes, memory, devices a
 
 Answer: A. Topics carry streams, services pair requests with responses, and actions add goal management, feedback, results and cancellation for longer operations. Parameters configure nodes.
 
-4. A native phone app sends JPEGs over WSS to a Python receiver that publishes Image messages. Which component participates directly in the ROS graph?
+4. In ros2 run examples_rclpy_minimal_publisher publisher_member_function --ros-args -r __node:=demo_talker, which name identifies the running ROS node?
 
-- A. The phone’s hotspot configuration page
-- B. The ROS receiver node on the laptop
-- C. Each individual JPEG file
+- A. examples_rclpy_minimal_publisher, because package and node names are always identical
+- B. /demo_talker, because __node remaps the runtime name
+- C. publisher_member_function.py, because ros2 run searches src for that filename
 
-Answer: B. The phone is a web sensor client; phone_bridge is the ROS participant publishing typed topics.
+Answer: B. The first name selects a package and the second selects its installed executable. The node is a running participant; this remapping names it /demo_talker without renaming any source file.
 
 5. Two nodes appear in ros2 node list, but the turtle does not move. Which observation best establishes a correctly connected command stream?
 
