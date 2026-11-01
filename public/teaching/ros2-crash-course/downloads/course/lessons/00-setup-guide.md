@@ -292,7 +292,7 @@ Use the same values in every lab terminal. ROS_DOMAIN_ID separates graphs; it is
 
 ### Save ROS sourcing and DDS settings in .bashrc
 
-Ubuntu reads `.bashrc` when an interactive Bash terminal opens. **Do not put `source ~/.bashrc` inside `.bashrc`: it makes the file load itself repeatedly and can freeze or close the terminal.** The earlier `if ! grep ...` / `cat ... EOF` installer was a command to run at the prompt, not file contents. Replace it using the steps below. If terminals already hang or close, start with **Recover a terminal that closes on startup** below.
+Ubuntu reads `.bashrc` when an interactive Bash terminal opens. **Do not put `source ~/.bashrc` inside `.bashrc`: it makes the file load itself repeatedly and can freeze or close the terminal.** The earlier `if ! grep ...` / `cat ... EOF` installer was a command to run at the prompt, not file contents. Replace it using the steps below.
 
 **Step 1 — run at the Ubuntu terminal prompt as your normal Linux user.** Back up the existing file, then open it in the editor:
 
@@ -345,22 +345,6 @@ LOCALHOST
 ```
 
 If `jazzy` is missing, check that `/opt/ros/jazzy/setup.bash` exists and that installation completed. After the first successful workspace build, run `source ~/ros2_ws/install/setup.bash` at the prompt in existing terminals; new interactive Bash terminals load it automatically. Keep optional SLAM overlays explicit, after the course overlay. If changing middleware or domain during diagnosis, stop lab nodes and run `ros2 daemon stop`, then reopen terminals with consistent settings. Jazzy warns that ROS_LOCALHOST_ONLY is deprecated. Unset that legacy variable and use ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST consistently; do not combine conflicting discovery profiles or DDS XML settings from another lab.
-
-### Recover a terminal that closes on startup
-
-If the old command block was saved inside `.bashrc`, its self-sourcing line can cause recursive shell startup. That explains a terminal hang or exit; it does not by itself establish a full Ubuntu system crash.
-
-**On Windows/WSL, run this in Windows PowerShell** to open Bash without loading the broken startup files:
-
-```powershell
-wsl -d Ubuntu-24.04 --exec /bin/bash --noprofile --norc
-```
-
-If your distro has a different name, find it with `wsl -l -v` in PowerShell and replace `Ubuntu-24.04`. On native Ubuntu, use your terminal's custom-command setting to launch `/bin/bash --noprofile --norc`.
-
-At the clean Bash prompt, follow Steps 1–3 above: back up `.bashrc`, remove the entire old installer and any line that sources `.bashrc` itself, insert the corrected file-content block once, then check syntax. Keep the clean shell open while testing a new normal Ubuntu terminal with Step 4. If startup still hangs, use the clean shell to temporarily comment out the workspace `source "$HOME/ros2_ws/install/setup.bash"` line and test the Jazzy underlay alone.
-
-Bash documents these startup-file bypass options in its [startup-file reference](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html); Microsoft's [WSL command reference](https://learn.microsoft.com/en-us/windows/wsl/basic-commands) explains selecting a distribution.
 
 ## Verify graphical applications
 
