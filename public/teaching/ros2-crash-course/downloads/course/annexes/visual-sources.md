@@ -29,3 +29,17 @@ Attribution: **Willow Garage, Inc. and RViz contributors**. Distributed under th
 Retain the source attribution and license when reusing the upstream RViz screenshot. Original course diagrams use CC BY 4.0. Sources are linked next to the lesson they support.
 
 The conceptual phone-equipment illustration retained in the course is AI generated and labelled conceptual. It is not a calibration target or an experimentally measured reconstruction. Learners should submit their own terminal logs, screenshots and measurements as evidence.
+
+## Lecture 01: redrawn author-supplied infographics
+
+Three reference images supplied by the course author on 1 November 2026 were redrawn with the built-in image-generation tool:
+
+| Supplied reference | Course asset | Teaching purpose |
+| --- | --- | --- |
+| `Picture1.jpg` | `lecture01-dds-highway.png` | DDS highway and branch-pipe metaphor, with sensor hardware, navigation robots and visualization |
+| `ROS 2 Robotics Framework Infographic.png` | `lecture01-reuse-plumbing.png` | Shared interfaces, interchangeable data sources, collaboration and reusable packages |
+| `ROS 2 Robotics Framework Infographic (1).png` | `lecture01-robot-capabilities.png` | Illustrated map of tools and capabilities around a mobile robot |
+
+These are AI-assisted educational illustrations, not screenshots of running systems. They retain the supplied compositions' teaching ideas while using the website's ivory, forest green, sage and copper palette. The robot, maps, sensors, arm and software screens are illustrative. The DDS bus is a metaphor for distributed middleware; capability connectors are associations, not data-flow arrows. The surrounding lesson provides the technical interpretation and primary references. The supplied references are recorded as author-provided material rather than attributed to an invented external source. Underlying reference rights remain with their respective rights holders.
+
+The website's Open image links provide full-resolution views for detailed labels.

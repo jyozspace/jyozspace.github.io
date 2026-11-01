@@ -38,6 +38,10 @@ One teammate can write perception in Python while another writes a controller in
 
 Mechanical design and electronics give a robot a body, power and connections. Software turns measurements into estimates, plans and commands. ROS helps organize that software and provides an ecosystem of reusable components: Nav2 for mobile navigation, MoveIt for manipulation, drivers for supported hardware, RViz for inspection and rosbag2 for recordings. A package still needs to match your ROS distribution and application requirements.
 
+![Shared ROS 2 interfaces let camera data feed visualization, recording and perception; real, simulated and recorded sources can use the same message type. AI-assisted redraw of the supplied reference.](../assets/lecture01-reuse-plumbing.png)
+
+**Read the comparison:** the copper chain shows components that need integration agreements. The green branch shows one camera topic serving independent consumers. The lower panels show three sources using `sensor_msgs/msg/Image`, Python/C++ collaboration and reusable packages. The `/image` topic name in the illustration is an example; the message type defines its structure. A matching type still needs matching units, timestamps, frames, calibration and QoS.
+
 **Hardware abstraction in practice:** replace a lidar driver while continuing to publish `sensor_msgs/msg/LaserScan`, and a downstream obstacle detector may be reusable. Check angular coverage, units, frame, timestamps, rate and QoS before calling the replacement compatible. Standard interfaces reduce integration work; they do not remove it.
 
 A small robot may run every node on one computer. A larger system can distribute perception, planning and operator tools across reachable computers. A shared interface makes this possible; network configuration, synchronization and failure handling remain engineering tasks. Python and C++ peers can collaborate without sharing their source language. Gazebo simulates physics and sensors; RViz visualizes published data. They are complementary tools, not interchangeable simulators.
@@ -76,6 +80,10 @@ Older tutorials may say `roscore`, `rosrun`, `rospy` or `catkin_make`: these bel
 ROS 2 addresses broader deployment needs, including unreliable networks, multiple robots and controlled startup. ROS 1 also supported distributed robots; these are architectural improvements, not a claim that such tasks were impossible before. The two systems do not automatically communicate. A separately configured bridge can support migration; it is not needed here. [Design motivation](https://design.ros2.org/articles/why_ros2.html), [Jazzy concepts](https://docs.ros.org/en/jazzy/Concepts.html).
 
 ## Features become useful when you have a concrete problem
+
+![A mobile robot surrounded by visualization, recording, simulation, hardware control, graph inspection and mapping capabilities, with Nav2, MoveIt and drivers below. AI-assisted conceptual illustration.](../assets/lecture01-robot-capabilities.png)
+
+**Read the capability map:** the connections associate tools with the robot; they are not message-flow arrows. RViz displays data, rosbag2 records and replays it, Gazebo supplies a simulated world, and drivers connect supported hardware. Nav2 and MoveIt solve different motion-planning problems. These are packages you select and configure, rather than features every ROS node automatically runs. The illustrated screens are conceptual views.
 
 | Need | ROS 2 capability | Example and limit |
 | --- | --- | --- |
@@ -155,6 +163,12 @@ A launch argument belongs to a launch description; a node parameter belongs to a
 ## DDS: the communication machinery underneath
 
 **DDS means Data Distribution Service.** It is a middleware standard with implementations providing discovery and data exchange. We use `rmw_fastrtps_cpp`, backed by Fast DDS. Python/C++ nodes normally use ROS client-library APIs rather than raw DDS APIs. ROS's `rmw` interface separates these from the implementation; ROS 2 is not synonymous with one DDS vendor.
+
+![DDS illustrated as a parallel-lane data highway connecting sensor, planning, localization, navigation, visualization and control software. AI-assisted redraw of the supplied DDS reference.](../assets/lecture01-dds-highway.png)
+
+**Read the highway:** measurements can serve localization and planning, while computed commands reach control components and inspection tools see the data. The branches represent software endpoints. Physical sensors and motors still need drivers; they do not connect directly to DDS. The highway is a communication metaphor: DDS participants discover and exchange data through distributed middleware, with no single central bus process relaying every sample. Separate named topics carry different typed streams; network reachability and compatible QoS still matter.
+
+The next diagram follows the software dependencies inside the participants: ROS client libraries use RMW and the selected middleware implementation. It explains how the highway metaphor is implemented on this course laptop.
 
 ![A camera and two subscribers above client-library, RMW and Fast DDS layers; discovery and compatible data delivery are separate steps.](../assets/lecture01-dds-path.svg)
 
@@ -308,4 +322,4 @@ Follow the boundary in the picture: the phone uses authenticated WebSocket trans
 
 **Further practice:** complete the interface sampler and revisit the shell drill in [lecture 00](00-setup-guide.md), drive a straight segment and turn, send zero velocity and explain your commands. Keep the ecosystem survey as a reference. Readiness for lecture 2 means explaining the graph you observed and inspecting its interfaces without guessing command meanings.
 
-Concept diagrams are original course artwork, licensed with the course under CC BY 4.0. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 31 October 2026.
+The highway, shared-interface comparison and robot-capability illustrations are AI-assisted redraws of author-supplied references. Other concept diagrams are original course artwork, licensed with the course under CC BY 4.0. See [visual sources](../annexes/visual-sources.md) for provenance. They explain relationships rather than reproduce captured application output. Primary references were reviewed on 31 October 2026.
